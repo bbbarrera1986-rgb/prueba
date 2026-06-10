@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Rúbricas y Evaluación con IA para Docentes Argentinos | Sin Registro | EvaluAR BRB</title>
+<meta name="description" content="Creá rúbricas de evaluación, listas de cotejo e instrumentos de evaluación con inteligencia artificial. Sin registro, sin límites, gratis. Para docentes de secundaria y educación técnica en Argentina." />
+<meta name="keywords" content="generador rúbricas evaluación IA, rúbricas docentes Argentina gratis, instrumentos de evaluación IA, lista de cotejo IA, evaluación formativa IA, generador rúbricas sin registro, evaluación educación técnica Argentina, rúbricas secundaria gratis" />
+<meta name="author" content="Boris Rodríguez Barrera — BRB Estrategia & Procesos" />
+<meta property="og:title" content="Generador de Rúbricas y Evaluación con IA para Docentes Argentinos | Sin Registro | EvaluAR BRB" />
+<meta property="og:description" content="Creá rúbricas de evaluación e instrumentos de evaluación con IA. Sin registro, sin límites, gratis. Para docentes argentinos." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_AR" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "EvaluAR BRB — Generador de Instrumentos de Evaluación con IA",
+  "description": "Herramienta gratuita con inteligencia artificial para generar rúbricas de evaluación, listas de cotejo e instrumentos de evaluación. Sin registro. Para docentes argentinos.",
+  "url": "https://bbbarrera1986-rgb.github.io/brb-generador/evaluAR_BRB_v1.html",
+  "applicationCategory": "EducationalApplication",
+  "inLanguage": "es-AR",
+  "isAccessibleForFree": true,
+  "author": {
+    "@type": "Person",
+    "name": "Boris Rodríguez Barrera",
+    "identifier": "https://orcid.org/0009-0004-6583-6439"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "ARS"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+:root {
+  --burdeo:     #6B1A2A;
+  --burdeo-med: #8B2535;
+  --burdeo-cl:  #A83848;
+  --oro:        #C8A84B;
+  --oro-cl:     #E8C96A;
+  --crema:      #F7F2EA;
+  --crema-osc:  #EDE4D4;
+  --negro:      #1A0D10;
+  --gris:       #5A4A50;
+  --gris-cl:    #9A8A90;
+  --gris-b:     #D0C4C8;
+  --verde-ok:   #2A6B3A;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--crema);color:var(--negro);min-height:100vh;}
+
+/* ── PANTALLAS ── */
+.pant{display:none;}
+.pant.activa{display:flex;flex-direction:column;}
+
+/* ══════════════════════════════════
+   PANTALLA 1 — API KEY
+══════════════════════════════════ */
+#p1{min-height:100vh;background:var(--burdeo);position:relative;overflow:hidden;}
+#p1::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(200,168,75,.05) 59px,rgba(200,168,75,.05) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(200,168,75,.05) 59px,rgba(200,168,75,.05) 60px);pointer-events:none;}
+#p1::after{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(ellipse,rgba(200,168,75,.08) 0%,transparent 65%);pointer-events:none;}
+
+.p1-hdr{position:relative;z-index:2;padding:32px 56px 20px;border-bottom:1px solid rgba(200,168,75,.18);display:flex;justify-content:space-between;align-items:flex-end;}
+.marca-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(200,168,75,.6);letter-spacing:.3em;text-transform:uppercase;}
+.marca-titulo{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--crema);margin-top:4px;font-weight:700;letter-spacing:.02em;}
+.marca-titulo em{font-style:italic;color:var(--oro);}
+.marca-version{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(200,168,75,.4);text-align:right;letter-spacing:.15em;}
+
+.p1-body{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px;position:relative;z-index:2;}
+.p1-card{background:rgba(255,255,255,.04);border:1px solid rgba(200,168,75,.18);max-width:620px;width:100%;padding:44px;}
+
+.card-step{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--oro);letter-spacing:.3em;text-transform:uppercase;margin-bottom:6px;}
+.card-titulo{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--crema);margin-bottom:4px;font-weight:600;}
+.card-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(245,240,232,.35);letter-spacing:.12em;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(200,168,75,.1);}
+
+/* Proveedores */
+.prov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.prov-btn{background:rgba(0,0,0,.25);border:1px solid rgba(200,168,75,.2);padding:14px;cursor:pointer;transition:all .2s;text-align:center;}
+.prov-btn.on{background:rgba(200,168,75,.12);border-color:var(--oro);}
+.prov-btn:hover:not(.on){border-color:rgba(200,168,75,.4);}
+.prov-icon{font-size:20px;display:block;margin-bottom:6px;}
+.prov-name{font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(245,240,232,.7);letter-spacing:.08em;}
+.prov-btn.on .prov-name{color:var(--oro);}
+.prov-gratis{font-size:10px;color:rgba(42,107,58,.9);background:rgba(42,107,58,.15);padding:2px 6px;display:inline-block;margin-top:3px;font-family:'IBM Plex Mono',monospace;}
+
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.fl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--oro);letter-spacing:.2em;text-transform:uppercase;}
+.fi,.fs,.fta{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,75,.22);color:var(--crema);font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:11px 14px;outline:none;transition:border-color .2s;appearance:none;border-radius:0;}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--oro);}
+.fi::placeholder{color:rgba(245,240,232,.2);}
+.fs option{background:var(--burdeo);}
+.fta{min-height:70px;resize:vertical;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+.nota-api{font-size:11px;color:rgba(245,240,232,.35);font-family:'IBM Plex Mono',monospace;margin-top:6px;line-height:1.6;}
+.nota-api a{color:var(--oro);opacity:.7;}
+
+.alerta-sup{background:rgba(107,26,42,.25);border:1px solid rgba(168,56,72,.35);padding:14px 18px;margin-bottom:22px;display:flex;gap:12px;align-items:flex-start;font-size:12px;color:rgba(245,240,232,.75);line-height:1.6;}
+.alerta-sup strong{color:#FFAAAA;}
+
+.btn-pp{background:var(--oro);color:var(--negro);border:none;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 28px;cursor:pointer;transition:background .2s,transform .15s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));width:100%;}
+.btn-pp:hover{background:var(--oro-cl);transform:translateY(-1px);}
+.btn-sec{background:transparent;color:var(--crema);border:1px solid rgba(245,240,232,.2);font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:12px 24px;cursor:pointer;transition:all .2s;}
+.btn-sec:hover{border-color:var(--oro);color:var(--oro);}
+.err-msg{margin-top:10px;font-size:11px;color:#FFAAAA;font-family:'IBM Plex Mono',monospace;display:none;}
+
+/* ══════════════════════════════════
+   PANTALLA 2 — LOGIN
+══════════════════════════════════ */
+#p2{min-height:100vh;background:var(--burdeo);}
+#p2::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(200,168,75,.05) 59px,rgba(200,168,75,.05) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(200,168,75,.05) 59px,rgba(200,168,75,.05) 60px);pointer-events:none;}
+
+/* ══════════════════════════════════
+   APP PRINCIPAL (P3+)
+══════════════════════════════════ */
+#p-app{min-height:100vh;background:var(--crema);}
+
+.app-hdr{background:var(--burdeo);padding:0 36px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--oro);min-height:58px;position:sticky;top:0;z-index:100;}
+.app-hdr-marca{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--crema);font-weight:700;}
+.app-hdr-marca em{font-style:italic;color:var(--oro);}
+.app-hdr-r{display:flex;align-items:center;gap:12px;}
+.app-hdr-info{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(245,240,232,.5);text-align:right;line-height:1.5;}
+.app-hdr-info strong{color:var(--oro);display:block;font-size:11px;}
+.hdr-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:6px 11px;border:1px solid rgba(200,168,75,.3);background:transparent;color:rgba(200,168,75,.65);cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;}
+.hdr-btn:hover{border-color:var(--oro);color:var(--oro);}
+
+.uso-bar{background:rgba(107,26,42,.12);border-bottom:1px solid rgba(200,168,75,.1);padding:7px 36px;display:flex;align-items:center;gap:16px;}
+.uso-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gris);letter-spacing:.1em;}
+.uso-track{flex:1;max-width:200px;height:4px;background:rgba(107,26,42,.2);border-radius:2px;}
+.uso-fill{height:100%;background:var(--oro);border-radius:2px;transition:width .3s;}
+.uso-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--oro);font-weight:500;}
+
+.app-body{display:grid;grid-template-columns:252px 1fr;min-height:calc(100vh - 58px - 32px - 30px);}
+
+/* SIDEBAR */
+.sidebar{background:var(--burdeo);padding:20px 0;border-right:1px solid rgba(200,168,75,.1);position:sticky;top:88px;height:calc(100vh - 88px);overflow-y:auto;}
+.sb-st{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(200,168,75,.3);letter-spacing:.3em;text-transform:uppercase;padding:0 18px;margin-top:16px;margin-bottom:4px;}
+.sb-it{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;transition:background .18s;border-left:3px solid transparent;}
+.sb-it:hover{background:rgba(200,168,75,.06);}
+.sb-it.on{background:rgba(200,168,75,.1);border-left-color:var(--oro);}
+.sb-ic{font-size:14px;flex-shrink:0;}
+.sb-tx{font-size:12px;color:rgba(245,240,232,.65);line-height:1.3;}
+.sb-it.on .sb-tx{color:var(--oro);font-weight:500;}
+.sb-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;background:rgba(200,168,75,.15);color:var(--oro);padding:2px 6px;margin-left:auto;flex-shrink:0;}
+
+/* MAIN PANEL */
+.main-p{background:var(--crema);padding:36px 40px;overflow-y:auto;}
+.ph{margin-bottom:28px;padding-bottom:18px;border-bottom:2px solid var(--burdeo);}
+.ph-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--burdeo-cl);letter-spacing:.25em;text-transform:uppercase;margin-bottom:7px;}
+.ph-tit{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--burdeo);line-height:1.08;margin-bottom:7px;font-weight:700;}
+.ph-tit em{font-style:italic;color:var(--oro);}
+.ph-desc{font-size:13px;color:var(--gris);line-height:1.7;max-width:560px;}
+
+/* Tarjetas de instrumento */
+.inst-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
+.inst-card{background:#fff;border:1px solid var(--gris-b);border-top:3px solid transparent;padding:18px;cursor:pointer;transition:all .2s;position:relative;}
+.inst-card:hover{border-color:var(--burdeo-cl);border-top-color:var(--burdeo);transform:translateY(-2px);box-shadow:0 6px 18px rgba(107,26,42,.1);}
+.inst-card.sel{border-color:var(--burdeo);border-top-color:var(--oro);background:#FDF8F5;}
+.inst-icon{font-size:20px;margin-bottom:8px;display:block;}
+.inst-tit{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--burdeo);margin-bottom:3px;font-weight:600;line-height:1.3;}
+.inst-desc{font-size:11px;color:var(--gris);line-height:1.5;}
+.inst-chk{position:absolute;top:12px;right:12px;width:18px;height:18px;border-radius:50%;background:var(--burdeo);color:#fff;font-size:10px;display:none;align-items:center;justify-content:center;}
+.inst-card.sel .inst-chk{display:flex;}
+
+/* Formulario generación */
+.gen-form{background:#fff;border:1px solid var(--gris-b);border-top:3px solid var(--burdeo);padding:26px;display:none;margin-bottom:18px;}
+.gen-form.vis{display:block;}
+.gen-form-tit{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--burdeo);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gris-b);font-weight:600;}
+.gen-campos{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.gc-full{grid-column:1/-1;}
+.gl{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--burdeo-cl);letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px;}
+.gi,.gs,.gta{width:100%;border:1px solid var(--gris-b);background:var(--crema);color:var(--negro);font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;border-radius:0;appearance:none;}
+.gi:focus,.gs:focus,.gta:focus{border-color:var(--burdeo);}
+.gta{min-height:75px;resize:vertical;}
+
+/* Perfil integrado en formulario */
+.perfil-chip{background:rgba(107,26,42,.06);border:1px solid rgba(107,26,42,.15);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--gris);display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.perfil-chip strong{color:var(--burdeo);}
+.perfil-chip-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;background:rgba(200,168,75,.15);color:var(--oro);padding:3px 8px;}
+
+.aviso-n{background:#FFF8E8;border:1px solid rgba(200,168,75,.35);border-left:4px solid var(--oro);padding:11px 14px;margin-bottom:14px;font-size:11px;color:#5A4A20;line-height:1.6;}
+.aviso-n strong{color:#3A2A00;}
+
+.btn-gen{background:var(--burdeo);color:var(--crema);border:none;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:12px 26px;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-gen:hover{background:var(--burdeo-med);}
+.btn-gen:disabled{opacity:.5;cursor:wait;}
+
+/* Resultado */
+.res-area{display:none;margin-bottom:24px;}
+.res-area.vis{display:block;}
+.res-cab{background:var(--burdeo);color:var(--crema);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.res-cab-tit{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--oro);letter-spacing:.12em;text-transform:uppercase;}
+.res-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.btn-accion{border:none;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:600;padding:7px 13px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:5px;transition:all .18s;}
+.btn-copy{background:rgba(245,240,232,.15);color:var(--crema);}
+.btn-copy:hover{background:rgba(245,240,232,.25);}
+.btn-dl{background:var(--oro);color:var(--negro);}
+.btn-dl:hover{background:var(--oro-cl);}
+.btn-save{background:var(--burdeo-cl);color:#fff;}
+.btn-save:hover{background:var(--burdeo-med);}
+.res-sup{background:#FFF5F5;border:1px solid rgba(107,26,42,.15);border-top:none;padding:7px 16px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--burdeo);letter-spacing:.04em;}
+.res-txt{background:#fff;border:1px solid var(--gris-b);border-top:none;padding:22px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.9;color:var(--negro);white-space:pre-wrap;max-height:460px;overflow-y:auto;}
+
+/* Historial */
+.hist-lista{display:flex;flex-direction:column;gap:9px;margin-top:20px;}
+.hist-item{background:#fff;border:1px solid var(--gris-b);border-left:4px solid var(--burdeo-cl);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hist-nombre{font-weight:600;font-size:13px;color:var(--burdeo);margin-bottom:2px;}
+.hist-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gris-cl);}
+.hist-btns{display:flex;gap:6px;flex-shrink:0;}
+.btn-mini{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 9px;border:1px solid var(--gris-b);background:transparent;color:var(--gris);cursor:pointer;transition:all .18s;}
+.btn-mini.vi{border-color:var(--oro);color:var(--oro);}
+.btn-mini.vi:hover{background:var(--oro);color:var(--negro);}
+.btn-mini.dl{border-color:var(--burdeo-cl);color:var(--burdeo-cl);}
+.btn-mini.dl:hover{background:var(--burdeo-cl);color:#fff;}
+.btn-mini.cp{border-color:var(--gris-cl);color:var(--gris-cl);}
+.btn-mini.cp:hover{background:var(--gris-cl);color:#fff;}
+.btn-mini.rm{border-color:rgba(107,26,42,.4);color:var(--burdeo);}
+.btn-mini.rm:hover{background:var(--burdeo);color:#fff;}
+
+/* Perfil panel */
+.perfil-form{background:#fff;border:1px solid var(--gris-b);border-top:3px solid var(--burdeo);padding:26px;margin-top:20px;}
+.perfil-sec{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--burdeo);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gris-b);font-weight:600;}
+.materias-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.materia-tag{background:rgba(107,26,42,.08);border:1px solid rgba(107,26,42,.2);color:var(--burdeo);font-size:12px;padding:5px 12px;display:flex;align-items:center;gap:6px;}
+.materia-tag button{background:none;border:none;color:var(--burdeo-cl);cursor:pointer;font-size:13px;line-height:1;padding:0;}
+.add-materia-row{display:flex;gap:8px;margin-top:8px;}
+
+/* Modal guardar */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-bg.vis{display:flex;}
+.modal{background:var(--crema);border:2px solid var(--burdeo);max-width:420px;width:90%;padding:28px;}
+.modal-tit{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--burdeo);margin-bottom:16px;font-weight:600;}
+.modal-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--burdeo-cl);letter-spacing:.18em;text-transform:uppercase;display:block;margin-bottom:6px;}
+.modal-inp{width:100%;border:1px solid var(--gris-b);background:#fff;color:var(--negro);font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:10px 13px;outline:none;border-radius:0;margin-bottom:18px;}
+.modal-inp:focus{border-color:var(--burdeo);}
+.modal-btns{display:flex;gap:10px;}
+
+/* Footer */
+.app-footer{background:var(--negro);padding:18px 36px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(200,168,75,.15);}
+.footer-m{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(200,168,75,.4);letter-spacing:.12em;}
+.footer-compl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(200,168,75,.25);letter-spacing:.08em;}
+.footer-compl strong{color:rgba(200,168,75,.5);}
+
+/* Inicio grid */
+.ini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;}
+.ini-mod{background:#fff;border:1px solid var(--gris-b);border-top:3px solid var(--burdeo-cl);padding:18px;cursor:pointer;transition:all .2s;}
+.ini-mod:hover{border-top-color:var(--oro);transform:translateY(-2px);box-shadow:0 5px 16px rgba(107,26,42,.1);}
+.ini-icon{font-size:22px;margin-bottom:8px;display:block;}
+.ini-tit{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--burdeo);margin-bottom:3px;font-weight:600;}
+.ini-count{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--burdeo-cl);letter-spacing:.12em;margin-bottom:5px;}
+.ini-desc{font-size:11px;color:var(--gris);line-height:1.5;}
+
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{width:12px;height:12px;border:2px solid rgba(245,240,232,.3);border-top-color:var(--crema);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.inst-card,.ini-mod,.hist-item{animation:fadeUp .3s ease both;}
+
+@media(max-width:860px){
+  .p1-hdr{padding:18px 20px 14px;}
+  .p1-card{padding:24px;}
+  .fgrid,.gen-campos{grid-template-columns:1fr;}
+  .app-body{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .main-p{padding:22px 16px;}
+  .inst-grid{grid-template-columns:1fr;}
+  .ini-grid{grid-template-columns:1fr 1fr;}
+  .app-hdr{padding:0 16px;}
+  .app-hdr-info{display:none;}
+}
+
+/* ══ REGISTRO EVAL COMPARTIDO ══ */
+.btn-registro{background:var(--verde-ok);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;padding:9px 16px;cursor:pointer;transition:background .2s;border-radius:0;}
+.btn-registro:hover{background:#1e5a2e;}
+.btn-registro:disabled{opacity:.45;cursor:not-allowed;}
+.modal-reg-ov{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:5500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-reg-ov.abierto{display:flex;}
+.modal-reg-box{background:#fff;border:none;border-top:3px solid var(--oro);max-width:680px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-reg-hdr{background:var(--burdeo);padding:1rem 1.4rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1;}
+.modal-reg-tit{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--crema);}
+.modal-reg-close{background:none;border:none;color:rgba(245,240,232,.5);cursor:pointer;font-size:1.2rem;transition:color .15s;}
+.modal-reg-close:hover{color:var(--crema);}
+.modal-reg-body{padding:1.3rem;display:flex;flex-direction:column;gap:1rem;}
+.reg-sec{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--burdeo);margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid var(--crema-osc);}
+.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.reg-gl{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gris);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.25rem;}
+.reg-gi,.reg-gs{width:100%;background:#fff;border:1px solid var(--gris-b);color:var(--negro);font-family:'IBM Plex Sans',sans-serif;font-size:12px;padding:7px 10px;outline:none;border-radius:0;appearance:none;transition:border-color .15s;}
+.reg-gi:focus,.reg-gs:focus{border-color:var(--burdeo);}
+.reg-gs option{background:#fff;}
+.nota-tabla{width:100%;border-collapse:collapse;font-size:11px;}
+.nota-tabla th{background:var(--burdeo);color:var(--crema);padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-size:.57rem;letter-spacing:.05em;text-transform:uppercase;text-align:left;}
+.nota-tabla td{padding:6px 10px;border-bottom:1px solid var(--crema-osc);}
+.nota-tabla tr:hover td{background:#fdf8f0;}
+.nota-inp{width:70px;border:1px solid var(--gris-b);padding:3px 6px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;text-align:center;outline:none;}
+.nota-inp:focus{border-color:var(--burdeo);}
+.obs-inp{width:100%;border:1px solid var(--gris-b);padding:3px 6px;font-size:.72rem;outline:none;}
+.reg-aviso-sin-clases{background:#fff8e1;border:1px solid #f9c940;padding:.75rem 1rem;font-size:.75rem;color:#7a5c00;line-height:1.6;}
+.hist-compartido-tabla{width:100%;border-collapse:collapse;font-size:11px;margin-top:.5rem;}
+.hist-compartido-tabla th{background:var(--burdeo);color:var(--crema);padding:7px 10px;font-family:'IBM Plex Mono',monospace;font-size:.57rem;letter-spacing:.05em;text-transform:uppercase;}
+.hist-compartido-tabla td{padding:7px 10px;border-bottom:1px solid var(--crema-osc);vertical-align:top;}
+
+/* ══ FAB AYUDA ══ */
+.fab-ayuda{position:fixed;bottom:1.5rem;left:1.5rem;background:rgba(107,26,42,0.94);color:var(--oro);border:1px solid rgba(200,168,75,0.35);padding:0.5rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;cursor:pointer;z-index:400;transition:all 0.2s;display:none;align-items:center;gap:6px;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
+.fab-ayuda.visible{display:flex;}
+.fab-ayuda:hover{background:var(--burdeo-med);}
+
+/* ══ FAB IR A CLASES ══ */
+.fab-clases{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--burdeo);color:var(--oro);border:1px solid rgba(200,168,75,0.4);padding:0.55rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;cursor:pointer;z-index:400;transition:all 0.2s;display:none;align-items:center;gap:6px;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
+.fab-clases.visible{display:flex;}
+.fab-clases:hover{background:var(--burdeo-med);}
+
+/* ══ MODAL AYUDA ══ */
+.modal-ov-ayuda{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:5000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-ov-ayuda.abierto{display:flex;}
+.modal-box-ay{background:#0d0d0d;border:1px solid #2a2a2a;border-top:3px solid var(--oro);max-width:640px;width:100%;max-height:88vh;overflow-y:auto;}
+.modal-hdr-ay{padding:1.2rem 1.5rem;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0d0d0d;z-index:1;}
+.modal-hdr-ay-tit{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--oro);}
+.modal-close-ay{background:none;border:none;color:#555;cursor:pointer;font-size:1.2rem;transition:color 0.15s;}
+.modal-close-ay:hover{color:#F7F2EA;}
+.modal-body-ay{padding:1.3rem;display:flex;flex-direction:column;gap:0.85rem;}
+.err-blk{border:1px solid #1e1e1e;padding:0.9rem;transition:border-color 0.15s;}
+.err-blk:hover{border-color:#333;}
+.err-blk-tit{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--oro);margin-bottom:0.45rem;}
+.err-blk-body{font-size:0.78rem;color:#888;line-height:1.65;}
+.err-blk-body code{font-family:'IBM Plex Mono',monospace;font-size:0.67rem;background:#111;padding:0.15rem 0.35rem;color:#F7F2EA;}
+.etag{font-family:'IBM Plex Mono',monospace;font-size:0.55rem;background:#1a1a1a;color:#666;padding:1px 6px;margin-right:0.3rem;display:inline-block;}
+.modal-footer-ay{padding:0.75rem 1.3rem;border-top:1px solid #1a1a1a;font-family:'IBM Plex Mono',monospace;font-size:0.55rem;color:#333;text-align:center;}
+
+/* ══ EXPORTACIÓN QUIZ KAHOOT/QUIZIZZ ══ */
+.quiz-export-bar{display:none;margin-top:1rem;padding:0.85rem 1rem;background:rgba(107,26,42,0.06);border:1px solid rgba(107,26,42,0.2);border-left:3px solid var(--oro);}
+.quiz-export-label{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--burdeo-cl);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;}
+.quiz-export-btns{display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;}
+.btn-quiz{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.45rem 0.85rem;cursor:pointer;border:1px solid;transition:all 0.15s;}
+.btn-kahoot{background:#46178f;color:#fff;border-color:#6a1fc2;}
+.btn-kahoot:hover{background:#6a1fc2;}
+.btn-quizizz{background:#8854c0;color:#fff;border-color:#a67dd4;}
+.btn-quizizz:hover{background:#a67dd4;}
+.btn-quiz-open{background:transparent;color:var(--burdeo);border-color:var(--burdeo-cl);}
+.btn-quiz-open:hover{background:var(--burdeo);color:var(--crema);}
+.btn-quiz-help{width:22px;height:22px;border-radius:50%;background:var(--oro);color:var(--negro);border:none;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s;}
+.btn-quiz-help:hover{background:var(--oro-cl);}
+.modal-quiz-ov{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:6000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-quiz-ov.abierto{display:flex;}
+.modal-quiz-box{background:#0d0d0d;border:1px solid #2a2a2a;border-top:3px solid var(--oro);max-width:600px;width:100%;max-height:88vh;overflow-y:auto;}
+.modal-quiz-hdr{padding:1.2rem 1.5rem;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0d0d0d;z-index:1;}
+.modal-quiz-tit{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--oro);}
+.modal-quiz-close{background:none;border:none;color:#555;cursor:pointer;font-size:1.2rem;transition:color 0.15s;}
+.modal-quiz-close:hover{color:#F7F2EA;}
+.modal-quiz-body{padding:1.3rem;display:flex;flex-direction:column;gap:1rem;}
+.quiz-plat-card{border:1px solid #1e1e1e;padding:1rem;}
+.quiz-plat-titulo{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;}
+.quiz-plat-titulo.k{color:#46178f;filter:brightness(2);}
+.quiz-plat-titulo.q{color:#8854c0;filter:brightness(1.5);}
+.quiz-plat-body{font-size:0.78rem;color:#888;line-height:1.7;}
+.quiz-plat-body strong{color:#ccc;}
+.quiz-plat-pasos{margin-top:0.6rem;padding-left:1rem;}
+.quiz-plat-pasos li{font-size:0.75rem;color:#777;line-height:1.8;}
+.modal-quiz-footer{padding:0.75rem 1.3rem;border-top:1px solid #1a1a1a;font-family:'IBM Plex Mono',monospace;font-size:0.55rem;color:#333;text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════ -->
+<!-- P1 — CONFIGURACIÓN API KEY          -->
+<!-- ════════════════════════════════════ -->
+<div id="p1" class="pant activa">
+  <div class="p1-hdr">
+    <div>
+      <div class="marca-eyebrow">BRB Estrategia & Procesos · Soberanía Técnica Ediciones</div>
+      <div class="marca-titulo">Evalu<em>AR</em> BRB</div>
+    </div>
+    <div class="marca-version">INSTRUMENTOS DE EVALUACIÓN<br>CON INTELIGENCIA ARTIFICIAL<br>v2.5 · 2026</div>
+  </div>
+  <div class="p1-body">
+    <div class="p1-card">
+      <div class="card-step">Paso 1 de 2 · Configuración</div>
+      <div class="card-titulo">Seleccioná tu proveedor de IA</div>
+      <div class="card-sub">LA CLAVE NO SE ALMACENA EN NUESTROS SERVIDORES · SOLO EXISTE EN TU SESIÓN</div>
+
+      <div class="prov-grid">
+        <div class="prov-btn on" onclick="selProv(this,'gemini')">
+          <span class="prov-icon">✦</span>
+          <div class="prov-name">Gemini</div>
+          <span class="prov-gratis">GRATUITO</span>
+        </div>
+        <div class="prov-btn" onclick="selProv(this,'openai')">
+          <span class="prov-icon">◉</span>
+          <div class="prov-name">OpenAI</div>
+        </div>
+        <div class="prov-btn" onclick="selProv(this,'claude')">
+          <span class="prov-icon">◆</span>
+          <div class="prov-name">Claude</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label class="fl">API Key del proveedor seleccionado</label>
+        <input class="fi" id="p1-apikey" type="password" placeholder="Pegá tu API Key aquí">
+        <div class="nota-api">Gemini gratuito: obtené tu clave en <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></div>
+      </div>
+
+      <button class="btn-pp" onclick="p1Siguiente()">Continuar al ingreso →</button>
+      <div class="err-msg" id="p1-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<!-- P2 — LOGIN                          -->
+<!-- ════════════════════════════════════ -->
+<div id="p2" class="pant">
+  <div class="p1-hdr">
+    <div>
+      <div class="marca-eyebrow">BRB Estrategia & Procesos · Soberanía Técnica Ediciones</div>
+      <div class="marca-titulo">Evalu<em>AR</em> BRB</div>
+    </div>
+    <div class="marca-version">INSTRUMENTOS DE EVALUACIÓN<br>CON INTELIGENCIA ARTIFICIAL<br>v2.5 · 2026</div>
+  </div>
+  <div class="p1-body">
+    <div class="p1-card">
+      <div class="card-step">Paso 2 de 2 · Acceso</div>
+      <div class="card-titulo">Ingresá con tu licencia</div>
+      <div class="card-sub">EMAIL Y CLAVE · PERFIL GUARDADO AUTOMÁTICAMENTE · 1 DISPOSITIVO POR LICENCIA</div>
+
+      <div class="fg"><label class="fl">Email</label><input class="fi" id="p2-email" type="email" placeholder="tu@email.com"></div>
+      <div class="fg"><label class="fl">Clave de acceso</label><input class="fi" id="p2-clave" type="password" placeholder="Clave BRB asignada"></div>
+
+      <div class="alerta-sup">
+        <span>⚠️</span>
+        <div><strong>SUPERVISIÓN HUMANA IRRENUNCIABLE:</strong> Todo instrumento generado es un borrador orientativo. El docente es responsable de revisar, adaptar y validar el contenido antes de usarlo con sus estudiantes.</div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button class="btn-sec" onclick="irP1()" style="flex-shrink:0;">← Volver</button>
+        <button class="btn-pp" onclick="login()" style="flex:1;">Ingresar →</button>
+      </div>
+      <div class="err-msg" id="p2-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<!-- APP PRINCIPAL                        -->
+<!-- ════════════════════════════════════ -->
+<div id="p-app" class="pant">
+  <div class="app-hdr">
+    <div class="app-hdr-marca">Evalu<em>AR</em> BRB</div>
+    <div class="app-hdr-r">
+      <div class="app-hdr-info">
+        <strong id="hdr-nombre">—</strong>
+        <span id="hdr-datos">—</span>
+      </div>
+      <button class="hdr-btn" onclick="nav('perfil',null)">⚙ Perfil</button>
+      <a href="https://sinidegestionescolar.educacion.gob.ar/" target="_blank" rel="noopener noreferrer" class="hdr-btn" style="border-color:#4A9E6F;color:#4A9E6F;text-decoration:none;">🏫 SInIDE</a>
+      <button class="hdr-btn" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </div>
+
+  <div class="uso-bar">
+    <span class="uso-label">USOS HOY</span>
+    <div class="uso-track"><div class="uso-fill" id="uso-fill" style="width:0%"></div></div>
+    <span class="uso-count" id="uso-count">0 / 10</span>
+  </div>
+
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sb-st">Navegación</div>
+      <div class="sb-it on" onclick="nav('inicio',this)"><span class="sb-ic">🏠</span><span class="sb-tx">Inicio</span></div>
+      <div class="sb-it" onclick="nav('historial',this)"><span class="sb-ic">🗄️</span><span class="sb-tx">Mis instrumentos guardados</span></div>
+      <div class="sb-it" onclick="nav('mis-evaluaciones',this)"><span class="sb-ic">📋</span><span class="sb-tx">Mis evaluaciones registradas</span></div>
+
+      <div class="sb-st">Módulos de evaluación</div>
+      <div class="sb-it" onclick="nav('rubricas',this)"><span class="sb-ic">📊</span><span class="sb-tx">Rúbricas</span><span class="sb-badge">4</span></div>
+      <div class="sb-it" onclick="nav('examenes',this)"><span class="sb-ic">📝</span><span class="sb-tx">Exámenes escritos</span><span class="sb-badge">4</span></div>
+      <div class="sb-it" onclick="nav('laboratorio',this)"><span class="sb-ic">🧪</span><span class="sb-tx">Laboratorio / TP</span><span class="sb-badge">4</span></div>
+      <div class="sb-it" onclick="nav('integradora',this)"><span class="sb-ic">🔗</span><span class="sb-tx">Evaluación Integradora</span><span class="sb-badge">5</span></div>
+      <div class="sb-it" onclick="nav('autoeval',this)"><span class="sb-ic">🔄</span><span class="sb-tx">Auto y Coevaluación</span><span class="sb-badge">4</span></div>
+      <div class="sb-it" onclick="nav('seguimiento',this)"><span class="sb-ic">📈</span><span class="sb-tx">Seguimiento y Matrices</span><span class="sb-badge">4</span></div>
+
+      <div class="sb-st">Cuenta</div>
+      <div class="sb-it" onclick="nav('perfil',this)"><span class="sb-ic">👤</span><span class="sb-tx">Mi perfil y materias</span></div>
+    </nav>
+
+    <main class="main-p" id="main-p"></main>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-m">Boris Rodríguez Barrera · BRB Estrategia & Procesos · Soberanía Técnica Ediciones · Puerto Madryn, Chubut · ORCID 0009-0004-6583-6439 · bbbarrera1986@gmail.com · +54 297 517-6351</div>
+    <div class="footer-compl">Complemento docente: <strong>Generador de Clases BRB v3.6</strong> — planificación + evaluación = ciclo completo</div>
+  </footer>
+</div>
+
+<!-- Modal guardar -->
+<div class="modal-bg" id="modal-guardar">
+  <div class="modal">
+    <div class="modal-tit">Guardar instrumento</div>
+    <label class="modal-label">Nombre del instrumento</label>
+    <input class="modal-inp" id="modal-nombre" type="text" placeholder="Ej: Rúbrica Informe de Lab — Química 4to A" maxlength="120">
+    <div class="modal-btns">
+      <button class="btn-pp" style="flex:1;" onclick="confirmarGuardar()">Guardar</button>
+      <button class="btn-sec" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// SUPABASE
+// ══════════════════════════════════════
+const SUPA_URL  = 'https://mjxtbtkhdsgzgvakgdrw.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qeHRidGtoZHNnemd2YWtnZHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMTc4OTcsImV4cCI6MjA5MTc5Mzg5N30.Q-Sg6aKScnOXlAyzY7hzfKUPUXJwf5teh3fMhTF-CeM';
+const H = { 'apikey':SUPA_ANON,'Authorization':`Bearer ${SUPA_ANON}`,'Content-Type':'application/json' };
+async function supa(path,opts={}){ const r=await fetch(`${SUPA_URL}/rest/v1/${path}`,{headers:H,...opts}); if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);} return r.json().catch(()=>null); }
+
+// ══════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════
+const S={
+  prov:'gemini', apikey:'',
+  licId:null, perfilId:null, email:'',
+  perfil:{}, usos:0,
+  docActual:null, textoGenerado:'',
+  panelActual:'inicio',
+};
+
+// ══════════════════════════════════════
+// HUELLA DISPOSITIVO
+// ══════════════════════════════════════
+function huella(){
+  const s=`${navigator.userAgent}${navigator.language}${screen.width}x${screen.height}${screen.colorDepth}${Intl.DateTimeFormat().resolvedOptions().timeZone}${navigator.hardwareConcurrency}`;
+  let h=0; for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}
+  return 'EVL-'+Math.abs(h).toString(36).toUpperCase();
+}
+
+// ══════════════════════════════════════
+// CONTEO DE USOS (localStorage)
+// ══════════════════════════════════════
+function getUsos(){
+  const hoy=new Date().toISOString().slice(0,10);
+  const d=JSON.parse(localStorage.getItem('evaluAR_usos')||'{}');
+  return d.fecha===hoy ? d.count : 0;
+}
+function incUsos(){
+  const hoy=new Date().toISOString().slice(0,10);
+  const c=getUsos()+1;
+  localStorage.setItem('evaluAR_usos',JSON.stringify({fecha:hoy,count:c}));
+  S.usos=c; actualizarBarraUsos();
+}
+function actualizarBarraUsos(){
+  S.usos=getUsos();
+  document.getElementById('uso-fill').style.width=(S.usos/10*100)+'%';
+  document.getElementById('uso-count').textContent=`${S.usos} / 10`;
+}
+
+// ══════════════════════════════════════
+// PANTALLA 1 — API KEY
+// ══════════════════════════════════════
+function selProv(btn,p){
+  document.querySelectorAll('.prov-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); S.prov=p;
+}
+function irP1(){
+  document.getElementById('p2').classList.remove('activa');
+  document.getElementById('p1').classList.add('activa');
+}
+function p1Siguiente(){
+  const k=document.getElementById('p1-apikey').value.trim();
+  const e=document.getElementById('p1-err');
+  if(!k){e.textContent='Ingresá tu API Key.';e.style.display='block';return;}
+  S.apikey=k; e.style.display='none';
+  document.getElementById('p1').classList.remove('activa');
+  document.getElementById('p2').classList.add('activa');
+}
+
+// ══════════════════════════════════════
+// LOGIN SUPABASE
+// ══════════════════════════════════════
+async function login(){
+  const email=document.getElementById('p2-email').value.trim().toLowerCase();
+  const clave=document.getElementById('p2-clave').value.trim().toUpperCase();
+  const e=document.getElementById('p2-err');
+  e.style.display='none';
+  if(!email||!clave){e.textContent='Completá email y clave.';e.style.display='block';return;}
+  try{
+    const rows=await supa(`licencias_evaluar?email=eq.${encodeURIComponent(email)}&select=*`);
+    if(!rows||!rows.length){e.textContent='Email no registrado.';e.style.display='block';return;}
+    const lic=rows[0];
+    if(lic.clave.toUpperCase()!==clave){e.textContent='Clave incorrecta.';e.style.display='block';return;}
+    if(!lic.activa){e.textContent='Licencia inactiva.';e.style.display='block';return;}
+    if(lic.fecha_vencimiento&&new Date(lic.fecha_vencimiento)<new Date()){e.textContent='Licencia vencida.';e.style.display='block';return;}
+    const h=huella();
+    if(!lic.dispositivo_id){
+      await supa(`licencias_evaluar?id=eq.${lic.id}`,{method:'PATCH',body:JSON.stringify({dispositivo_id:h})});
+    } else if(lic.dispositivo_id!==h){
+      e.textContent='Dispositivo no autorizado. Contactá a BRB para resetear.';e.style.display='block';return;
+    }
+    S.licId=lic.id; S.email=email;
+    const perfs=await supa(`perfiles_evaluar?licencia_id=eq.${lic.id}&select=*`);
+    if(perfs&&perfs.length){S.perfil=perfs[0];S.perfilId=perfs[0].id;iniciarApp();}
+    else{mostrarFormPerfil();}
+  }catch(err){e.textContent='Error: '+err.message;e.style.display='block';}
+}
+
+// ══════════════════════════════════════
+// PERFIL — PRIMER INGRESO
+// ══════════════════════════════════════
+function mostrarFormPerfil(){
+  document.getElementById('p2').classList.remove('activa');
+  document.getElementById('p-app').classList.add('activa');
+  actualizarBarraUsos();
+  activarFABs();
+  document.getElementById('hdr-nombre').textContent='Nuevo usuario';
+  document.getElementById('hdr-datos').textContent='Completá tu perfil para comenzar';
+  nav('perfil',null,true);
+}
+
+// ══════════════════════════════════════
+// INICIAR APP
+// ══════════════════════════════════════
+function iniciarApp(){
+  document.getElementById('p2').classList.remove('activa');
+  document.getElementById('p-app').classList.add('activa');
+  const p=S.perfil;
+  document.getElementById('hdr-nombre').textContent=p.nombre_docente||p.nombre||'Docente';
+  document.getElementById('hdr-datos').textContent=`${p.nivel||''} · ${p.institucion||''}`;
+  actualizarBarraUsos();
+  activarFABs();
+  nav('inicio',document.querySelector('.sb-it'));
+}
+
+function cerrarSesion(){
+  S.licId=null;S.perfil={};S.apikey='';S.email='';
+  document.getElementById('fab-ayuda').classList.remove('visible');
+  document.getElementById('fab-clases').classList.remove('visible');
+  document.getElementById('p-app').classList.remove('activa');
+  document.getElementById('p1').classList.add('activa');
+  document.getElementById('p1-apikey').value='';
+  document.getElementById('p2-email').value='';
+  document.getElementById('p2-clave').value='';
+}
+
+// ══════════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════════
+function nav(panel,el,forzar=false){
+  document.querySelectorAll('.sb-it').forEach(i=>i.classList.remove('on'));
+  if(el)el.classList.add('on');
+  S.panelActual=panel; S.docActual=null; S.textoGenerado='';
+  renderPanel(panel,forzar);
+}
+
+// ══════════════════════════════════════
+// DEFINICIÓN DE MÓDULOS
+// ══════════════════════════════════════
+const MODS={
+  rubricas:{
+    titulo:'Rúbricas', sub:'de Evaluación', badge:'MÓDULO 1',
+    desc:'Instrumentos descriptivos con criterios y niveles de desempeño. El instrumento más solicitado por el Ministerio para las Evaluaciones Integradoras.',
+    docs:[
+      {id:'rub-analitica',icon:'📊',tit:'Rúbrica Analítica',desc:'Criterios separados con niveles de logro individuales. Ideal para proyectos, trabajos prácticos e informes.',
+        campos:()=>[
+          {id:'materia',l:'Materia / Espacio curricular',t:'text',ph:'Ej: Química / Tecnología Pesquera'},
+          {id:'anio',l:'Año y división',t:'text',ph:'Ej: 4to año B'},
+          {id:'actividad',l:'Actividad o trabajo a evaluar',t:'text',ph:'Ej: Informe de laboratorio sobre fermentación'},
+          {id:'criterios',l:'Criterios a evaluar (3 a 5)',t:'ta',ph:'Ej: Precisión conceptual, presentación, conclusiones, uso de lenguaje técnico'},
+          {id:'niveles',l:'Niveles de desempeño',t:'select',opts:['4 niveles: Excelente / Bueno / En proceso / Inicial','3 niveles: Logrado / En proceso / No logrado','Numérico: 10-9 / 8-7 / 6-5 / Menor a 5']},
+          {id:'contexto',l:'Contexto o indicaciones adicionales (opcional)',t:'ta',ph:''},
+        ]},
+      {id:'rub-holistica',icon:'🎯',tit:'Rúbrica Holística',desc:'Evaluación global del desempeño. Rápida de aplicar, ideal para producciones orales y presentaciones.',
+        campos:()=>[
+          {id:'materia',l:'Materia / Espacio curricular',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:'Ej: 3er año A'},
+          {id:'actividad',l:'Actividad a evaluar',t:'text',ph:'Ej: Exposición oral grupal'},
+          {id:'aspectos',l:'Aspectos generales a considerar',t:'ta',ph:'Ej: dominio del tema, comunicación, participación grupal'},
+          {id:'niveles',l:'Niveles de desempeño',t:'select',opts:['4 niveles: Excelente / Bueno / En proceso / Inicial','3 niveles: Logrado / En proceso / No logrado']},
+        ]},
+      {id:'rub-proceso',icon:'🔄',tit:'Rúbrica de Proceso',desc:'Evalúa el desarrollo durante el trabajo, no solo el producto final. Esencial en proyectos de investigación y ABP.',
+        campos:()=>[
+          {id:'materia',l:'Materia / Espacio curricular',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'proyecto',l:'Nombre del proyecto o actividad',t:'text',ph:'Ej: Proyecto de investigación sobre recursos pesqueros'},
+          {id:'duracion',l:'Duración del proceso a evaluar',t:'text',ph:'Ej: 4 semanas / 1 bimestre'},
+          {id:'criterios',l:'Criterios de proceso a evaluar',t:'ta',ph:'Ej: organización, participación, cumplimiento de etapas, búsqueda de información'},
+        ]},
+      {id:'rub-producto',icon:'📦',tit:'Rúbrica de Producto',desc:'Evalúa el resultado final entregado. Para informes, maquetas, prototipos, producciones escritas o digitales.',
+        campos:()=>[
+          {id:'materia',l:'Materia / Espacio curricular',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'producto',l:'Tipo de producto a evaluar',t:'text',ph:'Ej: Maqueta funcional / Informe técnico / Presentación digital'},
+          {id:'criterios',l:'Criterios del producto',t:'ta',ph:'Ej: calidad técnica, presentación, originalidad, uso de materiales'},
+          {id:'peso',l:'Pesos o ponderación (opcional)',t:'text',ph:'Ej: técnico 50%, presentación 30%, originalidad 20%'},
+        ]},
+    ]
+  },
+  examenes:{
+    titulo:'Exámenes', sub:'Escritos', badge:'MÓDULO 2',
+    desc:'Instrumentos para evaluación escrita tradicional y sus variantes. Incluye clave de corrección automática.',
+    docs:[
+      {id:'ex-desarrollo',icon:'✍️',tit:'Examen de Desarrollo',desc:'Preguntas abiertas que exigen argumentación y síntesis conceptual.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'temas',l:'Temas a evaluar',t:'ta',ph:'Ej: Metabolismo celular, respiración aeróbica y anaeróbica'},
+          {id:'npreguntas',l:'Cantidad de preguntas',t:'select',opts:['3 preguntas','4 preguntas','5 preguntas','6 preguntas']},
+          {id:'duracion',l:'Duración del examen',t:'select',opts:['40 minutos','60 minutos','80 minutos','90 minutos','120 minutos']},
+          {id:'nivel',l:'Nivel de complejidad',t:'select',opts:['Básico — comprensión y reproducción','Intermedio — aplicación y análisis','Avanzado — síntesis y evaluación crítica']},
+        ]},
+      {id:'ex-multiple',icon:'☑️',tit:'Opción Múltiple',desc:'Con 4 alternativas por ítem y clave de corrección. Incluye distractores pedagógicamente fundamentados.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'temas',l:'Temas a evaluar',t:'ta',ph:''},
+          {id:'nitems',l:'Cantidad de ítems',t:'select',opts:['10 ítems','15 ítems','20 ítems','25 ítems']},
+          {id:'nivel',l:'Nivel de complejidad',t:'select',opts:['Básico','Intermedio','Avanzado']},
+        ]},
+      {id:'ex-problemas',icon:'🔢',tit:'Resolución de Problemas',desc:'Para matemática, física, química y materias técnicas. Con consigna, datos, procedimiento esperado y solución.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:'Ej: Física / Matemática / Tecnología Industrial'},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'tema',l:'Tema o unidad',t:'text',ph:'Ej: Cinemática / Estequiometría'},
+          {id:'nproblemas',l:'Cantidad de problemas',t:'select',opts:['2 problemas','3 problemas','4 problemas','5 problemas']},
+          {id:'contexto',l:'Contexto o sector de aplicación (opcional)',t:'text',ph:'Ej: industria pesquera / construcción / electrónica'},
+        ]},
+      {id:'ex-vf',icon:'✅',tit:'Verdadero / Falso con Justificación',desc:'Modalidad que exige fundamentar cada respuesta. Evita el azar y promueve el pensamiento crítico.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'temas',l:'Temas a evaluar',t:'ta',ph:''},
+          {id:'nitems',l:'Cantidad de afirmaciones',t:'select',opts:['6 afirmaciones','8 afirmaciones','10 afirmaciones','12 afirmaciones']},
+        ]},
+    ]
+  },
+  laboratorio:{
+    titulo:'Laboratorio', sub:'y Trabajo Práctico', badge:'MÓDULO 3 · EXCLUSIVO ETP',
+    desc:'Instrumentos específicos para la evaluación de prácticas de laboratorio, taller y enseñanza práctica. El módulo que ninguna herramienta genérica tiene.',
+    docs:[
+      {id:'lab-guia',icon:'🧫',tit:'Guía de Trabajo Práctico',desc:'Consignas estructuradas para el trabajo en laboratorio o taller con objetivos, materiales, procedimiento y consignas.',
+        campos:()=>[
+          {id:'materia',l:'Materia / Espacio curricular',t:'text',ph:'Ej: Microbiología / Tecnología Pesquera / Electrotecnia'},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'tp',l:'Nombre del trabajo práctico',t:'text',ph:'Ej: Técnicas de siembra en medios de cultivo'},
+          {id:'obj',l:'Objetivos del TP',t:'ta',ph:'Qué aprenderá o demostrará el estudiante'},
+          {id:'materiales',l:'Materiales e insumos principales',t:'ta',ph:'Listá los materiales más importantes'},
+          {id:'duracion',l:'Duración',t:'select',opts:['1 hora cátedra (40 min)','2 horas cátedra (80 min)','3 horas cátedra (120 min)','Jornada completa']},
+        ]},
+      {id:'lab-cotejo',icon:'✔️',tit:'Lista de Cotejo Procedimental',desc:'Checklist de pasos y procedimientos técnicos. Evalúa la secuencia correcta de ejecución en laboratorio o taller.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'procedimiento',l:'Procedimiento o técnica a evaluar',t:'text',ph:'Ej: Uso del microscopio / Soldadura eléctrica'},
+          {id:'pasos',l:'Pasos principales del procedimiento',t:'ta',ph:'Listá los pasos en orden (mínimo 6)'},
+          {id:'aspectos',l:'Aspectos de seguridad e higiene a incluir',t:'ta',ph:'Ej: uso de EPP, manejo de residuos, orden del espacio'},
+        ]},
+      {id:'lab-informe',icon:'📋',tit:'Rúbrica de Informe de Laboratorio',desc:'Evaluación específica para informes escritos de trabajos prácticos. Incluye todos los componentes del informe técnico.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'tp',l:'Trabajo práctico evaluado',t:'text',ph:'Ej: Determinación de pH en muestras de agua'},
+          {id:'componentes',l:'Componentes del informe a evaluar',t:'ta',ph:'Ej: introducción, hipótesis, materiales, procedimiento, resultados, conclusiones, bibliografía'},
+          {id:'nivel',l:'Nivel de exigencia',t:'select',opts:['Básico — primer informe del año','Intermedio — cursado avanzado','Avanzado — último año / ETP']},
+        ]},
+      {id:'lab-tecnica',icon:'⚗️',tit:'Escala de Evaluación de Técnica',desc:'Para evaluar la ejecución de técnicas específicas en taller o laboratorio. Incluye indicadores de seguridad.',
+        campos:()=>[
+          {id:'materia',l:'Materia / Taller',t:'text',ph:'Ej: Taller de Mecánica / Laboratorio de Análisis Clínicos'},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'tecnica',l:'Técnica o habilidad práctica a evaluar',t:'text',ph:'Ej: Toma de muestra de sangre / Corte con sierra caladora'},
+          {id:'dimensiones',l:'Dimensiones a evaluar',t:'ta',ph:'Ej: preparación del espacio, ejecución técnica, precisión, seguridad, orden al finalizar'},
+        ]},
+    ]
+  },
+  integradora:{
+    titulo:'Evaluación', sub:'Integradora', badge:'MÓDULO 4 · Res. CFE 343/18 · Evaluación Secundaria',
+    desc:'Evaluación integradora cuatrimestral para el Nivel Secundario. Marco federal: Res. CFE N.° 343/18. En Chubut: Res. ME N.° 29/24. En Buenos Aires: Res. 1650/24. En CABA: Res. 4117/14. Genera la propuesta completa con estructura oficial: propuesta, objetivos, contenidos, situación de evaluación, rúbrica y consignas.',
+    docs:[
+      {id:'int-proyecto',icon:'🔗',tit:'Evaluación Integradora — Proyecto de Investigación',desc:'Formato proyectual interdisciplinario. Requiere articulación entre docentes de distintas áreas.',
+        campos:()=>[
+          {id:'areas',l:'Áreas o espacios curriculares involucrados',t:'ta',ph:'Ej: Biología, Química, Construcción Ciudadana'},
+          {id:'anio',l:'Año y división',t:'text',ph:'Ej: 4to año B'},
+          {id:'docentes',l:'Docentes involucrados (opcional)',t:'text',ph:'Nombres o solo cantidad'},
+          {id:'tema',l:'Tema o problemática integradora',t:'text',ph:'Ej: Contaminación del mar patagónico y su impacto en la pesca'},
+          {id:'producto',l:'Producto final esperado',t:'text',ph:'Ej: Informe + presentación / Maqueta + video / Ensayo'},
+          {id:'duracion',l:'Duración total de la evaluación',t:'select',opts:['2 semanas','3 semanas','4 semanas','Todo el cuatrimestre']},
+          {id:'criterios_eje',l:'Capacidades o competencias a desarrollar',t:'ta',ph:'Ej: pensamiento crítico, comunicación, trabajo colaborativo, uso de fuentes'},
+        ]},
+      {id:'int-abp',icon:'🧩',tit:'Evaluación Integradora — ABP',desc:'Aprendizaje Basado en Problemas. El estudiante resuelve una situación problema real y contextualizada.',
+        campos:()=>[
+          {id:'areas',l:'Áreas involucradas',t:'ta',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'problema',l:'Situación problema a resolver',t:'ta',ph:'Describí el problema o caso real que enfrentarán los estudiantes'},
+          {id:'contexto',l:'Contexto local o regional (recomendado)',t:'text',ph:'Ej: empresa pesquera local / municipio / hospital'},
+          {id:'producto',l:'Producto final esperado',t:'text',ph:'Ej: Propuesta de solución fundamentada'},
+          {id:'criterios_eje',l:'Capacidades a evaluar',t:'ta',ph:''},
+        ]},
+      {id:'int-portfolio',icon:'📁',tit:'Evaluación Integradora — Portfolio',desc:'Recopilación y selección reflexiva de evidencias de aprendizaje a lo largo del período.',
+        campos:()=>[
+          {id:'areas',l:'Áreas involucradas',t:'ta',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'periodo',l:'Período evaluado',t:'select',opts:['1er cuatrimestre','2do cuatrimestre','Año completo']},
+          {id:'evidencias',l:'Tipos de evidencias a incluir',t:'ta',ph:'Ej: trabajos escritos, registros de TP, reflexiones, autoevaluaciones'},
+          {id:'reflexion',l:'Consigna de reflexión metacognitiva requerida',t:'ta',ph:'Qué deberá reflexionar el estudiante sobre su proceso'},
+        ]},
+      {id:'int-caso',icon:'🔍',tit:'Evaluación Integradora — Análisis de Caso',desc:'Estudio y resolución de un caso real o simulado de alta complejidad que integra saberes de múltiples áreas.',
+        campos:()=>[
+          {id:'areas',l:'Áreas involucradas',t:'ta',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'caso',l:'Descripción del caso a analizar',t:'ta',ph:'Describí el caso concreto o situación real'},
+          {id:'preguntas',l:'Preguntas o consignas de análisis',t:'ta',ph:'Qué deberán responder o resolver los estudiantes'},
+          {id:'modalidad',l:'Modalidad de trabajo',t:'select',opts:['Individual','Grupal (2-3 estudiantes)','Grupal (4-5 estudiantes)']},
+        ]},
+      {id:'int-simulacion',icon:'🎭',tit:'Evaluación Integradora — Simulación / Debate / Juego de Roles',desc:'Evaluación mediante representación de situaciones reales. Promueve oralidad, argumentación y pensamiento crítico.',
+        campos:()=>[
+          {id:'areas',l:'Áreas involucradas',t:'ta',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'formato',l:'Formato',t:'select',opts:['Debate formal','Juego de roles','Simulación de situación real','Defensa oral de proyecto','Panel de expertos simulado']},
+          {id:'tema_debate',l:'Tema, situación o roles a simular',t:'ta',ph:'Describí el escenario o la posición que cada grupo defenderá'},
+          {id:'criterios_eje',l:'Criterios de evaluación oral',t:'ta',ph:'Ej: argumentación, uso de conceptos, escucha activa, respeto del turno'},
+        ]},
+    ]
+  },
+  autoeval:{
+    titulo:'Auto y', sub:'Coevaluación', badge:'MÓDULO 5',
+    desc:'Instrumentos para que el estudiante evalúe su propio proceso y el de sus pares. Componente clave de la evaluación formativa y las Evaluaciones Integradoras.',
+    docs:[
+      {id:'auto-cuestionario',icon:'🪞',tit:'Cuestionario de Autoevaluación',desc:'Preguntas reflexivas para que el estudiante valore su propio aprendizaje y desempeño.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'actividad',l:'Actividad o período evaluado',t:'text',ph:'Ej: Proyecto de investigación / 1er cuatrimestre'},
+          {id:'dimensiones',l:'Dimensiones a autoevaluar',t:'ta',ph:'Ej: esfuerzo, comprensión, participación, organización personal, logros'},
+          {id:'formato',l:'Formato',t:'select',opts:['Escala del 1 al 5 con justificación','Preguntas abiertas de reflexión','Combinado: escala + preguntas']},
+        ]},
+      {id:'auto-metacog',icon:'🧠',tit:'Ficha de Reflexión Metacognitiva',desc:'Profundiza en el "cómo aprendí". Ayuda al estudiante a identificar sus estrategias, dificultades y logros.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'unidad',l:'Unidad o tema trabajado',t:'text',ph:'Ej: Unidad 3: Ecosistemas patagónicos'},
+          {id:'focus',l:'Foco de la reflexión',t:'select',opts:['Estrategias de estudio utilizadas','Dificultades encontradas y cómo las resolví','Conexión entre lo aprendido y la vida cotidiana','Proyección: qué quiero profundizar']},
+        ]},
+      {id:'auto-coeval',icon:'🤝',tit:'Matriz de Coevaluación entre Pares',desc:'Instrumento para que los estudiantes evalúen el trabajo de sus compañeros con criterios claros.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'actividad',l:'Actividad o producción grupal a coevaluar',t:'text',ph:''},
+          {id:'criterios',l:'Criterios de coevaluación',t:'ta',ph:'Ej: participación equitativa, calidad del aporte, comunicación dentro del grupo'},
+          {id:'escala',l:'Escala de valoración',t:'select',opts:['Siempre / A veces / Nunca','Excelente / Bueno / Regular / Insuficiente','Numérica del 1 al 4']},
+        ]},
+      {id:'auto-docente',icon:'🎓',tit:'Autoevaluación de la Práctica Docente',desc:'Para que el propio docente evalúe su práctica de enseñanza y detecte áreas de mejora.',
+        campos:()=>[
+          {id:'nivel',l:'Nivel y ciclo',t:'text',ph:'Ej: 3er año Ciclo Básico'},
+          {id:'periodo',l:'Período evaluado',t:'select',opts:['1er cuatrimestre','2do cuatrimestre','Año completo','Unidad didáctica específica']},
+          {id:'dimensiones',l:'Dimensiones a evaluar en mi práctica',t:'ta',ph:'Ej: planificación, implementación, evaluación, vínculo con estudiantes, uso de recursos'},
+        ]},
+    ]
+  },
+  seguimiento:{
+    titulo:'Seguimiento', sub:'y Matrices', badge:'MÓDULO 6',
+    desc:'Instrumentos de seguimiento grupal e individual. Para gestionar el progreso de todos los estudiantes a lo largo del período.',
+    docs:[
+      {id:'seg-grupal',icon:'👥',tit:'Planilla de Seguimiento Grupal',desc:'Matriz para registrar el desempeño de toda la clase en múltiples criterios o fechas de evaluación.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'periodo',l:'Período de seguimiento',t:'select',opts:['1er cuatrimestre','2do cuatrimestre','Bimestre','Trimestre']},
+          {id:'criterios',l:'Criterios o instancias a registrar',t:'ta',ph:'Ej: Trabajo práctico 1, Examen parcial, Participación, Evaluación integradora'},
+          {id:'escala',l:'Sistema de registro',t:'select',opts:['Numérico (1-10)','Conceptual: A/B/C/D','TEA / TEP / TED (Chubut) o equivalente provincial','Logrado / En proceso / No logrado']},
+        ]},
+      {id:'seg-individual',icon:'📍',tit:'Matriz de Progreso Individual',desc:'Seguimiento detallado de un estudiante a lo largo del período. Para casos de acompañamiento específico.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'situacion',l:'Situación del estudiante que motiva el seguimiento',t:'ta',ph:'Ej: dificultades de aprendizaje / alta capacidad / situación familiar compleja'},
+          {id:'aspectos',l:'Aspectos a monitorear',t:'ta',ph:'Ej: asistencia, entrega de trabajos, participación, resultados de evaluación'},
+          {id:'periodo',l:'Período de seguimiento',t:'text',ph:'Ej: Abril — Julio 2026'},
+        ]},
+      {id:'seg-diagnostica',icon:'🔭',tit:'Evaluación Diagnóstica Inicial',desc:'Instrumento para relevar los saberes previos al iniciar una unidad o ciclo lectivo.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'unidad',l:'Unidad o tema a iniciar',t:'text',ph:'Ej: Unidad 1: Química orgánica'},
+          {id:'saberes',l:'Saberes previos que se espera explorar',t:'ta',ph:'Qué deberían saber los estudiantes para esta unidad'},
+          {id:'formato',l:'Formato del diagnóstico',t:'select',opts:['Cuestionario escrito individual','Actividad grupal exploratoria','Mapa conceptual inicial','Pregunta problema disparadora']},
+        ]},
+      {id:'seg-recuperacion',icon:'🔁',tit:'Plan de Recuperación y Apoyo',desc:'Instrumento de seguimiento para estudiantes que deben recuperar contenidos. Con instancias, criterios y actividades de apoyo.',
+        campos:()=>[
+          {id:'materia',l:'Materia',t:'text',ph:''},
+          {id:'anio',l:'Año y división',t:'text',ph:''},
+          {id:'contenidos',l:'Contenidos a recuperar',t:'ta',ph:'Listá los contenidos que el estudiante debe recuperar'},
+          {id:'instancias',l:'Instancias de recuperación previstas',t:'ta',ph:'Ej: actividad domiciliaria + clase de apoyo + evaluación recuperatoria'},
+          {id:'plazo',l:'Plazo para la recuperación',t:'text',ph:'Ej: 3 semanas / Período de intensificación'},
+        ]},
+    ]
+  }
+};
+
+// ══════════════════════════════════════
+// PROMPT BUILDER
+// ══════════════════════════════════════
+function construirPrompt(modId,docId,vals){
+  const p=S.perfil;
+  const materias=p.materias&&p.materias.length?`Materias que dicta: ${p.materias.join(', ')}.`:'';
+  const base=`Sos un especialista en evaluación educativa para escuelas secundarias argentinas (técnicas y bachiller).
+Docente: ${p.nombre_docente||'Docente'}. Institución: ${p.institucion||'Escuela secundaria argentina'}. Nivel: ${p.nivel||'Secundaria'}. ${materias}
+REGLAS ABSOLUTAS:
+- Texto plano SIN markdown, SIN asteriscos (*), SIN numerales (#), SIN guiones bajos.
+- MAYUSCULAS para los títulos de sección.
+- Guiones simples (-) para las listas de ítems.
+- Formato listo para imprimir y usar en clase.
+- Al final: BORRADOR - REVISAR Y ADAPTAR ANTES DE USAR CON ESTUDIANTES.`;
+
+  const instrDoc={
+    'rub-analitica':`Generá una rúbrica analítica completa para: ${vals}. Incluí: título, datos del instrumento, tabla con criterios en filas y niveles en columnas, descriptores detallados para cada celda, y espacio para puntuación y observaciones.`,
+    'rub-holistica':`Generá una rúbrica holística completa para: ${vals}. Incluí: título, descripción general de cada nivel de desempeño, indicadores específicos, y escala de calificación.`,
+    'rub-proceso':`Generá una rúbrica de proceso completa para evaluar el desarrollo de la actividad: ${vals}. Incluí etapas del proceso, criterios por etapa, niveles de logro y espacio de observación por instancia.`,
+    'rub-producto':`Generá una rúbrica de producto completa para: ${vals}. Incluí criterios específicos del producto, descriptores por nivel, ponderación si corresponde, y tabla de calificación final.`,
+    'ex-desarrollo':`Generá un examen de preguntas de desarrollo completo para: ${vals}. Incluí: encabezado institucional, instrucciones, preguntas con espacio de respuesta sugerido, puntaje por pregunta, y al final CLAVE DE CORRECCIÓN con respuestas esperadas e indicadores de logro.`,
+    'ex-multiple':`Generá un examen de opción múltiple completo para: ${vals}. Incluí: encabezado institucional, instrucciones claras, ítems numerados con 4 alternativas cada uno (A/B/C/D), y al final CLAVE DE RESPUESTAS con justificación de cada respuesta correcta. Texto plano, sin markdown.
+
+Al finalizar el texto del examen, agregá obligatoriamente este bloque exacto (no lo omitas bajo ninguna circunstancia):
+
+[QUIZ_DATA_START]
+[{"p":"[pregunta 1 completa]","o":["opción A","opción B","opción C","opción D"],"c":0},{"p":"[pregunta 2 completa]","o":["opción A","opción B","opción C","opción D"],"c":2}]
+[QUIZ_DATA_END]
+
+Donde "c" es el índice (0-3) de la opción correcta. Incluí todas las preguntas del examen en ese array JSON. El bloque debe ser válido como JSON.`,
+    'ex-problemas':`Generá un examen de resolución de problemas completo para: ${vals}. Incluí: encabezado, instrucciones, problemas con datos, consignas claras, y al final SOLUCIÓN COMPLETA con procedimiento paso a paso y resultado.`,
+    'ex-vf':`Generá un examen de Verdadero/Falso con justificación para: ${vals}. Incluí: instrucciones, afirmaciones numeradas (que mezclen verdaderas y falsas), espacio para justificación, y al final CLAVE con indicación V/F y justificación correcta de cada ítem.`,
+    'lab-guia':`Generá una guía completa de Trabajo Práctico para: ${vals}. Incluí: título, objetivos, fundamento teórico breve, listado de materiales e insumos, procedimiento paso a paso numerado, precauciones de seguridad, tabla de registro de datos, consignas de análisis y conclusiones, y cuestionario integrador.`,
+    'lab-cotejo':`Generá una lista de cotejo procedimental completa para: ${vals}. Incluí: título, instrucciones de uso, listado de ítems con casillero SI/NO y observaciones, indicadores de seguridad diferenciados, y espacio para calificación y firma.`,
+    'lab-informe':`Generá una rúbrica completa para evaluar el informe de laboratorio de: ${vals}. Incluí: todos los componentes del informe técnico con descriptores por nivel, indicadores de calidad del lenguaje científico, presentación y conclusiones.`,
+    'lab-tecnica':`Generá una escala de evaluación de técnica completa para: ${vals}. Incluí: dimensiones técnicas con indicadores observables, indicadores de seguridad e higiene, escala de valoración, espacio de observación del evaluador, y puntaje total.`,
+    'int-proyecto':`Generá una propuesta completa de Evaluación Integradora — Proyecto de Investigación con estructura acorde al marco federal (Res. CFE N.° 343/18) y adaptable a la normativa jurisdiccional vigente, según normativa de evaluación integradora vigente en la jurisdicción. Incluí: áreas involucradas, propuesta general, objetivo general (en términos de saber hacer), objetivos específicos, contenidos a desarrollar por área, propuesta de la situación de evaluación, rúbrica o matriz de evaluación integrada, instrumentos de registro, organización del trabajo (tiempo, modalidad, etapas), y consigna general para los estudiantes. Datos: ${vals}.`,
+    'int-abp':`Generá una propuesta completa de Evaluación Integradora — ABP (Aprendizaje Basado en Problemas) con estructura acorde al marco federal (Res. CFE N.° 343/18) y adaptable a la normativa jurisdiccional vigente, según normativa de evaluación integradora vigente en la jurisdicción. Incluí: situación problema contextualizada, áreas involucradas, objetivo general, objetivos específicos, contenidos, rol de cada área, etapas de la investigación, rúbrica integrada y consignas para los estudiantes. Datos: ${vals}.`,
+    'int-portfolio':`Generá una propuesta completa de Evaluación Integradora — Portfolio con estructura acorde al marco federal (Res. CFE N.° 343/18) y adaptable a la normativa jurisdiccional vigente, según normativa de evaluación integradora vigente en la jurisdicción. Incluí: propuesta general, criterios de selección de evidencias, estructura del portfolio, rúbrica de evaluación, consigna de reflexión metacognitiva y organización del proceso. Datos: ${vals}.`,
+    'int-caso':`Generá una propuesta completa de Evaluación Integradora — Análisis de Caso con estructura acorde al marco federal (Res. CFE N.° 343/18) y adaptable a la normativa jurisdiccional vigente, según normativa de evaluación integradora vigente en la jurisdicción. Incluí: descripción del caso, áreas involucradas, objetivos, preguntas guía, rúbrica integrada y consignas para los estudiantes. Datos: ${vals}.`,
+    'int-simulacion':`Generá una propuesta completa de Evaluación Integradora — Simulación/Debate con estructura acorde al marco federal (Res. CFE N.° 343/18) y adaptable a la normativa jurisdiccional vigente, según normativa de evaluación integradora vigente en la jurisdicción. Incluí: descripción del formato, áreas involucradas, roles asignados, objetivo, criterios de evaluación oral, rúbrica específica y consignas para los estudiantes. Datos: ${vals}.`,
+    'auto-cuestionario':`Generá un cuestionario completo de autoevaluación para: ${vals}. Incluí: instrucciones, preguntas o escala reflexiva, espacio para observaciones del estudiante y síntesis de logros.`,
+    'auto-metacog':`Generá una ficha de reflexión metacognitiva completa para: ${vals}. Incluí: preguntas que inviten a reflexionar sobre el proceso de aprendizaje, estrategias usadas, dificultades y proyección.`,
+    'auto-coeval':`Generá una matriz de coevaluación entre pares completa para: ${vals}. Incluí: instrucciones, criterios con descriptores, escala de valoración, espacio de comentarios constructivos y firma.`,
+    'auto-docente':`Generá una autoevaluación de la práctica docente completa para: ${vals}. Incluí: dimensiones de la práctica, indicadores observables, escala de valoración, reflexión narrativa y compromisos de mejora.`,
+    'seg-grupal':`Generá una planilla de seguimiento grupal completa para: ${vals}. Incluí: encabezado, tabla con columnas para nombre del estudiante y criterios/instancias, sistema de registro, espacio para promedios y observaciones generales del período.`,
+    'seg-individual':`Generá una matriz de progreso individual completa para: ${vals}. Incluí: datos del estudiante, cronograma de seguimiento, indicadores por período, registro de intervenciones docentes y síntesis evolutiva.`,
+    'seg-diagnostica':`Generá una evaluación diagnóstica inicial completa para: ${vals}. Incluí: instrucciones, instrumento según formato elegido, saberes previos a explorar, y guía de interpretación de resultados para el docente.`,
+    'seg-recuperacion':`Generá un plan de recuperación y apoyo completo para: ${vals}. Incluí: contenidos a recuperar con indicadores de logro, actividades de apoyo graduadas, cronograma de instancias, criterios de la evaluación recuperatoria y espacio de seguimiento.`,
+  };
+
+  return base+'\n\n'+(instrDoc[docId]||`Generá el instrumento de evaluación: ${docId}. Datos: ${vals}`);
+}
+
+// ══════════════════════════════════════
+// RENDER PANELES
+// ══════════════════════════════════════
+function renderPanel(panel,forzar=false){
+  const mp=document.getElementById('main-p');
+  if(panel==='inicio'){renderInicio(mp);return;}
+  if(panel==='historial'){renderHistorial(mp);return;}
+  if(panel==='perfil'){renderPerfil(mp,forzar);return;}
+  if(panel==='mis-evaluaciones'){renderMisEvaluaciones(mp);return;}
+  const mod=MODS[panel];
+  if(!mod)return;
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">${mod.badge}</div>
+      <h1 class="ph-tit">${mod.titulo} <em>${mod.sub}</em></h1>
+      <p class="ph-desc">${mod.desc}</p>
+    </div>
+    <div style="margin-bottom:14px;display:flex;justify-content:flex-end;">
+      <a href="https://sinidegestionescolar.educacion.gob.ar/" target="_blank" rel="noopener noreferrer" style="font-family:'IBM Plex Mono',monospace;font-size:10px;padding:6px 13px;border:1px solid #4A9E6F;background:transparent;color:#4A9E6F;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;display:inline-flex;align-items:center;gap:6px;">🏫 Ir a SInIDE</a>
+    </div>
+    <div class="inst-grid">
+      ${mod.docs.map(d=>`
+        <div class="inst-card" id="card-${d.id}" onclick="selDoc('${panel}','${d.id}')">
+          <span class="inst-icon">${d.icon}</span>
+          <div class="inst-tit">${d.tit}</div>
+          <div class="inst-desc">${d.desc}</div>
+          <div class="inst-chk">✓</div>
+        </div>`).join('')}
+    </div>
+    <div class="gen-form" id="gen-form"></div>
+    <div class="res-area" id="res-area"></div>`;
+}
+
+function renderInicio(mp){
+  const p=S.perfil;
+  const mats=p.materias&&p.materias.length?p.materias.map(m=>`<span style="background:rgba(107,26,42,.1);border:1px solid rgba(107,26,42,.2);color:var(--burdeo);font-size:11px;padding:3px 10px;">${m}</span>`).join(''):'<span style="font-size:12px;color:var(--gris-cl);">No configuradas — completá tu perfil</span>';
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">INICIO</div>
+      <h1 class="ph-tit">Bienvenido/a, <em>${p.nombre_docente||'Docente'}</em></h1>
+      <p class="ph-desc">${p.institucion||'Tu institución'} · ${p.nivel||''} · ${p.cargo||''}</p>
+    </div>
+    <div style="background:#fff;border:1px solid var(--gris-b);border-left:4px solid var(--oro);padding:16px 20px;margin-bottom:24px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--oro);letter-spacing:.18em;text-transform:uppercase;flex-shrink:0;">Tus materias:</span>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">${mats}</div>
+    </div>
+    <div class="ini-grid">
+      ${Object.entries(MODS).map(([k,m],i)=>`
+        <div class="ini-mod" onclick="nav('${k}',document.querySelectorAll('.sb-it')[${i+3}])">
+          <span class="ini-icon">${{rubricas:'📊',examenes:'📝',laboratorio:'🧪',integradora:'🔗',autoeval:'🔄',seguimiento:'📈'}[k]}</span>
+          <div class="ini-count">${m.badge}</div>
+          <div class="ini-tit">${m.titulo} ${m.sub}</div>
+          <div class="ini-desc">${m.docs.length} instrumentos disponibles</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── HISTORIAL ──
+async function renderHistorial(mp){
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">MIS INSTRUMENTOS</div>
+      <h1 class="ph-tit">Instrumentos <em>guardados</em></h1>
+      <p class="ph-desc">Todos tus instrumentos generados y guardados. Podés ver, copiar, descargar o eliminar.</p>
+    </div>
+    <div id="hist-cont"><div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gris);padding:16px 0;">Cargando...</div></div>`;
+  try{
+    const docs=await supa(`instrumentos_evaluar?licencia_id=eq.${S.licId}&order=created_at.desc&select=*`);
+    const cont=document.getElementById('hist-cont');
+    if(!docs||!docs.length){cont.innerHTML=`<div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gris-cl);padding:16px 0;">No hay instrumentos guardados todavía.</div>`;return;}
+    cont.innerHTML=`<div class="hist-lista">${docs.map(d=>`
+      <div class="hist-item" id="hi-${d.id}">
+        <div>
+          <div class="hist-nombre">${d.nombre_inst}</div>
+          <div class="hist-meta">${d.modulo} · ${d.tipo_inst} · ${new Date(d.created_at).toLocaleDateString('es-AR')}</div>
+        </div>
+        <div class="hist-btns">
+          <button class="btn-mini vi" onclick="verInst('${d.id}')">Ver</button>
+          <button class="btn-mini cp" onclick="copiarTexto(${JSON.stringify(d.contenido)})">Copiar</button>
+          <button class="btn-mini dl" onclick="dlTxt(${JSON.stringify(d.contenido)},'${d.nombre_inst.replace(/'/g,"\\'")}')">⬇ .txt</button>
+          <button class="btn-mini rm" onclick="eliminarInst('${d.id}')">✕</button>
+        </div>
+      </div>`).join('')}</div>`;
+  }catch(e){document.getElementById('hist-cont').innerHTML=`<div style="color:var(--burdeo);font-size:12px;">Error: ${e.message}</div>`;}
+}
+
+function verInst(id){
+  supa(`instrumentos_evaluar?id=eq.${id}&select=*`).then(rows=>{
+    if(!rows||!rows.length)return;
+    const d=rows[0];
+    const ex=document.getElementById('vista-'+id);
+    if(ex){ex.remove();return;}
+    const div=document.createElement('div');
+    div.id='vista-'+id;
+    div.style.cssText='background:#fff;border:1px solid var(--gris-b);border-top:3px solid var(--oro);padding:22px;margin-top:8px;';
+    div.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid var(--gris-b);padding-bottom:10px;gap:10px;flex-wrap:wrap;">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--burdeo);font-weight:600;">${d.nombre_inst}</span>
+        <div style="display:flex;gap:7px;">
+          <button class="btn-mini cp" onclick="copiarTexto(${JSON.stringify(d.contenido)})">Copiar</button>
+          <button class="btn-mini dl" onclick="dlTxt(${JSON.stringify(d.contenido)},'${d.nombre_inst.replace(/'/g,"\\'")}')">⬇ .txt</button>
+        </div>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.9;white-space:pre-wrap;color:var(--negro);max-height:380px;overflow-y:auto;">${d.contenido}</div>`;
+    document.getElementById('hi-'+id).after(div);
+  });
+}
+
+async function eliminarInst(id){
+  if(!confirm('¿Eliminás este instrumento? La acción no se puede deshacer.'))return;
+  await supa(`instrumentos_evaluar?id=eq.${id}`,{method:'DELETE'});
+  document.getElementById('hi-'+id)?.remove();
+}
+
+// ── PERFIL ──
+function renderPerfil(mp,esNuevo=false){
+  const p=S.perfil;
+  const mats=p.materias||[];
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">${esNuevo?'PRIMER INGRESO — CONFIGURÁ TU PERFIL':'MI PERFIL'}</div>
+      <h1 class="ph-tit">${esNuevo?'Configurá tu <em>perfil docente</em>':'Tu <em>perfil docente</em>'}</h1>
+      <p class="ph-desc">${esNuevo?'Completá tus datos. Cada instrumento generado usará esta información automáticamente.':'Tus datos se guardan en Supabase. Modificá lo que necesites.'}</p>
+    </div>
+    <div class="perfil-form">
+      <div class="perfil-sec">Datos personales e institucionales</div>
+      <div class="gen-campos">
+        <div><label class="gl">Nombre completo</label><input class="gi" id="pf-nombre" type="text" value="${p.nombre_docente||''}" placeholder="Prof. / Lic. Nombre Apellido"></div>
+        <div><label class="gl">Institución</label><input class="gi" id="pf-inst" type="text" value="${p.institucion||''}" placeholder="Nombre de la escuela"></div>
+        <div><label class="gl">Cargo / Rol</label>
+          <select class="gs" id="pf-cargo">
+            ${['Profesor/a','Instructor/a de Taller','Jefe de Área/Departamento','Jefe de Enseñanza Práctica','Coordinador/a Pedagógico/a','Otro'].map(o=>`<option ${p.cargo===o?'selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div><label class="gl">Nivel / Ciclo que dicta</label>
+          <select class="gs" id="pf-nivel">
+            ${['Ciclo Básico (1ro a 3ro)','Ciclo Orientado / Superior (4to a 6to)','Ciclo Técnico (1ro a 7mo)','Todos los ciclos'].map(o=>`<option ${p.nivel===o?'selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div><label class="gl">Modalidad principal</label>
+          <select class="gs" id="pf-modalidad">
+            ${['Técnica (7 años)','Bachiller (6 años)','Técnica y Bachiller'].map(o=>`<option ${p.modalidad===o?'selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div><label class="gl">Provincia</label>
+          <select class="gs" id="pf-prov">
+            ${['Chubut','Río Negro','Santa Cruz','Tierra del Fuego','Neuquén','Buenos Aires','Otra'].map(o=>`<option ${p.provincia===o?'selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="perfil-sec" style="margin-top:8px;">Mis materias / Espacios curriculares</div>
+      <p style="font-size:12px;color:var(--gris);margin-bottom:12px;line-height:1.6;">Cada instrumento generado incluirá el contexto de tus materias automáticamente. Agregá todas las que dictás.</p>
+      <div class="materias-list" id="mats-lista">
+        ${mats.map(m=>`<div class="materia-tag">${m}<button onclick="quitarMateria('${m}')">×</button></div>`).join('')}
+      </div>
+      <div class="add-materia-row">
+        <input class="gi" id="nueva-mat" type="text" placeholder="Ej: Microbiología / Taller de Soldadura / Matemática" style="flex:1;" onkeydown="if(event.key==='Enter')agregarMateria()">
+        <button class="btn-gen" onclick="agregarMateria()" style="padding:9px 18px;">+ Agregar</button>
+      </div>
+
+      <div style="margin-top:24px;">
+        <button class="btn-pp" style="width:auto;padding:13px 32px;" onclick="guardarPerfil(${esNuevo})">${esNuevo?'Guardar perfil e ingresar →':'Guardar cambios'}</button>
+        <div class="err-msg" id="pf-err" style="margin-top:8px;color:var(--burdeo);"></div>
+        <div id="pf-ok" style="margin-top:8px;font-size:11px;color:var(--verde-ok);font-family:'IBM Plex Mono',monospace;display:none;">✓ Perfil guardado correctamente.</div>
+      </div>
+    </div>`;
+  window._materias=[...mats];
+}
+
+function agregarMateria(){
+  const inp=document.getElementById('nueva-mat');
+  const m=inp.value.trim();
+  if(!m)return;
+  if(!window._materias)window._materias=[];
+  if(window._materias.includes(m)){inp.value='';return;}
+  window._materias.push(m);
+  const lista=document.getElementById('mats-lista');
+  const div=document.createElement('div');
+  div.className='materia-tag';
+  div.innerHTML=`${m}<button onclick="quitarMateria('${m}')">×</button>`;
+  lista.appendChild(div);
+  inp.value='';
+}
+
+function quitarMateria(m){
+  if(!window._materias)return;
+  window._materias=window._materias.filter(x=>x!==m);
+  renderPerfil(document.getElementById('main-p'));
+}
+
+async function guardarPerfil(esNuevo=false){
+  const nombre=document.getElementById('pf-nombre')?.value.trim()||'';
+  const inst=document.getElementById('pf-inst')?.value.trim()||'';
+  const cargo=document.getElementById('pf-cargo')?.value||'Profesor/a';
+  const nivel=document.getElementById('pf-nivel')?.value||'';
+  const modalidad=document.getElementById('pf-modalidad')?.value||'';
+  const provincia=document.getElementById('pf-prov')?.value||'Chubut';
+  const errEl=document.getElementById('pf-err');
+  if(!nombre||!inst){errEl.textContent='Completá nombre e institución.';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  const datos={licencia_id:S.licId,nombre_docente:nombre,institucion:inst,cargo,nivel,modalidad,provincia,materias:window._materias||[]};
+  try{
+    if(esNuevo||!S.perfilId){
+      const r=await supa('perfiles_evaluar',{method:'POST',body:JSON.stringify(datos),headers:{...H,'Prefer':'return=representation'}});
+      S.perfil=r[0];S.perfilId=r[0].id;
+    } else {
+      await supa(`perfiles_evaluar?id=eq.${S.perfilId}`,{method:'PATCH',body:JSON.stringify(datos)});
+      Object.assign(S.perfil,datos);
+    }
+    document.getElementById('hdr-nombre').textContent=nombre;
+    document.getElementById('hdr-datos').textContent=`${nivel} · ${inst}`;
+    if(esNuevo){nav('inicio',document.querySelector('.sb-it'));return;}
+    const ok=document.getElementById('pf-ok');
+    if(ok){ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);}
+  }catch(e){errEl.textContent='Error al guardar: '+e.message;errEl.style.display='block';}
+}
+
+// ══════════════════════════════════════
+// SELECCIÓN Y FORMULARIO
+// ══════════════════════════════════════
+function selDoc(modId,docId){
+  document.querySelectorAll('.inst-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('card-'+docId)?.classList.add('sel');
+  const mod=MODS[modId];
+  const doc=mod.docs.find(d=>d.id===docId);
+  S.docActual={modId,docId,doc};S.textoGenerado='';
+  const campos=doc.campos();
+  const form=document.getElementById('gen-form');
+  form.classList.add('vis');
+  const p=S.perfil;
+  const chipMats=p.materias&&p.materias.length?p.materias.map(m=>`<span class="perfil-chip-tag">${m}</span>`).join(''):'—';
+  form.innerHTML=`
+    <div class="gen-form-tit">${doc.icon} ${doc.tit}</div>
+    <div class="perfil-chip">
+      <strong>Tu perfil:</strong>
+      ${p.nombre_docente||'—'} · ${p.cargo||''} · ${p.institucion||''} · ${p.nivel||''} &nbsp;|&nbsp; Materias: ${chipMats}
+    </div>
+    <div class="aviso-n"><strong>SUPERVISIÓN DOCENTE:</strong> El instrumento generado es un <strong>borrador orientativo</strong>. Revisá los contenidos, ajustá al grupo real y validá antes de usar con estudiantes.</div>
+    <div class="gen-campos">
+      ${campos.map(c=>{
+        let inp='';
+        if(c.t==='ta')inp=`<textarea class="gta" id="c-${c.id}" placeholder="${c.ph||''}" rows="3"></textarea>`;
+        else if(c.t==='select')inp=`<select class="gs" id="c-${c.id}"><option value="">— Seleccioná —</option>${c.opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
+        else inp=`<input class="gi" id="c-${c.id}" type="text" placeholder="${c.ph||''}">`;
+        const full=c.t==='ta'?'gc-full':'';
+        return `<div class="${full}"><label class="gl">${c.l}</label>${inp}</div>`;
+      }).join('')}
+    </div>
+    <button class="btn-gen" id="btn-gen" onclick="generarInstrumento()"><span>⚡</span> Generar instrumento</button>`;
+  document.getElementById('res-area').classList.remove('vis');
+  document.getElementById('res-area').innerHTML='';
+  form.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ══════════════════════════════════════
+// GENERACIÓN
+// ══════════════════════════════════════
+async function generarInstrumento(){
+  if(!S.docActual)return;
+  if(S.usos>=10){alert('Alcanzaste el límite de 10 usos diarios. Volvé mañana.');return;}
+  const {modId,docId,doc}=S.docActual;
+  const campos=doc.campos();
+  const vals=campos.map(c=>{const el=document.getElementById('c-'+c.id);return `${c.l}: ${el?el.value.trim()||'(no especificado)':'(no especificado)'}`;}).join(' | ');
+  const prompt=construirPrompt(modId,docId,vals);
+  const btn=document.getElementById('btn-gen');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Generando...';
+  const ra=document.getElementById('res-area');
+  ra.classList.add('vis');
+  ra.innerHTML=`<div class="res-cab"><span class="res-cab-tit">GENERANDO INSTRUMENTO...</span></div><div class="res-txt">Conectando con IA...</div>`;
+  try{
+    let texto='';
+    if(S.prov==='gemini'){
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${S.apikey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      if(!r.ok)throw new Error(`Gemini ${r.status} — Verificá tu API Key.`);
+      const d=await r.json();texto=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    }else if(S.prov==='openai'){
+      const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.apikey}`},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}]})});
+      if(!r.ok)throw new Error(`OpenAI ${r.status}`);
+      const d=await r.json();texto=d.choices?.[0]?.message?.content||'';
+    }else if(S.prov==='claude'){
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apikey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})});
+      if(!r.ok)throw new Error(`Claude ${r.status}`);
+      const d=await r.json();texto=d.content?.[0]?.text||'';
+    }
+    texto=texto.replace(/\*\*/g,'').replace(/\*/g,'').replace(/^#{1,6}\s/gm,'').replace(/_{2,}/g,'');
+    S.textoGenerado=texto;
+    incUsos();
+    const fecha=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const nombreDl=`EvaluAR_${docId.toUpperCase()}_${(S.perfil.institucion||'').replace(/[^a-zA-Z0-9]/g,'_').toUpperCase()}_${fecha.replace(/\//g,'')}.txt`;
+    ra.innerHTML=`
+      <div class="res-cab">
+        <span class="res-cab-tit">INSTRUMENTO GENERADO · ${doc.tit.toUpperCase()}</span>
+        <div class="res-btns">
+          <button class="btn-accion btn-copy" onclick="copiarTexto(S.textoGenerado)">📋 Copiar</button>
+          <button class="btn-accion btn-dl" onclick="dlTxt(S.textoGenerado,'${nombreDl}')">⬇ .txt</button>
+          <button class="btn-accion btn-save" onclick="abrirModal()">💾 Guardar</button>
+          <button class="btn-registro" onclick="abrirModalRegistro()" id="btn-registro" title="Registrar evaluación en el Generador de Clases">📋 Registrar evaluación</button>
+        </div>
+      </div>
+      <div class="res-sup">⚠ BORRADOR — Revisá y adaptá antes de usar con estudiantes</div>
+      <div class="res-txt">${texto}</div>
+      <div class="quiz-export-bar" id="quiz-export-bar">
+        <div class="quiz-export-label">
+          🎮 EXPORTAR COMO QUIZ INTERACTIVO — solo disponible para Opción Múltiple
+          <button class="btn-quiz-help" onclick="document.getElementById('modal-quiz-ayuda').classList.add('abierto')" title="¿Qué son Kahoot y Quizizz?">?</button>
+        </div>
+        <div class="quiz-export-btns">
+          <button class="btn-quiz btn-kahoot" onclick="copiarParaKahoot()">📋 Copiar para Kahoot</button>
+          <button class="btn-quiz btn-kahoot" onclick="descargarXlsxKahoot()">⬇ .xlsx Kahoot</button>
+          <button class="btn-quiz btn-quizizz" onclick="descargarCsvQuizizz()">⬇ .csv Quizizz</button>
+          <button class="btn-quiz btn-quiz-open" onclick="window.open('https://create.kahoot.it','_blank')">🟣 Abrir Kahoot</button>
+          <button class="btn-quiz btn-quiz-open" onclick="window.open('https://quizizz.com/admin','_blank')">🟢 Abrir Quizizz</button>
+        </div>
+      </div>`;
+    const qBar = document.getElementById('quiz-export-bar');
+    if (qBar) qBar.style.display = docId === 'ex-multiple' ? 'block' : 'none';
+  }catch(err){
+    ra.innerHTML=`<div class="res-cab"><span class="res-cab-tit" style="color:#FFAAAA;">ERROR</span></div><div class="res-txt">ERROR: ${err.message}\n\nVerificá tu API Key.</div>`;
+  }finally{
+    btn.disabled=false;btn.innerHTML='<span>⚡</span> Generar instrumento';
+    ra.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+// ══════════════════════════════════════
+// FAB AYUDA / ERRORES
+// ══════════════════════════════════════
+// ══════════════════════════════════════
+// STORAGE WRAPPER — Edge/Safari compat
+// ══════════════════════════════════════
+const _store = (() => {
+  try {
+    localStorage.setItem('_brb_test','1');
+    localStorage.removeItem('_brb_test');
+    return localStorage;
+  } catch(e) {
+    try {
+      sessionStorage.setItem('_brb_test','1');
+      sessionStorage.removeItem('_brb_test');
+      return sessionStorage;
+    } catch(e2) {
+      const _m={};
+      return { getItem:k=>_m.hasOwnProperty(k)?_m[k]:null, setItem:(k,v)=>{_m[k]=String(v);}, removeItem:k=>{delete _m[k];} };
+    }
+  }
+})();
+
+// ══════════════════════════════════════
+// STORAGE COMPARTIDO CON GENERADOR CLASES
+// ══════════════════════════════════════
+function getSharedKey() {
+  return 'brb_eval_compartido_' + (S.email||'').replace(/[@.]/g,'_');
+}
+function getSharedData() {
+  try { return JSON.parse(_store.getItem(getSharedKey())||'{}'); } catch(e) { return {}; }
+}
+function setSharedData(data) {
+  _store.setItem(getSharedKey(), JSON.stringify(data));
+}
+function tieneGeneradorClases() {
+  const email = S.email||'';
+  const pfKey = 'brb_perfil_' + email.replace(/[@.]/g,'_');
+  return !!_store.getItem(pfKey);
+}
+function getAlumnosDeClases(instKey, materiaKey, grupoKey) {
+  const email   = S.email||'';
+  const evalKey = 'brb_eval_' + email.replace(/[@.]/g,'_');
+  try {
+    const data = JSON.parse(_store.getItem(evalKey)||'{}');
+    return data.alumnos?.[`${instKey}__${materiaKey}__${grupoKey}`] || [];
+  } catch(e) { return []; }
+}
+
+// ══════════════════════════════════════
+// MODAL REGISTRAR EVALUACIÓN
+// ══════════════════════════════════════
+let _regAlumnos = [];
+
+function abrirModalRegistro() {
+  if (!S.textoGenerado) return;
+  const tieneClases = tieneGeneradorClases();
+  const modal = document.getElementById('modal-registro');
+  const body  = document.getElementById('modal-reg-body-content');
+  if (!tieneClases) {
+    body.innerHTML = `<div class="reg-aviso-sin-clases">⚠ <strong>No se detectó el Generador de Clases en este dispositivo.</strong><br>Para registrar evaluaciones integradas necesitás tener el Generador de Clases BRB activo y haber iniciado sesión al menos una vez en este navegador.<br><br>Podés guardar el instrumento usando el botón <strong>💾 Guardar</strong>.</div>`;
+  } else {
+    const email  = S.email||'';
+    const pfKey  = 'brb_perfil_' + email.replace(/[@.]/g,'_');
+    let perfil   = {};
+    try { perfil = JSON.parse(_store.getItem(pfKey)||'{}'); } catch(e) {}
+    const insts  = perfil.instituciones||[];
+    body.innerHTML = `
+      <div class="reg-sec">Datos de la evaluación</div>
+      <div class="reg-grid" style="margin-bottom:.75rem;">
+        <div><label class="reg-gl">Institución</label>
+          <select class="reg-gs" id="reg-inst" onchange="actualizarRegMaterias()">
+            <option value="">— Seleccioná —</option>
+            ${insts.map((inst,i)=>`<option value="${i}">${inst.nombre}</option>`).join('')}
+          </select></div>
+        <div><label class="reg-gl">Materia</label>
+          <select class="reg-gs" id="reg-materia" onchange="actualizarRegAlumnos()">
+            <option value="">— Seleccioná —</option>
+          </select></div>
+        <div><label class="reg-gl">Grupo / Año</label>
+          <select class="reg-gs" id="reg-grupo" onchange="actualizarRegAlumnos()">
+            <option value="">— Seleccioná —</option>
+            <option>1° Año</option><option>2° Año</option><option>3° Año</option>
+            <option>4° Año</option><option>5° Año</option><option>6° Año</option><option>7° Año</option>
+          </select></div>
+        <div><label class="reg-gl">Fecha</label>
+          <input class="reg-gi" type="date" id="reg-fecha" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div><label class="reg-gl">Tipo</label>
+          <select class="reg-gs" id="reg-tipo">
+            <option value="parcial">Parcial escrito</option>
+            <option value="rutina">Rutina / trabajo diario</option>
+            <option value="tp">Trabajo práctico</option>
+            <option value="oral">Evaluación oral</option>
+            <option value="integradora">Evaluación integradora</option>
+            <option value="diagnostica">Diagnóstica</option>
+          </select></div>
+        <div><label class="reg-gl">Escala</label>
+          <select class="reg-gs" id="reg-escala">
+            <option value="numerica">Numérica (1 al 10)</option>
+            <option value="conceptual">Conceptual (MB / B / R / I)</option>
+          </select></div>
+      </div>
+      <div style="margin-bottom:.75rem;">
+        <label class="reg-gl">Contenido evaluado</label>
+        <input class="reg-gi" type="text" id="reg-contenido" placeholder="Ej: Volumetría ácido-base — Unidad 3" style="width:100%;">
+      </div>
+      <div id="reg-alumnos-wrap"></div>
+      <button onclick="confirmarRegistro()" style="margin-top:.75rem;width:100%;padding:11px;background:var(--burdeo);color:var(--crema);border:none;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:.05em;cursor:pointer;transition:background .2s;">
+        💾 Guardar evaluación en ambas plataformas
+      </button>`;
+  }
+  modal.classList.add('abierto');
+}
+
+function cerrarModalRegistro() {
+  document.getElementById('modal-registro').classList.remove('abierto');
+}
+
+function actualizarRegMaterias() {
+  const email = S.email||'';
+  const pfKey = 'brb_perfil_' + email.replace(/[@.]/g,'_');
+  let perfil  = {};
+  try { perfil = JSON.parse(_store.getItem(pfKey)||'{}'); } catch(e) {}
+  const idx   = parseInt(document.getElementById('reg-inst').value);
+  const inst  = perfil.instituciones?.[idx];
+  const sel   = document.getElementById('reg-materia');
+  sel.innerHTML = '<option value="">— Seleccioná —</option>';
+  (inst?.materias||[]).forEach(m=>{ const o=document.createElement('option'); o.value=o.textContent=m; sel.appendChild(o); });
+  document.getElementById('reg-alumnos-wrap').innerHTML='';
+}
+
+function actualizarRegAlumnos() {
+  const email   = S.email||'';
+  const pfKey   = 'brb_perfil_' + email.replace(/[@.]/g,'_');
+  let perfil    = {};
+  try { perfil  = JSON.parse(_store.getItem(pfKey)||'{}'); } catch(e) {}
+  const instIdx = parseInt(document.getElementById('reg-inst').value);
+  const inst    = perfil.instituciones?.[instIdx];
+  const materia = document.getElementById('reg-materia').value;
+  const grupo   = document.getElementById('reg-grupo').value;
+  if (!inst||!materia||!grupo) return;
+  const iK = inst.nombre.replace(/[^a-zA-Z0-9]/g,'_');
+  const mK = materia.replace(/[^a-zA-Z0-9]/g,'_');
+  const gK = grupo.replace(/[^a-zA-Z0-9]/g,'_');
+  _regAlumnos = getAlumnosDeClases(iK,mK,gK);
+  const wrap = document.getElementById('reg-alumnos-wrap');
+  if (!_regAlumnos.length) {
+    wrap.innerHTML='<div style="font-size:.73rem;color:var(--gris);padding:.5rem 0;">No hay alumnos registrados para esta materia/grupo. La evaluación se guardará sin notas individuales.</div>';
+    return;
+  }
+  wrap.innerHTML=`
+    <div class="reg-sec">Notas individuales (${_regAlumnos.length} alumnos)</div>
+    <table class="nota-tabla">
+      <thead><tr><th>#</th><th>Apellido y Nombre</th><th>Nota</th><th>Observación</th></tr></thead>
+      <tbody>${_regAlumnos.map((al,i)=>`
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--gris);">${i+1}</td>
+          <td><strong>${al.apellido}</strong>, ${al.nombre}</td>
+          <td><input class="nota-inp" id="rnota-${i}" type="text" placeholder="-"></td>
+          <td><input class="obs-inp" id="robs-${i}" type="text" placeholder="Opcional..."></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function confirmarRegistro() {
+  const email   = S.email||'';
+  const pfKey   = 'brb_perfil_' + email.replace(/[@.]/g,'_');
+  let perfil    = {};
+  try { perfil  = JSON.parse(_store.getItem(pfKey)||'{}'); } catch(e) {}
+  const instIdx = parseInt(document.getElementById('reg-inst').value);
+  const inst    = perfil.instituciones?.[instIdx];
+  const materia = document.getElementById('reg-materia').value;
+  const grupo   = document.getElementById('reg-grupo').value;
+  const fecha   = document.getElementById('reg-fecha').value;
+  const tipo    = document.getElementById('reg-tipo').value;
+  const escala  = document.getElementById('reg-escala').value;
+  const contenido = document.getElementById('reg-contenido').value.trim();
+  if (!inst)    { alert('Seleccioná una institución.'); return; }
+  if (!materia) { alert('Seleccioná una materia.'); return; }
+  if (!grupo)   { alert('Seleccioná el grupo.'); return; }
+  if (!contenido){ alert('Ingresá el contenido evaluado.'); return; }
+  const iK = inst.nombre.replace(/[^a-zA-Z0-9]/g,'_');
+  const mK = materia.replace(/[^a-zA-Z0-9]/g,'_');
+  const gK = grupo.replace(/[^a-zA-Z0-9]/g,'_');
+  const lK = `${iK}__${mK}__${gK}`;
+  const notas = _regAlumnos.map((al,i)=>({
+    apellido:al.apellido, nombre:al.nombre,
+    nota: document.getElementById(`rnota-${i}`)?.value.trim()||'-',
+    obs:  document.getElementById(`robs-${i}`)?.value.trim()||''
+  }));
+  const evalObj = {
+    id: Date.now(),
+    fecha: new Date(fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'}),
+    tipo, escala, contenido, instrumento: S.textoGenerado, fuente:'evaluar', notas
+  };
+  // 1. Storage compartido
+  const shared = getSharedData();
+  if (!shared.evaluaciones) shared.evaluaciones={};
+  if (!shared.evaluaciones[lK]) shared.evaluaciones[lK]=[];
+  shared.evaluaciones[lK].unshift(evalObj);
+  setSharedData(shared);
+  // 2. Storage propio del Generador de Clases
+  const evalKey = 'brb_eval_' + email.replace(/[@.]/g,'_');
+  let evalData  = {};
+  try { evalData = JSON.parse(_store.getItem(evalKey)||'{}'); } catch(e) {}
+  if (!evalData.evaluaciones) evalData.evaluaciones={};
+  if (!evalData.evaluaciones[lK]) evalData.evaluaciones[lK]=[];
+  evalData.evaluaciones[lK].unshift(evalObj);
+  _store.setItem(evalKey, JSON.stringify(evalData));
+  cerrarModalRegistro();
+  alert('Evaluacion registrada en ambas plataformas.\n\nAparece en el Historial del Generador de Clases y en "Mis evaluaciones registradas" de EvaluAR.');
+}
+
+// ══════════════════════════════════════
+// PANEL MIS EVALUACIONES
+// ══════════════════════════════════════
+function renderMisEvaluaciones(mp) {
+  const shared   = getSharedData();
+  const tipoLbl  = {parcial:'Parcial',rutina:'Rutina',tp:'T.P.',oral:'Oral',integradora:'Integradora',diagnostica:'Diagnostica'};
+  const fuenteLbl= {evaluar:'EvaluAR',clases:'Gen. Clases'};
+  const allEvals = [];
+  Object.entries(shared.evaluaciones||{}).forEach(([key,evals])=>{
+    evals.forEach(ev=>allEvals.push({...ev,_grupo:key.replace(/__/g,' · ')}));
+  });
+  allEvals.sort((a,b)=>b.id-a.id);
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">MIS EVALUACIONES</div>
+      <h1 class="ph-tit">Evaluaciones <em>registradas</em></h1>
+      <p class="ph-desc">Todas las evaluaciones guardadas desde EvaluAR o desde el Generador de Clases en este dispositivo.</p>
+    </div>
+    ${allEvals.length===0
+      ? '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:.72rem;color:var(--gris);padding:1rem 0;">No hay evaluaciones registradas. Generá un instrumento y usá el boton Registrar evaluacion.</div>'
+      : `<div style="overflow-x:auto;"><table class="hist-compartido-tabla">
+          <thead><tr><th>Fecha</th><th>Materia y Grupo</th><th>Tipo</th><th>Contenido</th><th>Escala</th><th>Alumnos</th><th>Fuente</th><th></th></tr></thead>
+          <tbody>${allEvals.map(ev=>`
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;white-space:nowrap;">${ev.fecha}</td>
+              <td style="font-size:.72rem;">${ev._grupo}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;">${tipoLbl[ev.tipo]||ev.tipo}</td>
+              <td style="font-size:.72rem;max-width:200px;">${ev.contenido}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;">${ev.escala==='conceptual'?'MB/B/R/I':'1-10'}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-align:center;">${(ev.notas||[]).length}</td>
+              <td><span style="background:${ev.fuente==='evaluar'?'var(--burdeo)':'#1B3A6B'};color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.55rem;padding:2px 7px;border-radius:2px;">${fuenteLbl[ev.fuente]||ev.fuente}</span></td>
+              <td><button onclick="eliminarEvalCompartida(${ev.id})" style="background:transparent;border:1px solid var(--burdeo);color:var(--burdeo);font-family:'IBM Plex Mono',monospace;font-size:.55rem;padding:2px 7px;cursor:pointer;">X</button></td>
+            </tr>`).join('')}
+          </tbody></table></div>`}`;
+}
+
+function eliminarEvalCompartida(id) {
+  if (!confirm('Eliminar esta evaluacion del registro compartido?')) return;
+  const shared = getSharedData();
+  Object.keys(shared.evaluaciones||{}).forEach(k=>{
+    shared.evaluaciones[k]=(shared.evaluaciones[k]||[]).filter(e=>e.id!==id);
+  });
+  setSharedData(shared);
+  const email   = S.email||'';
+  const evalKey = 'brb_eval_' + email.replace(/[@.]/g,'_');
+  let evalData  = {};
+  try { evalData = JSON.parse(_store.getItem(evalKey)||'{}'); } catch(e){}
+  Object.keys(evalData.evaluaciones||{}).forEach(k=>{
+    evalData.evaluaciones[k]=(evalData.evaluaciones[k]||[]).filter(e=>e.id!==id);
+  });
+  _store.setItem(evalKey, JSON.stringify(evalData));
+  renderMisEvaluaciones(document.getElementById('main-p'));
+}
+
+function abrirAyuda()  { document.getElementById('modal-ayuda').classList.add('abierto'); }
+function cerrarAyuda() { document.getElementById('modal-ayuda').classList.remove('abierto'); }
+
+function activarFABs() {
+  document.getElementById('fab-ayuda').classList.add('visible');
+  document.getElementById('fab-clases').classList.add('visible');
+}
+
+// ══════════════════════════════════════
+// FAB IR A GENERADOR DE CLASES
+// ══════════════════════════════════════
+const URL_GENERADOR_CLASES = 'https://bbbarrera1986-rgb.github.io/brb-generador/generador_clases_BRB_v2_1.html';
+
+function irAClases() {
+  window.open(URL_GENERADOR_CLASES, '_blank');
+}
+
+
+function copiarTexto(txt){
+  navigator.clipboard.writeText(typeof txt==='string'?txt:S.textoGenerado)
+    .then(()=>alert('✓ Copiado al portapapeles.'))
+    .catch(()=>alert('No se pudo copiar. Seleccioná el texto manualmente.'));
+}
+
+function dlTxt(txt,nombre){
+  const t=typeof txt==='string'?txt:S.textoGenerado;
+  const n=nombre||'EvaluAR_BRB.txt';
+  const blob=new Blob([t],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=n;a.click();URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════
+// MODAL GUARDAR
+// ══════════════════════════════════════
+function abrirModal(){
+  if(!S.textoGenerado)return;
+  const {doc}=S.docActual;
+  document.getElementById('modal-nombre').value=`${doc.tit} — ${new Date().toLocaleDateString('es-AR')}`;
+  document.getElementById('modal-guardar').classList.add('vis');
+}
+function cerrarModal(){document.getElementById('modal-guardar').classList.remove('vis');}
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('modal-guardar').addEventListener('click',function(e){if(e.target===this)cerrarModal();});
+});
+
+// ══════════════════════════════════════
+// EXPORTACIÓN QUIZ KAHOOT/QUIZIZZ
+// ══════════════════════════════════════
+function extraerQuizData() {
+  const texto = S.textoGenerado || '';
+  const match = texto.match(/\[QUIZ_DATA_START\]\s*([\s\S]*?)\s*\[QUIZ_DATA_END\]/);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1].trim());
+  } catch(e) {
+    return null;
+  }
+}
+
+function copiarParaKahoot() {
+  const data = extraerQuizData();
+  if (!data) { alert('No se encontraron preguntas para exportar. Generá nuevamente el examen de Opción Múltiple.'); return; }
+  const filas = [['Question','Answer 1','Answer 2','Answer 3','Answer 4','Time','Correct']];
+  data.forEach(q=>{
+    filas.push([q.p, q.o[0]||'', q.o[1]||'', q.o[2]||'', q.o[3]||'', '20', String((q.c||0)+1)]);
+  });
+  const texto = filas.map(f=>f.join('\t')).join('\n');
+  navigator.clipboard.writeText(texto)
+    .then(()=>alert('✓ Copiado al portapapeles. Pegalo en una planilla para importar a Kahoot.'))
+    .catch(()=>{
+      const ta=document.createElement('textarea');
+      ta.value=texto; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('✓ Copiado al portapapeles. Pegalo en una planilla para importar a Kahoot.');
+    });
+}
+
+function descargarXlsxKahoot() {
+  const data = extraerQuizData();
+  if (!data) { alert('No se encontraron preguntas para exportar. Generá nuevamente el examen de Opción Múltiple.'); return; }
+  const filas = [['Question','Answer 1','Answer 2','Answer 3','Answer 4','Time','Correct']];
+  data.forEach(q=>{
+    filas.push([q.p, q.o[0]||'', q.o[1]||'', q.o[2]||'', q.o[3]||'', '20', String((q.c||0)+1)]);
+  });
+  const ws = XLSX.utils.aoa_to_sheet(filas);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, 'EvaluAR_Kahoot.xlsx');
+}
+
+function descargarCsvQuizizz() {
+  const data = extraerQuizData();
+  if (!data) { alert('No se encontraron preguntas para exportar. Generá nuevamente el examen de Opción Múltiple.'); return; }
+  const esc = s => `"${String(s).replace(/"/g,'""')}"`;
+  const filas = [['Question Text','Option 1','Option 2','Option 3','Option 4','Correct Answer','Time']];
+  data.forEach(q=>{
+    filas.push([q.p, q.o[0]||'', q.o[1]||'', q.o[2]||'', q.o[3]||'', String((q.c||0)+1), '20']);
+  });
+  const csv = filas.map(f=>f.map(esc).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='EvaluAR_Quizizz.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function confirmarGuardar(){
+  const nombre=document.getElementById('modal-nombre').value.trim();
+  if(!nombre){alert('Ingresá un nombre.');return;}
+  const {modId,docId,doc}=S.docActual;
+  const datos={licencia_id:S.licId,nombre_inst:nombre,modulo:MODS[modId].titulo+' '+MODS[modId].sub,tipo_inst:doc.tit,contenido:S.textoGenerado};
+  try{
+    await supa('instrumentos_evaluar',{method:'POST',body:JSON.stringify(datos),headers:{...H,'Prefer':'return=minimal'}});
+    cerrarModal();alert('✓ Guardado en tu historial.');
+  }catch(e){alert('Error al guardar: '+e.message);}
+}
+</script>
+<!-- ══ MODAL AYUDA/ERRORES ══ -->
+<div class="modal-ov-ayuda" id="modal-ayuda" onclick="if(event.target===this)cerrarAyuda()">
+  <div class="modal-box-ay">
+    <div class="modal-hdr-ay">
+      <div class="modal-hdr-ay-tit">Diagnóstico de Problemas</div>
+      <button class="modal-close-ay" onclick="cerrarAyuda()">✕</button>
+    </div>
+    <div class="modal-body-ay">
+
+      <div class="err-blk">
+        <div class="err-blk-tit">🔑 API Key inválida o rechazada</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>Error 401 o 403 al generar un instrumento.<br>
+          <span class="etag">SOLUCIÓN</span>Gemini empieza con <code>AIza</code>. OpenAI con <code>sk-</code>. Claude con <code>sk-ant-</code>. Verificá que no tenga espacios al principio o al final. Generá una key nueva en el panel del proveedor si el problema persiste.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">📊 Cuota de API agotada</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>Error 429 — "quota exceeded" o "rate limit reached".<br>
+          <span class="etag">SOLUCIÓN</span>Gemini gratuito: límite de 15 solicitudes por minuto — esperá 60 segundos. OpenAI: recargá crédito en <code>platform.openai.com</code>. Claude: verificá tu saldo en <code>console.anthropic.com</code>. Alternativa: cambiá de proveedor para esta sesión.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">⏰ Licencia vencida</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>Mensaje "Licencia vencida" al intentar ingresar.<br>
+          <span class="etag">SOLUCIÓN</span>Contactá a BRB Estrategia & Procesos para renovar. La renovación es manual — no se puede gestionar desde la aplicación.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">📱 Licencia en otro dispositivo</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>"Dispositivo no autorizado" al ingresar.<br>
+          <span class="etag">SOLUCIÓN</span>Cada licencia está vinculada a un único dispositivo/navegador. Si cambiaste de equipo o limpiaste los datos del navegador, contactá a BRB para resetear el binding. No tiene solución desde la aplicación.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">💾 Límite diario de instrumentos</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>Barra de uso completa o mensaje "Límite alcanzado".<br>
+          <span class="etag">SOLUCIÓN</span>Límite: 10 instrumentos generados por día. Se reinicia automáticamente a medianoche. Los instrumentos ya guardados en el historial no se pierden.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">🌐 Error de conexión / Sin red</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>"Failed to fetch" o "Error de conexión" al generar o al ingresar.<br>
+          <span class="etag">SOLUCIÓN</span>Verificá tu conexión a internet. Los bloqueadores de anuncios y las VPN pueden interferir con Supabase y con las APIs de IA. Desactivá temporalmente estas extensiones y volvé a intentar.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">📋 Instrumento generado vacío o incompleto</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>El resultado aparece muy corto, cortado o sin estructura.<br>
+          <span class="etag">SOLUCIÓN</span>Completá todos los campos del formulario con información específica — cuanto más detalle, mejor el instrumento. Si usás Gemini gratuito y el resultado se corta, probá con OpenAI o Claude que tienen mayor límite de tokens de salida.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">💾 Error al guardar en historial</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>Error al hacer clic en "Guardar" después de generar.<br>
+          <span class="etag">SOLUCIÓN</span>El historial se guarda en Supabase y requiere conexión activa. Verificá tu internet. Como alternativa inmediata, usá "Copiar" o "⬇ .txt" para no perder el instrumento mientras solucionás la conexión.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">💻 Pantalla en blanco al cargar</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>La página carga pero no muestra contenido.<br>
+          <span class="etag">SOLUCIÓN</span>Hacé Ctrl+Shift+R para forzar recarga sin caché. Si el problema persiste, abrí la consola del navegador (F12 → Console), copiá el error en rojo y contactá a BRB con esa información.
+        </div>
+      </div>
+
+      <div class="err-blk">
+        <div class="err-blk-tit">🔗 No aparece el botón para ir al Generador de Clases</div>
+        <div class="err-blk-body">
+          <span class="etag">SÍNTOMA</span>No ves el botón "→ Generador de Clases" en la esquina inferior derecha.<br>
+          <span class="etag">SOLUCIÓN</span>El botón aparece solo después de iniciar sesión con licencia válida. Si ya ingresaste y no aparece, recargá la página con Ctrl+Shift+R.
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer-ay">
+      EvaluAR BRB v2.5 · BRB Estrategia &amp; Procesos · ORCID: 0009-0004-6583-6439 · bbbarrera1986@gmail.com · +54 297 517-6351
+    </div>
+  </div>
+</div>
+
+<!-- ══ FAB AYUDA ══ -->
+<button class="fab-ayuda" id="fab-ayuda" onclick="abrirAyuda()">⚠ Ayuda / Errores</button>
+
+<!-- ══ FAB IR A GENERADOR DE CLASES ══ -->
+<button class="fab-clases" id="fab-clases" onclick="irAClases()">→ Generador de Clases</button>
+
+<!-- ══ MODAL REGISTRAR EVALUACIÓN ══ -->
+<div class="modal-reg-ov" id="modal-registro" onclick="if(event.target===this)cerrarModalRegistro()">
+  <div class="modal-reg-box">
+    <div class="modal-reg-hdr">
+      <div class="modal-reg-tit">Registrar Evaluación</div>
+      <button class="modal-reg-close" onclick="cerrarModalRegistro()">✕</button>
+    </div>
+    <div class="modal-reg-body" id="modal-reg-body-content"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL AYUDA QUIZ KAHOOT/QUIZIZZ ══ -->
+<div class="modal-quiz-ov" id="modal-quiz-ayuda" onclick="if(event.target===this)this.classList.remove('abierto')">
+  <div class="modal-quiz-box">
+    <div class="modal-quiz-hdr">
+      <div class="modal-quiz-tit">¿Qué son Kahoot y Quizizz?</div>
+      <button class="modal-quiz-close" onclick="document.getElementById('modal-quiz-ayuda').classList.remove('abierto')">✕</button>
+    </div>
+    <div class="modal-quiz-body">
+      <div class="quiz-plat-card">
+        <div class="quiz-plat-titulo k">🟣 Kahoot</div>
+        <div class="quiz-plat-body">
+          <strong>Plataforma de juegos de preguntas en tiempo real.</strong> Los estudiantes responden desde sus celulares mientras la pregunta se proyecta en el pizarrón. Ideal para repasos y competencias en el aula.
+          <ul class="quiz-plat-pasos">
+            <li>1. Descargá el archivo .xlsx con el botón correspondiente.</li>
+            <li>2. Entrá a create.kahoot.it e iniciá sesión.</li>
+            <li>3. Creá un nuevo Kahoot y elegí "Importar desde Excel".</li>
+            <li>4. Subí el archivo descargado y revisá las preguntas.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quiz-plat-card">
+        <div class="quiz-plat-titulo q">🟢 Quizizz</div>
+        <div class="quiz-plat-body">
+          <strong>Plataforma similar a Kahoot</strong>, pero permite que los estudiantes avancen a su propio ritmo y se puede usar como tarea para el hogar.
+          <ul class="quiz-plat-pasos">
+            <li>1. Descargá el archivo .csv con el botón correspondiente.</li>
+            <li>2. Entrá a quizizz.com/admin e iniciá sesión.</li>
+            <li>3. Creá un nuevo quiz y elegí la opción de importar preguntas desde un spreadsheet/CSV.</li>
+            <li>4. Subí el archivo descargado y revisá las preguntas.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quiz-plat-card">
+        <div class="quiz-plat-titulo k">📋 Copiar para Kahoot</div>
+        <div class="quiz-plat-body">
+          Copia las preguntas en formato de tabla al portapapeles, listas para pegar directamente en una planilla de cálculo (Excel/Google Sheets) y luego importarlas a Kahoot.
+        </div>
+      </div>
+    </div>
+    <div class="modal-quiz-footer">
+      EvaluAR BRB v2.5 · BRB Estrategia &amp; Procesos · brbeduca.com
+    </div>
+  </div>
+</div>
+
+<!-- AUDITORIA v2.5: URL_GENERADOR_CLASES e irAClases() apuntan a generador_clases_BRB_v2_1.html (referencia heredada de v2.1, fuera del alcance de esta corrección). Sin otros residuos detectados: variables, funciones e IDs referenciados tienen su contraparte. -->
+
+</body>
+</html>
