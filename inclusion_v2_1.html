@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRB Inclusión & Neuro-Estrategias v2.1 — PPI/DUA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+:root{
+  --verde:#0d4a2f;--verde-med:#1a6b42;--verde-cl:#2d8a57;--verde-bg:rgba(13,74,47,.12);
+  --oro:#C8A84B;--oro-dim:#8a7233;--oro-bg:rgba(200,168,75,.08);
+  --crema:#F2EFE8;--crema-dark:#ddd8cc;
+  --negro:#080C08;--gris:#111a11;--gris-b:#1e281e;--gris-cl:#7a8a7a;
+  --error:#c0392b;--success:#1a7a4a;--warn:#d4860a;
+  --gemini:#4285f4;--claude:#cc785c;--gpt:#10a37f;
+  --fd:'Cormorant Garamond',Georgia,serif;
+  --fm:'IBM Plex Mono','Courier New',monospace;
+  --fb:'IBM Plex Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--negro);color:var(--crema);font-family:var(--fb);overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4;}
+
+/* PANTALLAS */
+.p{display:none;min-height:100vh;}
+.p.on{display:flex;flex-direction:column;}
+
+/* BOTONES */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.6rem;font-family:var(--fm);font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-p{background:var(--verde-cl);color:white;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+.btn-p:hover{background:var(--verde-med);transform:translateY(-1px);}
+.btn-s{background:transparent;color:var(--oro);border:1px solid var(--oro-dim);clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+.btn-s:hover{background:var(--oro-bg);}
+.btn-g{background:transparent;color:var(--gris-cl);border:1px solid #2a2a2a;}
+.btn-g:hover{color:var(--crema);border-color:#444;}
+.btn-sm{padding:.4rem .9rem;font-size:.62rem;}
+.btn-danger{background:rgba(192,57,43,.15);color:var(--error);border:1px solid rgba(192,57,43,.3);}
+.btn-danger:hover{background:rgba(192,57,43,.25);}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.btn-oro{background:var(--oro-bg);color:var(--oro);border:1px solid var(--oro-dim);}
+.btn-oro:hover{background:rgba(200,168,75,.18);}
+
+/* INPUTS */
+.field{display:flex;flex-direction:column;gap:.35rem;}
+.field label{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--oro-dim);}
+.field input,.field select,.field textarea{background:#0d120d;border:1px solid #1e281e;color:var(--crema);padding:.7rem .9rem;font-family:var(--fb);font-size:.875rem;outline:none;transition:border-color .2s;width:100%;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--verde-cl);}
+.field input::placeholder,.field textarea::placeholder{color:#3a4a3a;font-style:italic;}
+.field select option{background:#0d120d;}
+.field textarea{resize:vertical;min-height:90px;line-height:1.6;}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--gris-b);background:rgba(8,12,8,.95);backdrop-filter:blur(8px);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:.5rem;}
+.hdr-brand{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--oro);letter-spacing:.06em;}
+.hdr-brand span{color:var(--crema);font-weight:300;font-style:italic;font-size:.95rem;}
+.hdr-right{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.hdr-user{font-family:var(--fm);font-size:.58rem;color:var(--gris-cl);letter-spacing:.08em;}
+.hdr-badge{font-family:var(--fm);font-size:.55rem;padding:.2rem .6rem;background:rgba(45,138,87,.12);border:1px solid rgba(45,138,87,.25);color:var(--verde-cl);}
+.hdr-prof{font-family:var(--fm);font-size:.55rem;color:var(--oro-dim);letter-spacing:.06em;}
+
+/* LOADING */
+#p-load{justify-content:center;align-items:center;flex-direction:column;gap:1.5rem;}
+.load-logo{font-family:var(--fd);font-size:3.5rem;font-weight:700;color:var(--verde-cl);animation:breathe 2s ease-in-out infinite;}
+.load-sub{font-family:var(--fm);font-size:.6rem;letter-spacing:.2em;color:var(--gris-cl);text-transform:uppercase;}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* LOGIN */
+#p-login{justify-content:center;align-items:center;padding:2rem 1rem;background:var(--negro);}
+.login-wrap{max-width:400px;width:100%;display:flex;flex-direction:column;gap:1.75rem;}
+.login-brand{text-align:center;}
+.login-mark{font-family:var(--fd);font-size:3rem;font-weight:700;color:var(--verde-cl);display:block;line-height:1;}
+.login-sub{font-family:var(--fm);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gris-cl);margin-top:.3rem;}
+.login-div{width:36px;height:1px;background:var(--oro-dim);margin:.6rem auto;}
+.login-prod{font-family:var(--fd);font-size:1.2rem;font-weight:300;color:var(--crema);font-style:italic;}
+.login-box{background:#0d120d;border:1px solid var(--gris-b);border-top:2px solid var(--verde-cl);padding:1.75rem;display:flex;flex-direction:column;gap:1.1rem;}
+.login-title{font-family:var(--fm);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gris-cl);text-align:center;}
+.login-err{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.25);color:#e74c3c;font-family:var(--fm);font-size:.68rem;padding:.7rem .9rem;display:none;line-height:1.5;}
+.eye-btn{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gris-cl);cursor:pointer;font-size:.8rem;}
+.rel{position:relative;}
+.login-foot{text-align:center;font-family:var(--fm);font-size:.52rem;color:#2a2a2a;line-height:1.8;}
+.login-foot a{color:var(--oro-dim);text-decoration:none;}
+
+/* PERFIL */
+#p-perfil{justify-content:center;align-items:flex-start;padding:2rem 1rem;background:var(--negro);overflow-y:auto;}
+.perfil-wrap{max-width:680px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;}
+.perfil-hero{text-align:center;}
+.perfil-hero h1{font-family:var(--fd);font-size:2.2rem;font-weight:300;color:var(--crema);line-height:1.15;}
+.perfil-hero h1 em{color:var(--verde-cl);font-style:italic;}
+.perfil-hero p{color:var(--gris-cl);font-size:.875rem;line-height:1.65;margin-top:.5rem;}
+.card-sec{background:#0a100a;border:1px solid var(--gris-b);border-top:2px solid var(--verde-cl);padding:1.4rem;display:flex;flex-direction:column;gap:1rem;}
+.card-sec-title{font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--verde-cl);margin-bottom:.25rem;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.estilo-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+.estilo-item{display:flex;align-items:flex-start;gap:.6rem;padding:.7rem .9rem;background:#0d120d;border:1px solid #1e281e;cursor:pointer;transition:all .2s;}
+.estilo-item.activo{border-color:var(--verde-cl);background:rgba(45,138,87,.08);}
+.estilo-item input{display:none;}
+.estilo-dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--gris-cl);flex-shrink:0;margin-top:.2rem;transition:all .2s;}
+.estilo-item.activo .estilo-dot{border-color:var(--verde-cl);background:var(--verde-cl);}
+.et-nombre{display:block;font-size:.82rem;font-weight:600;color:var(--crema);}
+.et-desc{display:block;font-size:.72rem;color:var(--gris-cl);line-height:1.4;margin-top:.15rem;}
+.prof-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem;}
+.prof-chip{font-family:var(--fm);font-size:.62rem;padding:.3rem .7rem;background:#0d120d;border:1px solid #2a2a2a;color:var(--gris-cl);cursor:pointer;transition:all .15s;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
+.prof-chip.sel{background:rgba(45,138,87,.12);border-color:var(--verde-cl);color:var(--verde-cl);}
+.perfil-footer{display:flex;justify-content:flex-end;gap:.5rem;padding-top:.5rem;}
+.perfil-saved{font-family:var(--fm);font-size:.6rem;color:var(--success);display:none;align-self:center;}
+.perfil-saved.show{display:block;}
+
+/* API KEYS */
+#p-keys{justify-content:center;align-items:center;padding:2rem 1rem;background:var(--negro);}
+.keys-wrap{max-width:580px;width:100%;}
+.keys-hero{text-align:center;margin-bottom:2.5rem;}
+.keys-hero h1{font-family:var(--fd);font-size:2.5rem;font-weight:300;line-height:1.1;margin-bottom:.75rem;}
+.keys-hero h1 em{color:var(--verde-cl);font-style:italic;}
+.keys-hero p{color:var(--gris-cl);font-size:.875rem;line-height:1.65;}
+.provider-tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid var(--gris-b);}
+.ptab{padding:.7rem 1.2rem;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;color:var(--gris-cl);border-bottom:2px solid transparent;transition:all .2s;}
+.ptab.on{color:var(--oro);border-bottom-color:var(--oro);}
+.ptab:hover:not(.on){color:var(--crema);}
+.provider-panel{display:none;flex-direction:column;gap:1rem;}
+.provider-panel.on{display:flex;}
+.provider-badge{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--fm);font-size:.62rem;padding:.3rem .8rem;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.2);color:var(--oro);margin-bottom:.5rem;}
+.key-guide{background:#0a100a;border:1px solid var(--gris-b);border-left:3px solid var(--verde-cl);padding:1.25rem;margin-bottom:.5rem;}
+.key-guide-title{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verde-cl);margin-bottom:.9rem;}
+.kg-step{display:flex;gap:.75rem;align-items:flex-start;margin-bottom:.7rem;}
+.kg-num{font-family:var(--fm);font-size:.6rem;color:var(--verde-cl);background:rgba(45,138,87,.15);border:1px solid var(--verde-cl);width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
+.kg-text{font-size:.82rem;color:var(--crema-dark);line-height:1.5;}
+.kg-text a{color:var(--verde-cl);text-decoration:none;}
+.kg-text code{font-family:var(--fm);font-size:.75rem;background:#111a11;border:1px solid #2a2a2a;padding:.1rem .35rem;color:var(--oro);}
+.key-status{font-family:var(--fm);font-size:.68rem;padding:.45rem .75rem;border:1px solid #1e281e;background:#080c08;display:none;}
+.key-status.ok{color:var(--success);border-color:rgba(26,122,74,.3);}
+.key-status.err{color:var(--error);border-color:rgba(192,57,43,.3);}
+.key-status.checking{color:var(--gris-cl);}
+
+/* APP PRINCIPAL */
+#p-app{flex-direction:column;}
+.app-layout{flex:1;display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 56px);}
+
+/* SIDEBAR */
+.sidebar{background:#080c08;border-right:1px solid var(--gris-b);display:flex;flex-direction:column;overflow:hidden;}
+.sb-hdr{padding:1rem 1.2rem;border-bottom:1px solid var(--gris-b);display:flex;align-items:center;justify-content:space-between;}
+.sb-title{font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--verde-cl);}
+.sb-body{flex:1;overflow-y:auto;padding:.75rem;}
+.sb-body::-webkit-scrollbar{width:3px;}
+.sb-body::-webkit-scrollbar-thumb{background:#1e281e;}
+.sb-search{background:#0d120d;border:1px solid #1e281e;color:var(--crema);padding:.6rem .85rem;font-family:var(--fb);font-size:.82rem;width:100%;outline:none;margin-bottom:.75rem;}
+.sb-search::placeholder{color:#3a4a3a;font-style:italic;}
+.sb-search:focus{border-color:var(--verde-cl);}
+.leg-item{display:flex;align-items:center;gap:.75rem;padding:.75rem .6rem;border-bottom:1px solid #0d120d;cursor:pointer;transition:background .15s;}
+.leg-item:hover{background:#0d120d;}
+.leg-item.sel{background:rgba(45,138,87,.08);border-left:2px solid var(--verde-cl);}
+.leg-num{font-family:var(--fm);font-size:.58rem;color:var(--verde-cl);min-width:48px;flex-shrink:0;}
+.leg-nombre{flex:1;}
+.leg-nombre-main{font-size:.82rem;font-weight:500;color:var(--crema);line-height:1.2;}
+.leg-nombre-diag{font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);margin-top:.1rem;}
+.leg-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:160px;gap:.75rem;opacity:.35;text-align:center;}
+.leg-ph-icon{font-size:2rem;}
+.leg-ph-txt{font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;color:var(--gris-cl);}
+.sb-io{padding:.75rem 1.2rem;border-top:1px solid var(--gris-b);display:flex;flex-direction:column;gap:.4rem;}
+.sb-io-title{font-family:var(--fm);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:#3a4a3a;margin-bottom:.15rem;}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;overflow:hidden;}
+.main-tabs{display:flex;background:#080c08;border-bottom:1px solid var(--gris-b);}
+.mtab{padding:.85rem 1.2rem;font-family:var(--fm);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:var(--gris-cl);border-bottom:2px solid transparent;transition:all .2s;}
+.mtab.on{color:var(--oro);border-bottom-color:var(--oro);}
+.mtab:hover:not(.on){color:var(--crema);}
+.main-panel{display:none;flex:1;overflow-y:auto;padding:1.75rem;}
+.main-panel.on{display:block;}
+.main-panel::-webkit-scrollbar{width:4px;}
+.main-panel::-webkit-scrollbar-thumb{background:#1e281e;}
+
+/* WELCOME */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:1.5rem;text-align:center;padding:3rem;}
+.welcome h2{font-family:var(--fd);font-size:2rem;font-weight:300;color:var(--crema);}
+.welcome h2 em{color:var(--verde-cl);font-style:italic;}
+.welcome p{color:var(--gris-cl);max-width:400px;font-size:.875rem;line-height:1.7;}
+
+/* FICHA */
+.ficha-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.ficha-id{display:flex;flex-direction:column;gap:.25rem;}
+.ficha-legajo{font-family:var(--fm);font-size:.6rem;color:var(--verde-cl);letter-spacing:.12em;}
+.ficha-nombre{font-family:var(--fd);font-size:1.8rem;font-weight:400;color:var(--crema);line-height:1.1;}
+.ficha-diag{font-family:var(--fm);font-size:.65rem;color:var(--gris-cl);margin-top:.25rem;}
+.ficha-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.ficha-card{background:#0a100a;border:1px solid var(--gris-b);padding:1rem;}
+.ficha-card-title{font-family:var(--fm);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verde-cl);margin-bottom:.75rem;}
+.ficha-field{margin-bottom:.6rem;}
+.ficha-label{font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);letter-spacing:.1em;text-transform:uppercase;}
+.ficha-value{font-size:.82rem;color:var(--crema-dark);margin-top:.1rem;line-height:1.4;}
+
+/* AVISO */
+.aviso-resp{background:rgba(212,134,10,.06);border:1px solid rgba(212,134,10,.25);border-left:3px solid var(--warn);padding:.85rem 1.1rem;margin-bottom:1.25rem;display:flex;gap:.75rem;align-items:flex-start;}
+.aviso-resp-icon{font-size:1.1rem;flex-shrink:0;margin-top:.05rem;}
+.aviso-resp-text{font-family:var(--fm);font-size:.65rem;color:var(--crema-dark);line-height:1.6;letter-spacing:.02em;}
+.aviso-resp-text strong{color:var(--warn);}
+
+/* MÓDULOS */
+.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem;}
+.mod-card{background:#0a100a;border:1px solid var(--gris-b);border-top:2px solid transparent;padding:1.25rem;cursor:pointer;transition:all .2s;}
+.mod-card:hover{border-top-color:var(--verde-cl);background:#0d120d;}
+.mod-card.sel{border-top-color:var(--oro);background:rgba(200,168,75,.04);}
+.mod-icon{font-size:1.5rem;margin-bottom:.6rem;}
+.mod-name{font-family:var(--fb);font-size:.82rem;font-weight:600;color:var(--crema);margin-bottom:.25rem;line-height:1.3;}
+.mod-desc{font-size:.72rem;color:var(--gris-cl);line-height:1.5;}
+.mod-norm{font-family:var(--fm);font-size:.55rem;color:var(--verde-cl);margin-top:.5rem;letter-spacing:.06em;}
+
+/* GENERADOR */
+.gen-area{display:flex;flex-direction:column;gap:1rem;}
+.gen-section-title{font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--verde-cl);margin-bottom:.5rem;}
+
+/* SELECTOR IA */
+.ai-selector{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.ai-btn{display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem;font-family:var(--fm);font-size:.62rem;letter-spacing:.08em;border:1px solid #2a2a2a;cursor:pointer;background:transparent;color:var(--gris-cl);transition:all .2s;}
+.ai-btn.sel-gemini{border-color:var(--gemini);color:var(--gemini);background:rgba(66,133,244,.08);}
+.ai-btn.sel-claude{border-color:var(--claude);color:var(--claude);background:rgba(204,120,92,.08);}
+.ai-btn.sel-gpt{border-color:var(--gpt);color:var(--gpt);background:rgba(16,163,127,.08);}
+.ai-btn:hover:not([class*="sel-"]){color:var(--crema);border-color:#444;}
+.ai-dot{width:7px;height:7px;border-radius:50%;}
+.dot-gemini{background:var(--gemini);}
+.dot-claude{background:var(--claude);}
+.dot-gpt{background:var(--gpt);}
+
+/* CAMPOS */
+.campos-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.span-2{grid-column:1/-1;}
+
+/* OUTPUT */
+.output-area{background:#080c08;border:1px solid var(--gris-b);}
+.output-hdr{padding:.7rem 1rem;border-bottom:1px solid var(--gris-b);display:flex;align-items:center;justify-content:space-between;background:#0a100a;flex-wrap:wrap;gap:.4rem;}
+.output-tag{font-family:var(--fm);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verde-cl);}
+.output-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+.output-body{padding:1.1rem;font-family:var(--fm);font-size:.75rem;line-height:1.85;color:#aaa;min-height:240px;white-space:pre-wrap;overflow-y:auto;max-height:420px;}
+.output-aviso{padding:.6rem 1rem;font-family:var(--fm);font-size:.6rem;color:var(--warn);background:rgba(212,134,10,.05);border-top:1px solid rgba(212,134,10,.15);letter-spacing:.04em;}
+
+/* DUA CODE BOX */
+.dua-code-box{margin-top:1rem;background:#0a100a;border:1px solid rgba(200,168,75,.2);border-left:3px solid var(--oro);padding:1rem;}
+.dua-code-title{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--oro);margin-bottom:.5rem;}
+.dua-code-val{font-family:var(--fm);font-size:.7rem;color:var(--crema-dark);background:#080c08;border:1px solid #1e281e;padding:.6rem .9rem;word-break:break-all;line-height:1.6;margin-bottom:.5rem;}
+.dua-code-desc{font-family:var(--fm);font-size:.58rem;color:var(--gris-cl);line-height:1.6;}
+
+/* LOADING BAR */
+.loading-row{display:flex;align-items:center;gap:1rem;padding:1.25rem;border:1px solid var(--gris-b);background:#080c08;}
+.loading-bar{flex:1;height:2px;background:#1e281e;overflow:hidden;}
+.loading-bar-inner{height:100%;background:linear-gradient(90deg,var(--verde-cl),var(--oro));animation:lb 1.5s ease-in-out infinite;}
+@keyframes lb{0%{width:0%;margin-left:0}50%{width:55%;margin-left:20%}100%{width:0%;margin-left:100%}}
+.loading-txt{font-family:var(--fm);font-size:.65rem;color:var(--gris-cl);white-space:nowrap;}
+
+/* HISTORIAL */
+.hist-item{background:#0a100a;border:1px solid var(--gris-b);padding:1rem;margin-bottom:.6rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.hist-meta{display:flex;flex-direction:column;gap:.2rem;flex:1;}
+.hist-tipo{font-family:var(--fm);font-size:.62rem;color:var(--verde-cl);letter-spacing:.1em;}
+.hist-fecha{font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);}
+.hist-preview{font-size:.78rem;color:var(--crema-dark);margin-top:.3rem;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.hist-btns{display:flex;gap:.3rem;flex-shrink:0;}
+
+/* ADJUNTOS */
+.upload-zone{border:2px dashed #1e281e;padding:1.75rem;text-align:center;cursor:pointer;transition:all .2s;background:#080c08;position:relative;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--verde-cl);background:#0d120d;}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:1.75rem;opacity:.4;margin-bottom:.4rem;}
+.upload-lbl{font-family:var(--fm);font-size:.68rem;letter-spacing:.1em;color:var(--gris-cl);}
+.upload-fmt{font-family:var(--fm);font-size:.58rem;color:#3a4a3a;margin-top:.25rem;}
+.file-chip{display:flex;align-items:center;justify-content:space-between;padding:.6rem .9rem;background:rgba(45,138,87,.1);border:1px solid rgba(45,138,87,.25);margin-top:.5rem;}
+.file-chip-name{font-family:var(--fm);font-size:.68rem;color:var(--verde-cl);}
+.file-chip-info{font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:500;padding:1rem;overflow-y:auto;}
+.modal-overlay.on{display:flex;}
+.modal{background:#0d120d;border:1px solid var(--gris-b);border-top:2px solid var(--verde-cl);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-hdr{padding:1.1rem 1.4rem;border-bottom:1px solid var(--gris-b);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:var(--fd);font-size:1.3rem;font-weight:400;color:var(--crema);}
+.modal-close{background:none;border:none;color:var(--gris-cl);cursor:pointer;font-size:1.2rem;}
+.modal-body{padding:1.4rem;display:flex;flex-direction:column;gap:1rem;}
+.modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--gris-b);display:flex;gap:.5rem;justify-content:flex-end;}
+
+/* CHIPS */
+.chip{font-family:var(--fm);font-size:.55rem;letter-spacing:.08em;padding:.2rem .55rem;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);}
+.chip-verde{background:rgba(45,138,87,.15);border:1px solid rgba(45,138,87,.3);color:var(--verde-cl);}
+.chip-oro{background:var(--oro-bg);border:1px solid rgba(200,168,75,.2);color:var(--oro);}
+.chip-warn{background:rgba(212,134,10,.1);border:1px solid rgba(212,134,10,.25);color:var(--warn);}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;font-family:var(--fm);font-size:.68rem;padding:.65rem 1.1rem;border:1px solid #2a2a2a;background:#0d120d;color:var(--crema);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px;line-height:1.4;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-color:rgba(26,122,74,.4);color:var(--success);}
+.toast.err{border-color:rgba(192,57,43,.4);color:var(--error);}
+.toast.info{border-color:rgba(200,168,75,.3);color:var(--oro);}
+
+/* FAB AYUDA */
+.fab-ayuda{position:fixed;bottom:1.5rem;left:1.5rem;z-index:400;display:none;}
+.fab-ayuda.show{display:flex;}
+
+/* MODAL AYUDA */
+.ayuda-item{border:1px solid var(--gris-b);padding:.9rem;margin-bottom:.5rem;}
+.ayuda-item-title{font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--oro);margin-bottom:.4rem;}
+.ayuda-item-body{font-size:.78rem;color:var(--gris-cl);line-height:1.65;}
+.ayuda-tag{font-family:var(--fm);font-size:.55rem;background:#1a1a1a;color:#666;padding:1px 6px;margin-right:.3rem;}
+code{font-family:var(--fm);font-size:.67rem;background:#111;padding:.15rem .35rem;color:var(--oro);}
+
+/* FOOTER */
+.app-footer{padding:1.25rem 2rem;border-top:1px solid #0d120d;background:#080c08;font-family:var(--fm);font-size:.52rem;color:#2a2a2a;line-height:2;}
+.app-footer a{color:#2a2a2a;text-decoration:none;}
+.norm-grid{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem;}
+.norm-chip{font-family:var(--fm);font-size:.5rem;padding:.15rem .5rem;background:#0a100a;border:1px solid #1e281e;color:#3a4a3a;}
+
+/* LIMIT BAR */
+.limit-bar{font-family:var(--fm);font-size:.58rem;color:var(--gris-cl);display:flex;align-items:center;gap:.5rem;}
+.limit-track{flex:1;height:3px;background:#1e281e;max-width:80px;}
+.limit-fill{height:100%;background:var(--verde-cl);transition:width .3s;}
+.limit-fill.warn{background:var(--warn);}
+.limit-fill.full{background:var(--error);}
+
+@media(max-width:768px){
+  .app-layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .mod-grid{grid-template-columns:1fr 1fr;}
+  .campos-grid{grid-template-columns:1fr;}
+  .span-2{grid-column:1;}
+  .ficha-grid{grid-template-columns:1fr;}
+  .grid-2,.estilo-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="p-load" class="p on">
+  <div class="load-logo">BRB</div>
+  <div class="load-sub">Inclusión & Neuro-Estrategias v2.1 · Iniciando</div>
+</div>
+
+<!-- LOGIN -->
+<div id="p-login" class="p">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <span class="login-mark">BRB</span>
+      <div class="login-sub">Estrategia & Procesos · Soberanía Técnica Ediciones</div>
+      <div class="login-div"></div>
+      <div class="login-prod">Inclusión & Neuro-Estrategias <em style="font-family:var(--fm);font-size:.65rem;color:var(--verde-cl);font-style:normal;">v2.1</em></div>
+    </div>
+    <div class="login-box">
+      <div class="login-title">Acceso Profesional</div>
+      <div class="login-err" id="login-err"></div>
+      <div class="field">
+        <label>Correo Electrónico</label>
+        <input type="email" id="li-email" placeholder="tu@email.com" autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Clave de Acceso</label>
+        <div class="rel">
+          <input type="password" id="li-clave" placeholder="BRB-INC-XXXX-XXXX"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('li-clave',this)">👁</button>
+        </div>
+      </div>
+      <button class="btn btn-p" id="btn-login" onclick="login()" style="width:100%;justify-content:center;">Ingresar →</button>
+      <div style="font-family:var(--fm);font-size:.56rem;color:#2a2a2a;text-align:center;line-height:1.7;">Licencia de un solo dispositivo · 10 generaciones/día<br>Datos clínicos almacenados solo en tu dispositivo</div>
+    </div>
+    <div class="login-foot">
+      Para obtener acceso: <a href="mailto:bbbarrera1986@gmail.com">bbbarrera1986@gmail.com</a><br>
+      BRB Estrategia &amp; Procesos · Soberanía Técnica Ediciones
+    </div>
+  </div>
+</div>
+
+<!-- PERFIL PROFESIONAL -->
+<div id="p-perfil" class="p">
+  <div class="perfil-wrap">
+    <div class="perfil-hero">
+      <h1>Tu Perfil <em>Profesional</em></h1>
+      <p>Configuralo una vez. El generador usa estos datos para personalizar cada documento. Podés editarlo desde el menú principal.</p>
+    </div>
+
+    <div class="card-sec">
+      <div class="card-sec-title">👤 Datos personales</div>
+      <div class="grid-2">
+        <div class="field"><label>Nombre completo</label><input type="text" id="pf-nombre" placeholder="Ej: María González"/></div>
+        <div class="field"><label>Institución principal</label><input type="text" id="pf-inst" placeholder="Ej: Escuela N°2701 — Puerto Madryn"/></div>
+        <div class="field"><label>Provincia</label>
+          <select id="pf-provincia">
+            <option value="">— Seleccioná —</option>
+            <option>Buenos Aires</option><option>CABA</option><option>Catamarca</option>
+            <option>Chaco</option><option selected>Chubut</option><option>Córdoba</option>
+            <option>Corrientes</option><option>Entre Ríos</option><option>Formosa</option>
+            <option>Jujuy</option><option>La Pampa</option><option>La Rioja</option>
+            <option>Mendoza</option><option>Misiones</option><option>Neuquén</option>
+            <option>Río Negro</option><option>Salta</option><option>San Juan</option>
+            <option>San Luis</option><option>Santa Cruz</option><option>Santa Fe</option>
+            <option>Santiago del Estero</option><option>Tierra del Fuego</option><option>Tucumán</option>
+          </select>
+        </div>
+        <div class="field"><label>Matrícula / N° de registro profesional</label><input type="text" id="pf-matricula" placeholder="Opcional — Ej: MP 4521"/></div>
+        <div class="field"><label>WhatsApp del profesional <span style="color:var(--gris-cl)">— para registro de comunicados</span></label><input type="text" id="pf-telefono" placeholder="Ej: 2975551234"/></div>
+      </div>
+    </div>
+
+    <div class="card-sec">
+      <div class="card-sec-title">🎓 Profesión</div>
+      <div class="prof-chips" id="prof-chips">
+        <div class="prof-chip" onclick="selProf('Maestra/o de Apoyo a la Inclusión (MAI)',this)">MAI</div>
+        <div class="prof-chip" onclick="selProf('Psicopedagoga/o',this)">Psicopedagoga/o</div>
+        <div class="prof-chip" onclick="selProf('Psicóloga/o',this)">Psicóloga/o</div>
+        <div class="prof-chip" onclick="selProf('Fonoaudióloga/o',this)">Fonoaudióloga/o</div>
+        <div class="prof-chip" onclick="selProf('Neuropsicóloga/o',this)">Neuropsicóloga/o</div>
+        <div class="prof-chip" onclick="selProf('Trabajadora/or Social',this)">Trab. Social</div>
+        <div class="prof-chip" onclick="selProf('Terapeuta Ocupacional',this)">Ter. Ocupacional</div>
+        <div class="prof-chip" onclick="selProf('Acompañante Terapéutica/o',this)">Acompañante Ter.</div>
+        <div class="prof-chip" onclick="selProf('Médica/o Pediatra',this)">Médica/o Pediatra</div>
+        <div class="prof-chip" onclick="selProf('Docente Integradora/or',this)">Doc. Integradora/or</div>
+        <div class="prof-chip" onclick="selProf('Otra profesión',this)">Otra</div>
+      </div>
+      <div class="field">
+        <label>Profesión (confirmá o escribí la tuya)</label>
+        <input type="text" id="pf-profesion" placeholder="Escribí o seleccioná arriba"/>
+      </div>
+    </div>
+
+    <div class="card-sec">
+      <div class="card-sec-title">📋 Enfoque de trabajo</div>
+      <div class="estilo-grid" id="estilo-grid">
+        <label class="estilo-item activo" onclick="selEstilo(this,'neuroeducativo')">
+          <input type="radio" name="estilo" value="neuroeducativo" checked>
+          <div class="estilo-dot"></div>
+          <div><span class="et-nombre">Neuroeducativo</span><span class="et-desc">Basado en neurociencias y DUA. Enfasis en accesibilidad cognitiva.</span></div>
+        </label>
+        <label class="estilo-item" onclick="selEstilo(this,'constructivista')">
+          <input type="radio" name="estilo" value="constructivista">
+          <div class="estilo-dot"></div>
+          <div><span class="et-nombre">Constructivista</span><span class="et-desc">El alumno construye conocimiento desde su experiencia.</span></div>
+        </label>
+        <label class="estilo-item" onclick="selEstilo(this,'conductual')">
+          <input type="radio" name="estilo" value="conductual">
+          <div class="estilo-dot"></div>
+          <div><span class="et-nombre">Conductual / ABA</span><span class="et-desc">Análisis de conducta aplicado. Refuerzo positivo sistemático.</span></div>
+        </label>
+        <label class="estilo-item" onclick="selEstilo(this,'mixto')">
+          <input type="radio" name="estilo" value="mixto">
+          <div class="estilo-dot"></div>
+          <div><span class="et-nombre">Mixto / Flexible</span><span class="et-desc">Combino enfoques según el caso y el contexto institucional.</span></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="card-sec">
+      <div class="card-sec-title">📦 Importar legajos guardados en otro dispositivo</div>
+      <p style="font-family:var(--fm);font-size:.65rem;color:var(--gris-cl);line-height:1.65;margin-bottom:.75rem;">Los legajos se guardan en este dispositivo. Si cambiaste de equipo, importá el JSON que exportaste previamente.</p>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarLegajos(event)"/>
+      <button class="btn btn-g btn-sm" onclick="document.getElementById('import-file').click()">📂 Importar legajos desde JSON</button>
+    </div>
+
+    <div class="perfil-footer">
+      <span class="perfil-saved" id="perfil-saved">✓ Perfil guardado</span>
+      <button class="btn btn-g btn-sm" onclick="saltarPerfil()">Completar después →</button>
+      <button class="btn btn-p" onclick="guardarPerfil()">Guardar y continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- API KEYS -->
+<div id="p-keys" class="p">
+  <div class="keys-wrap" style="margin:0 auto;padding:2rem 1rem;">
+    <div class="keys-hero">
+      <h1>Configurar <em>Motor de IA</em></h1>
+      <p>Ingresá al menos una API Key para generar documentos. Las keys se guardan solo en este dispositivo y nunca salen de él.</p>
+    </div>
+
+    <div class="provider-tabs">
+      <div class="ptab on" onclick="switchProvider('gemini',this)">Gemini</div>
+      <div class="ptab" onclick="switchProvider('claude',this)">Claude</div>
+      <div class="ptab" onclick="switchProvider('gpt',this)">GPT-4</div>
+    </div>
+
+    <!-- GEMINI -->
+    <div class="provider-panel on" id="pp-gemini">
+      <div class="provider-badge">⬛ GOOGLE GEMINI — gratuito con límites</div>
+      <div class="key-guide">
+        <div class="key-guide-title">Cómo obtener tu key</div>
+        <div class="kg-step"><div class="kg-num">1</div><div class="kg-text">Entrá a <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div></div>
+        <div class="kg-step"><div class="kg-num">2</div><div class="kg-text">Hacé clic en <strong>Create API key</strong></div></div>
+        <div class="kg-step"><div class="kg-num">3</div><div class="kg-text">Copiá la key — empieza con <code>AIza</code></div></div>
+      </div>
+      <div class="field"><label>API Key de Gemini</label><input type="password" id="key-gemini" placeholder="AIzaSy..."/></div>
+      <div class="key-status" id="status-gemini"></div>
+      <button class="btn btn-p btn-sm" id="btn-val-gemini" onclick="validarKey('gemini')">Validar Gemini →</button>
+    </div>
+
+    <!-- CLAUDE -->
+    <div class="provider-panel" id="pp-claude">
+      <div class="provider-badge">🟤 ANTHROPIC CLAUDE — de pago</div>
+      <div class="key-guide">
+        <div class="key-guide-title">Cómo obtener tu key</div>
+        <div class="kg-step"><div class="kg-num">1</div><div class="kg-text">Entrá a <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a></div></div>
+        <div class="kg-step"><div class="kg-num">2</div><div class="kg-text">Creá una API Key — empieza con <code>sk-ant-</code></div></div>
+        <div class="kg-step"><div class="kg-num">3</div><div class="kg-text">Recargá crédito en Billing para activarla</div></div>
+      </div>
+      <div class="field"><label>API Key de Claude</label><input type="password" id="key-claude" placeholder="sk-ant-..."/></div>
+      <div class="key-status" id="status-claude"></div>
+      <button class="btn btn-p btn-sm" id="btn-val-claude" onclick="validarKey('claude')">Validar Claude →</button>
+    </div>
+
+    <!-- GPT -->
+    <div class="provider-panel" id="pp-gpt">
+      <div class="provider-badge">🟢 OPENAI GPT-4 — de pago</div>
+      <div class="key-guide">
+        <div class="key-guide-title">Cómo obtener tu key</div>
+        <div class="kg-step"><div class="kg-num">1</div><div class="kg-text">Entrá a <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a></div></div>
+        <div class="kg-step"><div class="kg-num">2</div><div class="kg-text">Creá una key — empieza con <code>sk-</code></div></div>
+        <div class="kg-step"><div class="kg-num">3</div><div class="kg-text">Asegurate de tener crédito cargado en tu cuenta</div></div>
+      </div>
+      <div class="field"><label>API Key de GPT-4</label><input type="password" id="key-gpt" placeholder="sk-..."/></div>
+      <div class="key-status" id="status-gpt"></div>
+      <button class="btn btn-p btn-sm" id="btn-val-gpt" onclick="validarKey('gpt')">Validar GPT-4 →</button>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family:var(--fm);font-size:.6rem;color:#2a2a2a">Las keys se guardan solo en tu dispositivo</div>
+      <button class="btn btn-p" onclick="irAApp()" id="btn-ir-app" disabled>Continuar a la herramienta →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="p-app" class="p">
+  <header class="hdr">
+    <div class="hdr-brand">BRB <span>Inclusión & Neuro-Estrategias</span> <span style="font-family:var(--fm);font-size:.55rem;color:var(--verde-cl);font-style:normal;">v2.1</span></div>
+    <div class="hdr-right">
+      <span class="hdr-prof" id="hdr-prof"></span>
+      <div class="hdr-badge" id="hdr-limit">0/10 hoy</div>
+      <div class="hdr-user" id="hdr-user"></div>
+      <button class="btn btn-g btn-sm" onclick="irAPerfil()">⚙ Perfil</button>
+      <button class="btn btn-g btn-sm" onclick="mostrar('p-keys')">🔑 IA</button>
+      <button class="btn btn-g btn-sm" onclick="abrirAyuda()">⚠ Ayuda</button>
+      <button class="btn btn-s btn-sm" onclick="irATutoria()" title="Ir a Plataforma de Tutoría BRB">→ Tutoría BRB</button>
+      <button class="btn btn-g btn-sm" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-hdr">
+        <div class="sb-title">Legajos</div>
+        <button class="btn btn-p btn-sm" onclick="abrirNuevoLegajo()">+ Nuevo</button>
+      </div>
+      <div class="sb-body">
+        <input class="sb-search" id="sb-search" placeholder="Buscar por nombre, apellido o Nº..." oninput="filtrarLegajos()"/>
+        <div id="legajos-lista"></div>
+      </div>
+      <div class="sb-io">
+        <div class="sb-io-title">Exportar / Importar legajos</div>
+        <button class="btn btn-g btn-sm" style="width:100%;margin-bottom:.3rem" onclick="exportarLegajosJSON()">⬇ Exportar JSON</button>
+        <input type="file" id="import-file-sidebar" accept=".json" style="display:none" onchange="importarLegajos(event)"/>
+        <button class="btn btn-g btn-sm" style="width:100%" onclick="document.getElementById('import-file-sidebar').click()">📂 Importar JSON</button>
+        <div style="font-family:var(--fm);font-size:.5rem;color:#2a2a2a;margin-top:.3rem;line-height:1.5;">Exportá para hacer backup o transferir a otro dispositivo.</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="main-tabs">
+        <div class="mtab on" onclick="switchTab('ficha',this)">Ficha del Alumno</div>
+        <div class="mtab" onclick="switchTab('generador',this)">Generador de Documentos</div>
+        <div class="mtab" onclick="switchTab('historial',this)">Historial</div>
+      </div>
+
+      <!-- TAB: FICHA -->
+      <div class="main-panel on" id="tab-ficha">
+        <div id="ficha-welcome" class="welcome">
+          <h2>Seleccioná o creá<br><em>un legajo</em></h2>
+          <p>Cada alumno tiene su propio legajo con trazabilidad por número, nombre y apellido. Los datos se guardan en tu dispositivo.</p>
+          <button class="btn btn-p" onclick="abrirNuevoLegajo()">+ Crear primer legajo</button>
+        </div>
+        <div id="ficha-content" style="display:none">
+          <div class="ficha-hdr">
+            <div class="ficha-id">
+              <div class="ficha-legajo" id="f-legajo-num"></div>
+              <div class="ficha-nombre" id="f-nombre"></div>
+              <div class="ficha-diag" id="f-diagnostico"></div>
+            </div>
+            <div class="ficha-actions">
+              <button class="btn btn-g btn-sm" onclick="editarLegajo()">✏ Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarLegajo()">✕ Eliminar</button>
+            </div>
+          </div>
+          <div class="ficha-grid">
+            <div class="ficha-card">
+              <div class="ficha-card-title">Datos escolares</div>
+              <div class="ficha-field"><div class="ficha-label">Institución</div><div class="ficha-value" id="f-inst">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">Año / Sección</div><div class="ficha-value" id="f-anio">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">Nivel</div><div class="ficha-value" id="f-nivel">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">MAI / Profesional de apoyo</div><div class="ficha-value" id="f-mai">—</div></div>
+            </div>
+            <div class="ficha-card">
+              <div class="ficha-card-title">Datos clínicos</div>
+              <div class="ficha-field"><div class="ficha-label">Diagnóstico principal</div><div class="ficha-value" id="f-diag-det">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">Diagnósticos secundarios</div><div class="ficha-value" id="f-diag-sec">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">Profesional tratante</div><div class="ficha-value" id="f-prof-trat">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">Obra social / Cobertura</div><div class="ficha-value" id="f-obra">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">Familiar principal</div><div class="ficha-value" id="f-fam1">—</div></div>
+              <div class="ficha-field"><div class="ficha-label">WhatsApp</div><div class="ficha-value" id="f-tel1">—</div></div>
+            </div>
+          </div>
+          <div class="ficha-card" style="margin-bottom:1rem">
+            <div class="ficha-card-title">Perfil funcional</div>
+            <div class="ficha-value" id="f-perfil" style="white-space:pre-wrap;line-height:1.7">—</div>
+          </div>
+          <div class="ficha-card">
+            <div class="ficha-card-title">Documentos clínicos adjuntos</div>
+            <div id="f-docs-lista"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: GENERADOR -->
+      <div class="main-panel" id="tab-generador">
+        <div id="gen-welcome" class="welcome">
+          <h2>Seleccioná un<br><em>legajo primero</em></h2>
+          <p>El generador usa el perfil del alumno para crear documentos personalizados y contextualizados.</p>
+        </div>
+        <div id="gen-content" style="display:none">
+
+          <div class="aviso-resp">
+            <div class="aviso-resp-icon">⚠️</div>
+            <div class="aviso-resp-text"><strong>RESPONSABILIDAD PROFESIONAL IRRENUNCIABLE:</strong> Todo texto generado es un borrador orientativo de uso exclusivo para revisión técnica. El profesional firmante (MAI, psicopedagogo/a, fonoaudiólogo/a, psicólogo/a) es el único responsable de la interpretación clínica, la validación técnica y la adecuación al caso. La firma implica responsabilidad profesional plena. Esta herramienta no reemplaza el juicio profesional en ninguna circunstancia.</div>
+          </div>
+
+          <!-- IA SELECTOR -->
+          <div style="margin-bottom:1rem">
+            <div class="gen-section-title">Motor de IA</div>
+            <div class="ai-selector" id="ai-selector"></div>
+            <div class="limit-bar" id="limit-bar">
+              <span id="limit-txt">0 / 10 generaciones hoy</span>
+              <div class="limit-track"><div class="limit-fill" id="limit-fill" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- ADJUNTO -->
+          <div style="margin-bottom:1rem">
+            <div class="gen-section-title">Documento clínico de referencia (opcional)</div>
+            <div class="upload-zone" id="upload-zone">
+              <input type="file" accept=".pdf,.doc,.docx" onchange="handleFileUpload(event)"/>
+              <div class="upload-icon">📎</div>
+              <div class="upload-lbl">Adjuntá informe médico, historia clínica o diagnóstico</div>
+              <div class="upload-fmt">PDF · DOC · DOCX — procesado localmente, nunca sale del dispositivo</div>
+            </div>
+            <div id="file-chip" style="display:none" class="file-chip">
+              <div><div class="file-chip-name" id="file-chip-name"></div><div class="file-chip-info" id="file-chip-info"></div></div>
+              <button class="btn btn-g btn-sm" onclick="clearFile()">✕</button>
+            </div>
+          </div>
+
+          <!-- MÓDULOS -->
+          <div style="margin-bottom:1rem">
+            <div class="gen-section-title">Módulo a generar</div>
+            <div class="mod-grid">
+              <div class="mod-card" onclick="selMod('ppi',this)">
+                <div class="mod-icon">📋</div>
+                <div class="mod-name">PPI — Proyecto Pedagógico Individual</div>
+                <div class="mod-desc">Estructura completa según Res. CFE 311/16 con configuraciones de apoyo y metas trimestrales.</div>
+                <div class="mod-norm">Res. CFE 311/16 · Anexo II</div>
+              </div>
+              <div class="mod-card" onclick="selMod('config',this)">
+                <div class="mod-icon">🧩</div>
+                <div class="mod-name">Configuraciones de Apoyo</div>
+                <div class="mod-desc">Diseño de apoyos de acceso, forma y contenido. Barreras identificadas y respuestas concretas.</div>
+                <div class="mod-norm">Res. CFE 311/16 · Anexo III</div>
+              </div>
+              <div class="mod-card" onclick="selMod('traductor',this)">
+                <div class="mod-icon">🔬</div>
+                <div class="mod-name">Traductor Clínico-Pedagógico</div>
+                <div class="mod-desc">Convierte el diagnóstico DSM-5/CIE-11 en estrategias de aula concretas con base neuroeducativa.</div>
+                <div class="mod-norm">DUA · DSM-5 · CIE-11 · Neurociencias</div>
+              </div>
+              <div class="mod-card" onclick="selMod('informe',this)">
+                <div class="mod-icon">📊</div>
+                <div class="mod-name">Informe de Avance MAI</div>
+                <div class="mod-desc">Reporte técnico trimestral/anual de evolución para obras sociales y supervisión escolar.</div>
+                <div class="mod-norm">ANSES · Obras Sociales · Supervisión</div>
+              </div>
+              <div class="mod-card" onclick="selMod('dua',this)">
+                <div class="mod-icon">🎯</div>
+                <div class="mod-name">Planificación DUA + Código Docente</div>
+                <div class="mod-desc">Diseño Universal para el Aprendizaje con generación de código para el Generador de Clases BRB.</div>
+                <div class="mod-norm">DUA · CAST 2018 → Generador de Clases BRB</div>
+              </div>
+              <div class="mod-card" onclick="selMod('eval',this)">
+                <div class="mod-icon">✅</div>
+                <div class="mod-name">Evaluación Adaptada</div>
+                <div class="mod-desc">Instrumento evaluativo vinculado a los objetivos del PPI. Para el docente de grado.</div>
+                <div class="mod-norm">Res. CFE 311/16 · Art. 48</div>
+              </div>
+              <div class="mod-card" onclick="selMod('comunicado',this)">
+                <div class="mod-icon">💬</div>
+                <div class="mod-name">Comunicado a familia</div>
+                <div class="mod-desc">Mensaje claro y breve para enviar a la familia por WhatsApp. Informa sobre el proceso de inclusión sin exponer datos clínicos sensibles.</div>
+                <div class="mod-norm">Ley 26.206 Art. 6° · Res. CFE 311/16</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CAMPOS -->
+          <div id="mod-campos" style="display:none;margin-bottom:1rem">
+            <div class="gen-section-title" id="mod-campos-title">Parámetros del documento</div>
+            <div class="campos-grid" id="campos-grid"></div>
+          </div>
+
+          <!-- BOTÓN GENERAR -->
+          <div id="gen-btn-area" style="display:none;margin-bottom:1rem">
+            <button class="btn btn-p" onclick="generarDocumento()" id="btn-generar" style="width:100%;justify-content:center;padding:1rem">
+              ⚡ Generar documento
+            </button>
+          </div>
+
+          <!-- OUTPUT -->
+          <div id="output-area" style="display:none">
+            <div class="output-area">
+              <div class="output-hdr">
+                <span class="output-tag" id="output-tag">DOCUMENTO GENERADO</span>
+                <div class="output-actions">
+                  <button class="btn btn-g btn-sm" onclick="copiarOutput()">📋 Copiar</button>
+                  <button class="btn btn-g btn-sm" onclick="descargarOutput()">⬇ .txt</button>
+                  <button class="btn btn-s btn-sm" onclick="guardarEnHistorial()">💾 Guardar</button>
+                </div>
+              </div>
+              <div class="output-body" id="output-body"></div>
+              <div class="output-aviso">⚠ BORRADOR — Requiere revisión, validación técnica y firma del profesional responsable antes de cualquier uso institucional o clínico.</div>
+              <div id="comunicado-wa-bar" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.25);border-radius:4px;flex-direction:column;gap:0.5rem;">
+                <span style="font-family:var(--fm);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(37,211,102,0.8);">ENVIAR POR WHATSAPP</span>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                  <button id="wa-inc-btn-1" class="btn btn-sm" style="background:rgba(37,211,102,0.2);color:#25d366;border:1px solid rgba(37,211,102,0.4);" onclick="enviarWhatsAppInc(1)">📲 Contacto 1</button>
+                  <button id="wa-inc-btn-2" class="btn btn-sm" style="background:rgba(37,211,102,0.15);color:#25d366;border:1px solid rgba(37,211,102,0.3);" onclick="enviarWhatsAppInc(2)">📲 Contacto 2</button>
+                </div>
+                <span id="wa-inc-msg" style="font-family:var(--fm);font-size:0.6rem;color:rgba(37,211,102,0.7);display:none;">✓ Comunicado guardado en registro</span>
+              </div>
+            </div>
+
+            <!-- DUA CODE — integrado al output, visible inmediatamente, estilo Generador de Clases -->
+            <div id="dua-code-area" style="display:none;margin-top:1rem;">
+              <div style="background:#0a100a;border:1px solid rgba(200,168,75,.3);border-top:3px solid var(--oro);">
+
+                <!-- Estado: generando -->
+                <div id="dua-code-generando" style="display:none;padding:1.25rem;display:flex;align-items:center;gap:1rem;">
+                  <div style="flex:1;">
+                    <div style="font-family:var(--fm);font-size:.62rem;color:var(--oro);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">🔗 Generando Clase Adaptada para el Docente</div>
+                    <div style="height:2px;background:#1e281e;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,var(--verde-cl),var(--oro));animation:lb 1.5s ease-in-out infinite;"></div></div>
+                  </div>
+                </div>
+
+                <!-- Estado: código listo -->
+                <div id="dua-code-listo" style="display:none;">
+                  <div style="padding:.75rem 1.1rem;border-bottom:1px solid rgba(200,168,75,.15);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+                    <div>
+                      <div style="font-family:var(--fm);font-size:.62rem;color:var(--oro);letter-spacing:.12em;text-transform:uppercase;">🔗 Código de Clase Adaptada — Generador de Clases BRB</div>
+                      <div style="font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);margin-top:.2rem;">Pegalo en Generador de Clases BRB → Módulo Evaluación → "Recuperar clase compartida"</div>
+                    </div>
+                    <span id="dua-code-vence" style="font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);"></span>
+                  </div>
+
+                  <!-- Código visual — clic para copiar, igual que Generador de Clases -->
+                  <div style="padding:1.1rem;text-align:center;">
+                    <div id="dua-code-val"
+                      onclick="copiarCodigoDUA()"
+                      title="Clic para copiar el código"
+                      style="display:inline-block;font-family:var(--fm);font-size:1.8rem;font-weight:700;letter-spacing:.18em;color:var(--oro);background:#080c08;border:1px solid rgba(200,168,75,.2);padding:.85rem 2.5rem;cursor:pointer;transition:all .2s;user-select:all;"
+                      onmouseover="this.style.background='rgba(200,168,75,.08)'"
+                      onmouseout="this.style.background='#080c08'"
+                    ></div>
+                    <div style="font-family:var(--fm);font-size:.56rem;color:var(--gris-cl);margin-top:.5rem;">Clic en el código para copiarlo · Compartilo con el docente de grado</div>
+                  </div>
+
+                  <div style="padding:.75rem 1.1rem;border-top:1px solid rgba(200,168,75,.1);display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+                    <button class="btn btn-oro btn-sm" onclick="copiarCodigoDUA()">📋 Copiar código</button>
+                    <button class="btn btn-g btn-sm" onclick="descargarCodigoDUA()">⬇ Instrucciones .txt</button>
+                    <span style="font-family:var(--fm);font-size:.55rem;color:var(--gris-cl);margin-left:auto;">⚠ Sin datos identificatorios del alumno · Vence en 7 días</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: HISTORIAL -->
+      <div class="main-panel" id="tab-historial">
+        <div id="hist-welcome" class="welcome">
+          <h2>Seleccioná un<br><em>legajo primero</em></h2>
+          <p>El historial muestra todos los documentos generados y guardados para el alumno seleccionado.</p>
+        </div>
+        <div id="hist-content" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem">
+            <div style="font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--verde-cl)" id="hist-alumno-label"></div>
+            <button class="btn btn-g btn-sm" onclick="exportarLegajoTXT()">⬇ Exportar legajo .txt</button>
+          </div>
+          <div id="hist-lista"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="app-footer">
+    Boris Rodríguez Barrera · ORCID: 0009-0004-6583-6439 · <a href="mailto:bbbarrera1986@gmail.com">bbbarrera1986@gmail.com</a> · +54 297 517-6351 · Puerto Madryn, Chubut, Argentina<br>
+    BRB Inclusión & Neuro-Estrategias v2.1 · BRB Estrategia &amp; Procesos · Soberanía Técnica Ediciones · 2026<br>
+    <div class="norm-grid">
+      <span class="norm-chip">Res. CFE 311/16</span>
+      <span class="norm-chip">Ley 26.378 — Conv. DDHH PcD</span>
+      <span class="norm-chip">Ley 27.044 — Conv. Derechos PcD</span>
+      <span class="norm-chip">DUA · CAST 2018</span>
+      <span class="norm-chip">DSM-5 / CIE-11</span>
+      <span class="norm-chip">Ley 24.901 — Sistema de Prestaciones</span>
+      <span class="norm-chip">Res. CFE 155/11</span>
+      <span class="norm-chip">Ley 25.326 — Datos Personales</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LEGAJO -->
+<div class="modal-overlay" id="modal-legajo">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-legajo-title">Nuevo Legajo</div>
+      <button class="modal-close" onclick="cerrarModal('modal-legajo')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;color:var(--verde-cl);margin-bottom:.5rem">DATOS DEL ALUMNO</div>
+      <div class="campos-grid">
+        <div class="field"><label>N° de Legajo</label><input type="text" id="nl-num" placeholder="Ej: 2026-001"/></div>
+        <div class="field"><label>Apellido</label><input type="text" id="nl-apellido" placeholder="Apellido del alumno"/></div>
+        <div class="field span-2"><label>Nombre/s</label><input type="text" id="nl-nombre" placeholder="Nombre/s del alumno"/></div>
+        <div class="field"><label>Fecha de nacimiento</label><input type="date" id="nl-fnac"/></div>
+        <div class="field"><label>DNI</label><input type="text" id="nl-dni" placeholder="Sin puntos"/></div>
+      </div>
+      <div style="font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;color:var(--verde-cl);margin:.5rem 0">DATOS ESCOLARES</div>
+      <div class="campos-grid">
+        <div class="field span-2"><label>Institución educativa</label><input type="text" id="nl-inst" placeholder="Nombre de la escuela"/></div>
+        <div class="field"><label>Año / Sección</label><input type="text" id="nl-anio" placeholder="Ej: 3° B"/></div>
+        <div class="field"><label>Nivel</label>
+          <select id="nl-nivel"><option value="">— Seleccioná —</option><option>Inicial</option><option>Primario</option><option>Secundario</option><option>Terciario</option></select>
+        </div>
+        <div class="field"><label>Ciclo lectivo</label><input type="text" id="nl-ciclo" placeholder="2026"/></div>
+        <div class="field"><label>MAI / Profesional de apoyo</label><input type="text" id="nl-mai" placeholder="Nombre del MAI o psicopedagogo"/></div>
+      </div>
+      <div style="font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;color:var(--verde-cl);margin:.5rem 0">DATOS CLÍNICOS</div>
+      <div class="campos-grid">
+        <div class="field span-2"><label>Diagnóstico principal (DSM-5 / CIE-11)</label>
+          <select id="nl-diag">
+            <option value="">— Seleccioná —</option>
+            <option>TDAH — Trastorno por Déficit de Atención e Hiperactividad (F90)</option>
+            <option>TEA — Trastorno del Espectro Autista (F84)</option>
+            <option>Dislexia — Trastorno Específico del Aprendizaje, lectura (F81.0)</option>
+            <option>Discalculia — Trastorno Específico del Aprendizaje, matemáticas (F81.2)</option>
+            <option>Disortografía — Trastorno Específico del Aprendizaje, escritura (F81.1)</option>
+            <option>Baja memoria de trabajo — Dificultad cognitiva específica</option>
+            <option>Discapacidad intelectual leve (F70)</option>
+            <option>Discapacidad intelectual moderada (F71)</option>
+            <option>Hipoacusia / Discapacidad auditiva (H90-H91)</option>
+            <option>Discapacidad visual (H54)</option>
+            <option>Trastorno del desarrollo del lenguaje (F80)</option>
+            <option>Trastorno de ansiedad con impacto escolar (F41)</option>
+            <option>Trastorno del procesamiento sensorial</option>
+            <option>Síndrome de Down (Q90)</option>
+            <option>Trastorno del espectro alcohólico fetal</option>
+            <option>Otro (especificar en perfil funcional)</option>
+          </select>
+        </div>
+        <div class="field span-2"><label>Diagnósticos secundarios</label><input type="text" id="nl-diag-sec" placeholder="Ej: Trastorno de ansiedad, Dislexia comórbida..."/></div>
+        <div class="field"><label>Profesional tratante</label><input type="text" id="nl-prof-trat" placeholder="Ej: Dra. García — Neuróloga infantil"/></div>
+        <div class="field"><label>Obra social / Cobertura</label><input type="text" id="nl-obra" placeholder="Ej: OSDE 310 / PAMI / Particular"/></div>
+        <div class="field"><label>CUD — Certificado Único de Discapacidad</label>
+          <select id="nl-cud"><option value="">— Estado —</option><option>Vigente</option><option>En trámite</option><option>No presenta</option><option>Vencido</option></select>
+        </div>
+        <div class="field"><label>Motivo de apertura</label>
+          <select id="nl-motivo"><option value="">— Seleccioná —</option><option>Inicio inclusión escolar</option><option>Continuidad de inclusión</option><option>Solicitud de familia</option><option>Derivación OATE</option><option>Derivación directivos</option><option>Actualización de diagnóstico</option></select>
+        </div>
+      </div>
+      <div style="font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;color:var(--verde-cl);margin:.5rem 0">CONTACTO FAMILIAR</div>
+      <div class="campos-grid">
+        <div class="field"><label>Familiar principal <span style="color:var(--gris-cl)">— padre / madre / tutor legal</span></label><input type="text" id="nl-fam1" placeholder="Nombre del familiar principal"/></div>
+        <div class="field"><label>WhatsApp familiar principal</label><input type="text" id="nl-tel1" placeholder="Ej: 2975551234"/></div>
+        <div class="field"><label>Segundo familiar / Tutor legal <span style="color:var(--gris-cl)">— opcional</span></label><input type="text" id="nl-fam2" placeholder="Nombre del segundo familiar"/></div>
+        <div class="field"><label>WhatsApp segundo contacto <span style="color:var(--gris-cl)">— opcional</span></label><input type="text" id="nl-tel2" placeholder="Ej: 2975551234"/></div>
+      </div>
+      <div class="field span-2" style="margin-top:.5rem"><label>Perfil funcional del alumno</label>
+        <textarea id="nl-perfil" rows="5" placeholder="Describí las fortalezas, dificultades específicas, estilo de aprendizaje, comportamiento en el aula, nivel de autonomía, interacción con pares y docentes, y cualquier información relevante para diseñar las configuraciones de apoyo..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-g" onclick="cerrarModal('modal-legajo')">Cancelar</button>
+      <button class="btn btn-p" onclick="guardarLegajo()">Guardar legajo →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VER DOCUMENTO -->
+<div class="modal-overlay" id="modal-doc">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-doc-title">Documento</div>
+      <button class="modal-close" onclick="cerrarModal('modal-doc')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="aviso-resp" style="margin-bottom:0">
+        <div class="aviso-resp-icon">⚠️</div>
+        <div class="aviso-resp-text"><strong>BORRADOR ORIENTATIVO.</strong> El profesional firmante es el único responsable de su validación técnica y uso institucional.</div>
+      </div>
+      <div style="background:#080c08;border:1px solid var(--gris-b);padding:1.1rem;font-family:var(--fm);font-size:.75rem;line-height:1.8;color:#aaa;white-space:pre-wrap;max-height:480px;overflow-y:auto;margin-top:1rem" id="modal-doc-body"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-g" onclick="cerrarModal('modal-doc')">Cerrar</button>
+      <button class="btn btn-g btn-sm" onclick="copiarModalDoc()">📋 Copiar</button>
+      <button class="btn btn-p btn-sm" onclick="descargarModalDoc()">⬇ .txt</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AYUDA / ERRORES -->
+<div class="modal-overlay" id="modal-ayuda">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hdr">
+      <div class="modal-title" style="font-family:var(--fd);color:var(--oro)">Diagnóstico de Problemas</div>
+      <button class="modal-close" onclick="cerrarModal('modal-ayuda')">✕</button>
+    </div>
+    <div class="modal-body" style="gap:.5rem">
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">🔑 API Key inválida</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">SÍNTOMA</span>Error 401 o 403 al generar.<br><span class="ayuda-tag">SOLUCIÓN</span>Gemini: key empieza con <code>AIza</code>. Claude: <code>sk-ant-</code>. GPT: <code>sk-</code>. Sin espacios. Validá desde el menú 🔑 IA.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">📊 Cuota de API agotada</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">SÍNTOMA</span>Error 429 — "quota exceeded" o "rate limit".<br><span class="ayuda-tag">SOLUCIÓN</span>Gemini: esperá 1 minuto o usá otro motor. OpenAI/Claude: recargá crédito en la consola. Cambiá de proveedor desde el selector de IA.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">⏰ Licencia vencida o dispositivo no autorizado</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">SÍNTOMA</span>El login rechaza con "licencia inactiva" o "otro dispositivo".<br><span class="ayuda-tag">SOLUCIÓN</span>Contactá a BRB — <code>bbbarrera1986@gmail.com</code> · +54 297 517-6351. Si cambiaste de equipo, pedí reset de dispositivo.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">💾 Límite de 10 generaciones/día alcanzado</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">SÍNTOMA</span>El botón "Generar" no responde y el contador muestra 10/10.<br><span class="ayuda-tag">SOLUCIÓN</span>Se reinicia automáticamente a medianoche. El historial y legajos guardados no se pierden.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">📁 No veo mis legajos en otro dispositivo o navegador</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">CAUSA</span>Los legajos se guardan en este dispositivo/navegador (localStorage). Al cambiar de equipo o navegador están vacíos.<br><span class="ayuda-tag">SOLUCIÓN</span>Usá "Exportar JSON" en el panel lateral para hacer backup, e "Importar JSON" en el nuevo dispositivo. Hacé backup frecuente.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">🌐 Error de conexión / Sin red</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">SOLUCIÓN</span>Verificá conexión a internet. Desactivá VPN o bloqueadores de anuncios temporalmente. Las API de IA requieren conexión activa.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">📄 El documento adjunto no procesa</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">CAUSA</span>PDFs escaneados (solo imagen) no tienen texto extraíble.<br><span class="ayuda-tag">SOLUCIÓN</span>Usá PDF con texto seleccionable o Word (.docx). Si el PDF es escaneado, transcribí el contenido relevante en el campo de perfil funcional.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">💻 Pantalla en blanco al cargar</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">SOLUCIÓN</span>Ctrl+Shift+R (forzar recarga sin caché). Si persiste: F12 → Console → copiá el error y envialo a <code>bbbarrera1986@gmail.com</code>.</div>
+      </div>
+      <div class="ayuda-item">
+        <div class="ayuda-item-title">🔗 El código DUA no funciona en el Generador de Clases</div>
+        <div class="ayuda-item-body"><span class="ayuda-tag">CAUSA</span>El Generador de Clases BRB v3.5 o superior debe tener el campo "Código DUA" habilitado.<br><span class="ayuda-tag">SOLUCIÓN</span>Pegá el código completo (empieza con <code>BRBDUA:</code>) en el campo correspondiente. No modifiques el código.</div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-start">
+      <span style="font-family:var(--fm);font-size:.55rem;color:#3a4a3a">BRB Inclusión v2.1 · bbbarrera1986@gmail.com · +54 297 517-6351</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FAB AYUDA -->
+<button class="btn btn-g btn-sm fab-ayuda" id="fab-ayuda" onclick="abrirAyuda()">⚠ Ayuda / Errores</button>
+
+<script>
+// ══════════════════════════════════════════════
+// STORAGE WRAPPER — compatibilidad Edge/Safari/Firefox
+// ══════════════════════════════════════════════
+const _store = (() => {
+  try {
+    localStorage.setItem('_brb_test','1');
+    localStorage.removeItem('_brb_test');
+    return localStorage;
+  } catch(e) {
+    try {
+      sessionStorage.setItem('_brb_test','1');
+      sessionStorage.removeItem('_brb_test');
+      return sessionStorage;
+    } catch(e2) {
+      const _mem = {};
+      return {
+        getItem:  k => _mem.hasOwnProperty(k) ? _mem[k] : null,
+        setItem:  (k,v) => { _mem[k] = String(v); },
+        removeItem: k => { delete _mem[k]; }
+      };
+    }
+  }
+})();
+
+// ══════════════════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════════════════
+const SUPA_URL  = 'https://blhwmrxzldymasnwbeaq.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsaHdtcnh6bGR5bWFzbndiZWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NTgzODcsImV4cCI6MjA5MjQzNDM4N30.Cc36kFQfRs5X23h5Ioa0kdd4L1nqBx--Btj5PQ2-BYc';
+const hdrs = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_ANON}`, 'Content-Type': 'application/json' };
+const SUPA_MAIN_URL  = 'https://mjxtbtkhdsgzgvakgdrw.supabase.co';
+const SUPA_MAIN_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qeHRidGtoZHNnemd2YWtnZHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMTc4OTcsImV4cCI6MjA5MTc5Mzg5N30.Q-Sg6aKScnOXlAyzY7hzfKUPUXJwf5teh3fMhTF-CeM';
+
+async function supaFetch(path, opts = {}) {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${path}`, { headers: hdrs, ...opts });
+  if (!r.ok) { const e = await r.json().catch(()=>({message:r.status})); throw new Error(e.message || r.status); }
+  return r.json().catch(() => null);
+}
+
+// ══════════════════════════════════════════════
+// STORAGE KEYS
+// ══════════════════════════════════════════════
+const LS_LEGAJOS  = 'brb_inclusion_v2_legajos';
+const LS_KEYS     = 'brb_inclusion_v2_keys';
+const LS_AI       = 'brb_inclusion_v2_ai';
+const LS_PERFIL   = 'brb_inclusion_v2_perfil';
+const LS_LIMIT    = 'brb_inclusion_v2_limit';
+
+const getLegajos  = () => { try { return JSON.parse(_store.getItem(LS_LEGAJOS) || '[]'); } catch(e){ return []; } };
+const setLegajos  = a  => _store.setItem(LS_LEGAJOS, JSON.stringify(a));
+const getKeys     = () => { try { return JSON.parse(_store.getItem(LS_KEYS) || '{}'); } catch(e){ return {}; } };
+const setKeys     = k  => _store.setItem(LS_KEYS, JSON.stringify(k));
+const getPerfil   = () => { try { return JSON.parse(_store.getItem(LS_PERFIL) || 'null'); } catch(e){ return null; } };
+const setPerfil   = p  => _store.setItem(LS_PERFIL, JSON.stringify(p));
+
+// ══════════════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════════════
+const S = {
+  licenciaId: null, email: '',
+  aiActivo: 'gemini',
+  legajoActual: null,
+  modActual: null,
+  outputActual: '', outputTipo: '',
+  docBase: '', docBaseNombre: '',
+  editandoLegajoId: null,
+  isGenerating: false,
+  perfil: null,
+  duaCodeActual: ''
+};
+
+// ══════════════════════════════════════════════
+// LÍMITE DIARIO — 10 generaciones/día
+// ══════════════════════════════════════════════
+function getLimitData() {
+  try {
+    const d = JSON.parse(_store.getItem(LS_LIMIT) || '{}');
+    const hoy = new Date().toISOString().slice(0,10);
+    if (d.fecha !== hoy) return { fecha: hoy, count: 0 };
+    return d;
+  } catch(e) { return { fecha: new Date().toISOString().slice(0,10), count: 0 }; }
+}
+function getLimitCount() { return getLimitData().count; }
+function incrementLimit() {
+  const d = getLimitData();
+  d.count = (d.count || 0) + 1;
+  _store.setItem(LS_LIMIT, JSON.stringify(d));
+  actualizarLimitUI();
+}
+function actualizarLimitUI() {
+  const n = getLimitCount();
+  const pct = Math.min(100, (n/10)*100);
+  const fill = document.getElementById('limit-fill');
+  const txt  = document.getElementById('limit-txt');
+  const badge = document.getElementById('hdr-limit');
+  if (fill) { fill.style.width = pct+'%'; fill.className = 'limit-fill' + (n>=10?' full':n>=7?' warn':''); }
+  if (txt) txt.textContent = `${n} / 10 generaciones hoy`;
+  if (badge) badge.textContent = `${n}/10 hoy`;
+}
+
+// ══════════════════════════════════════════════
+// HUELLA DE DISPOSITIVO
+// ══════════════════════════════════════════════
+function huella() {
+  const nav = window.navigator;
+  const s = [nav.userAgent,nav.language,screen.width+'x'+screen.height,screen.colorDepth,new Date().getTimezoneOffset(),nav.hardwareConcurrency||'',nav.platform||''].join('|');
+  let h = 0;
+  for (let i=0;i<s.length;i++){const c=s.charCodeAt(i);h=((h<<5)-h)+c;h=h&h;}
+  return 'INC-' + Math.abs(h).toString(36).toUpperCase();
+}
+
+// ══════════════════════════════════════════════
+// PANTALLAS
+// ══════════════════════════════════════════════
+function mostrar(id) {
+  document.querySelectorAll('.p').forEach(p => p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('fab-ayuda').classList.toggle('show', id==='p-app');
+}
+
+// ══════════════════════════════════════════════
+// AYUDA
+// ══════════════════════════════════════════════
+function abrirAyuda() { abrirModal('modal-ayuda'); }
+
+// ══════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════
+function toggleEye(id) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+async function login() {
+  const email = document.getElementById('li-email').value.trim().toLowerCase();
+  const clave = document.getElementById('li-clave').value.trim().toUpperCase();
+  const errEl = document.getElementById('login-err');
+  errEl.style.display = 'none';
+  if (!email || !clave) { errEl.textContent='Ingresá email y clave.'; errEl.style.display='block'; return; }
+
+  const btn = document.getElementById('btn-login');
+  btn.disabled=true; btn.textContent='Verificando...';
+
+  try {
+    const rows = await supaFetch(`licencias_inclusion?email=eq.${encodeURIComponent(email)}&herramienta=eq.inclusion&select=*`);
+    if (!rows || !rows.length) throw new Error('Email no registrado.');
+    const lic = rows[0];
+    if (lic.clave.toUpperCase() !== clave) throw new Error('Clave incorrecta.');
+    if (!lic.activa) throw new Error('Licencia inactiva. Contactá a BRB.');
+    if (lic.fecha_vencimiento && new Date(lic.fecha_vencimiento) < new Date()) throw new Error('Licencia vencida. Contactá a BRB.');
+
+    const h = huella();
+    if (!lic.dispositivo_id) {
+      await supaFetch(`licencias_inclusion?id=eq.${lic.id}`, { method:'PATCH', body:JSON.stringify({dispositivo_id:h}) });
+    } else if (lic.dispositivo_id !== h) {
+      throw new Error('Esta licencia está registrada en otro dispositivo. Si cambiaste de equipo, contactá a BRB.');
+    }
+
+    S.licenciaId = lic.id;
+    S.email = email;
+
+    // Cargar perfil
+    S.perfil = getPerfil();
+
+    const keys = getKeys();
+    const tieneKey = keys.gemini || keys.claude || keys.gpt;
+
+    if (!tieneKey) {
+      mostrar('p-keys');
+    } else if (!S.perfil || !S.perfil.nombre) {
+      mostrar('p-perfil');
+    } else {
+      iniciarApp();
+    }
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled=false; btn.textContent='Ingresar →';
+  }
+}
+
+function logout() {
+  S.licenciaId=null; S.email='';
+  document.getElementById('fab-ayuda').classList.remove('show');
+  mostrar('p-login');
+}
+
+// ══════════════════════════════════════════════
+// PERFIL PROFESIONAL
+// ══════════════════════════════════════════════
+let estiloSel = 'neuroeducativo';
+let profSel   = '';
+
+function selProf(val, el) {
+  document.querySelectorAll('.prof-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  profSel = val;
+  document.getElementById('pf-profesion').value = val === 'Otra profesión' ? '' : val;
+}
+
+function selEstilo(el, val) {
+  document.querySelectorAll('.estilo-item').forEach(e => e.classList.remove('activo'));
+  el.classList.add('activo');
+  el.querySelector('input[type="radio"]').checked = true;
+  estiloSel = val;
+}
+
+function cargarFormPerfil() {
+  const pf = S.perfil;
+  if (!pf) return;
+  if (pf.nombre)    document.getElementById('pf-nombre').value    = pf.nombre;
+  if (pf.inst)      document.getElementById('pf-inst').value      = pf.inst;
+  if (pf.provincia) document.getElementById('pf-provincia').value = pf.provincia;
+  if (pf.matricula) document.getElementById('pf-matricula').value = pf.matricula;
+  if (pf.telefono)  document.getElementById('pf-telefono').value  = pf.telefono;
+  if (pf.profesion) document.getElementById('pf-profesion').value = pf.profesion;
+  if (pf.estilo) {
+    document.querySelectorAll('.estilo-item').forEach(el => {
+      const inp = el.querySelector('input[type="radio"]');
+      if (inp && inp.value === pf.estilo) { el.classList.add('activo'); inp.checked=true; }
+      else el.classList.remove('activo');
+    });
+    estiloSel = pf.estilo;
+  }
+  // Marcar chip de profesión
+  if (pf.profesion) {
+    document.querySelectorAll('.prof-chip').forEach(c => {
+      if (c.textContent.trim() && pf.profesion.includes(c.textContent.trim().replace('/o',''))) c.classList.add('sel');
+    });
+  }
+}
+
+function guardarPerfil() {
+  const nombre = document.getElementById('pf-nombre').value.trim();
+  if (!nombre) { toast('Ingresá tu nombre completo', 'err'); return; }
+  const pf = {
+    nombre,
+    inst:      document.getElementById('pf-inst').value.trim(),
+    provincia: document.getElementById('pf-provincia').value,
+    matricula: document.getElementById('pf-matricula').value.trim(),
+    telefono:  document.getElementById('pf-telefono').value.trim(),
+    profesion: document.getElementById('pf-profesion').value.trim() || profSel,
+    estilo:    estiloSel
+  };
+  S.perfil = pf;
+  setPerfil(pf);
+  document.getElementById('perfil-saved').classList.add('show');
+  setTimeout(() => document.getElementById('perfil-saved').classList.remove('show'), 2000);
+  iniciarApp();
+}
+
+function saltarPerfil() {
+  iniciarApp();
+}
+
+function irAPerfil() {
+  cargarFormPerfil();
+  mostrar('p-perfil');
+}
+
+// ══════════════════════════════════════════════
+// API KEYS
+// ══════════════════════════════════════════════
+function switchProvider(id, el) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.provider-panel').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('pp-'+id).classList.add('on');
+}
+
+async function validarKey(provider) {
+  const inp = document.getElementById('key-'+provider);
+  const key = inp.value.trim();
+  const statusEl = document.getElementById('status-'+provider);
+  const btn = document.getElementById('btn-val-'+provider);
+  if (!key) { showKeyStatus(statusEl,'Ingresá la key primero.','err'); return; }
+  btn.disabled=true; btn.textContent='Validando...';
+  showKeyStatus(statusEl,'Conectando...','checking');
+  try {
+    if (provider==='gemini') {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+        {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:'OK'}]}],generationConfig:{maxOutputTokens:5}})});
+      if (!r.ok) throw new Error('Key inválida');
+    } else if (provider==='claude') {
+      const r = await fetch('https://api.anthropic.com/v1/messages',
+        {method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:10,messages:[{role:'user',content:'OK'}]})});
+      if (!r.ok) throw new Error('Key inválida');
+    } else if (provider==='gpt') {
+      const r = await fetch('https://api.openai.com/v1/chat/completions',
+        {method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+        body:JSON.stringify({model:'gpt-4o',max_tokens:5,messages:[{role:'user',content:'OK'}]})});
+      if (!r.ok) throw new Error('Key inválida');
+    }
+    const keys = getKeys();
+    keys[provider] = key;
+    setKeys(keys);
+    if (!S.aiActivo || provider==='gemini') S.aiActivo = provider;
+    _store.setItem(LS_AI, S.aiActivo);
+    showKeyStatus(statusEl, `✓ ${provider.toUpperCase()} conectado correctamente`, 'ok');
+    document.getElementById('btn-ir-app').disabled = false;
+  } catch(e) {
+    showKeyStatus(statusEl, `✗ ${e.message}`, 'err');
+  } finally {
+    btn.disabled=false;
+    btn.textContent = provider==='gemini'?'Validar Gemini →':provider==='claude'?'Validar Claude →':'Validar GPT-4 →';
+  }
+}
+
+function showKeyStatus(el, msg, type) {
+  el.textContent=msg; el.className='key-status '+type; el.style.display='block';
+}
+
+function irAApp() { iniciarApp(); }
+
+// ══════════════════════════════════════════════
+// APP PRINCIPAL
+// ══════════════════════════════════════════════
+function iniciarApp() {
+  const keys = getKeys();
+  S.aiActivo = _store.getItem(LS_AI) || (keys.gemini?'gemini':keys.claude?'claude':'gpt');
+  S.perfil   = getPerfil();
+
+  const hdrUser = document.getElementById('hdr-user');
+  const hdrProf = document.getElementById('hdr-prof');
+  if (hdrUser) hdrUser.textContent = S.email;
+  if (hdrProf && S.perfil) hdrProf.textContent = `${S.perfil.nombre || ''} · ${S.perfil.profesion || ''}`;
+
+  mostrar('p-app');
+  renderAISelector();
+  renderLegajos();
+  actualizarLimitUI();
+  document.getElementById('fab-ayuda').classList.add('show');
+}
+
+// ── AI SELECTOR ──
+function renderAISelector() {
+  const keys = getKeys();
+  const cont = document.getElementById('ai-selector');
+  if (!cont) return;
+  cont.innerHTML = '';
+  const providers = [
+    {id:'gemini',label:'Gemini',dot:'dot-gemini'},
+    {id:'claude',label:'Claude',dot:'dot-claude'},
+    {id:'gpt',label:'GPT-4',dot:'dot-gpt'}
+  ];
+  providers.forEach(p => {
+    if (!keys[p.id]) return;
+    const btn = document.createElement('button');
+    btn.className = `ai-btn${S.aiActivo===p.id?' sel-'+p.id:''}`;
+    btn.innerHTML = `<div class="ai-dot ${p.dot}"></div>${p.label}`;
+    btn.onclick = () => { S.aiActivo=p.id; _store.setItem(LS_AI,p.id); renderAISelector(); toast(`Motor: ${p.label}`,'info'); };
+    cont.appendChild(btn);
+  });
+  const link = document.createElement('button');
+  link.className='btn btn-g btn-sm';
+  link.textContent='+ Configurar IA';
+  link.onclick = () => mostrar('p-keys');
+  cont.appendChild(link);
+}
+
+// ── LEGAJOS ──
+function renderLegajos(filtro='') {
+  const legs = getLegajos().filter(l =>
+    !filtro ||
+    l.nombre?.toLowerCase().includes(filtro.toLowerCase()) ||
+    l.apellido?.toLowerCase().includes(filtro.toLowerCase()) ||
+    l.numLegajo?.toLowerCase().includes(filtro.toLowerCase())
+  );
+  const cont = document.getElementById('legajos-lista');
+  if (!cont) return;
+  if (legs.length===0) {
+    cont.innerHTML = `<div class="leg-ph"><div class="leg-ph-icon">📁</div><div class="leg-ph-txt">${filtro?'Sin resultados':'Sin legajos aún'}</div></div>`;
+    return;
+  }
+  cont.innerHTML = legs.map(l => `
+    <div class="leg-item${S.legajoActual?.id===l.id?' sel':''}" onclick="selLegajo('${l.id}')">
+      <div class="leg-num">${l.numLegajo||'—'}</div>
+      <div class="leg-nombre">
+        <div class="leg-nombre-main">${l.apellido}, ${l.nombre}</div>
+        <div class="leg-nombre-diag">${l.diagnostico||'—'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function filtrarLegajos() { renderLegajos(document.getElementById('sb-search').value); }
+
+function selLegajo(id) {
+  S.legajoActual = getLegajos().find(l=>l.id===id);
+  renderLegajos(document.getElementById('sb-search').value);
+  renderFicha();
+  renderHistorial();
+  habilitarGenerador();
+  // Recuperar último documento clínico guardado
+  const docs = S.legajoActual?.docsClinicosTexto || [];
+  if (docs.length > 0) {
+    const ultimo = docs[docs.length-1];
+    S.docBase = ultimo.texto;
+    S.docBaseNombre = ultimo.nombre;
+    document.getElementById('upload-zone').style.display='none';
+    document.getElementById('file-chip').style.display='flex';
+    document.getElementById('file-chip-name').textContent = ultimo.nombre;
+    document.getElementById('file-chip-info').textContent = `${ultimo.chars?.toLocaleString()||''} caracteres · Recuperado del legajo`;
+  } else {
+    S.docBase=''; S.docBaseNombre='';
+    document.getElementById('upload-zone').style.display='block';
+    document.getElementById('file-chip').style.display='none';
+  }
+}
+
+function renderFicha() {
+  const l = S.legajoActual;
+  if (!l) return;
+  document.getElementById('ficha-welcome').style.display='none';
+  document.getElementById('ficha-content').style.display='block';
+  document.getElementById('f-legajo-num').textContent=`Legajo N° ${l.numLegajo||'—'} · ${l.ciclo||''}`;
+  document.getElementById('f-nombre').textContent=`${l.apellido}, ${l.nombre}`;
+  document.getElementById('f-diagnostico').textContent=l.diagnostico||'—';
+  document.getElementById('f-inst').textContent=l.institucion||'—';
+  document.getElementById('f-anio').textContent=l.anio||'—';
+  document.getElementById('f-nivel').textContent=l.nivel||'—';
+  document.getElementById('f-mai').textContent=l.mai||'—';
+  document.getElementById('f-diag-det').textContent=l.diagnostico||'—';
+  document.getElementById('f-diag-sec').textContent=l.diagSecundario||'—';
+  document.getElementById('f-prof-trat').textContent=l.profTratante||'—';
+  document.getElementById('f-obra').textContent=l.obraSocial||'—';
+  document.getElementById('f-fam1').textContent=l.fam1||'—';
+  document.getElementById('f-tel1').textContent=l.tel1||'—';
+  document.getElementById('f-perfil').textContent=l.perfil||'—';
+  const docs = (l.docsClinicosTexto||[]);
+  document.getElementById('f-docs-lista').innerHTML = docs.length>0
+    ? docs.map((d,i)=>`<div class="file-chip" style="margin-bottom:.4rem">
+        <div><div class="file-chip-name">${d.nombre}</div><div class="file-chip-info">${new Date(d.fecha).toLocaleDateString('es-AR')} · ${d.chars?.toLocaleString()||'—'} caracteres</div></div>
+        <div style="display:flex;gap:.3rem;">
+          <button class="btn btn-g btn-sm" onclick="cargarDocEnGenerador(${i})" title="Cargar en generador">↑ Usar</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarDocClinico(${i})" title="Eliminar">✕</button>
+        </div>
+      </div>`).join('')
+    : '<div style="font-family:var(--fm);font-size:.65rem;color:#3a4a3a;padding:.5rem 0">Sin documentos adjuntos.</div>';
+}
+
+function habilitarGenerador() {
+  document.getElementById('gen-welcome').style.display='none';
+  document.getElementById('gen-content').style.display='block';
+  renderAISelector();
+  actualizarLimitUI();
+}
+
+// ── MODAL LEGAJO ──
+function abrirNuevoLegajo() {
+  S.editandoLegajoId=null;
+  document.getElementById('modal-legajo-title').textContent='Nuevo Legajo';
+  ['nl-num','nl-apellido','nl-nombre','nl-dni','nl-inst','nl-anio','nl-ciclo','nl-mai','nl-diag-sec','nl-prof-trat','nl-obra','nl-perfil','nl-fam1','nl-tel1','nl-fam2','nl-tel2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['nl-nivel','nl-diag','nl-cud','nl-motivo'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+  document.getElementById('nl-fnac').value='';
+  const legs=getLegajos();
+  const year=new Date().getFullYear();
+  document.getElementById('nl-num').value=`${year}-${String(legs.length+1).padStart(3,'0')}`;
+  document.getElementById('nl-ciclo').value=year;
+  abrirModal('modal-legajo');
+}
+
+function editarLegajo() {
+  if (!S.legajoActual) return;
+  const l=S.legajoActual;
+  S.editandoLegajoId=l.id;
+  document.getElementById('modal-legajo-title').textContent='Editar Legajo';
+  document.getElementById('nl-num').value=l.numLegajo||'';
+  document.getElementById('nl-apellido').value=l.apellido||'';
+  document.getElementById('nl-nombre').value=l.nombre||'';
+  document.getElementById('nl-fnac').value=l.fnac||'';
+  document.getElementById('nl-dni').value=l.dni||'';
+  document.getElementById('nl-inst').value=l.institucion||'';
+  document.getElementById('nl-anio').value=l.anio||'';
+  document.getElementById('nl-nivel').value=l.nivel||'';
+  document.getElementById('nl-ciclo').value=l.ciclo||'';
+  document.getElementById('nl-mai').value=l.mai||'';
+  document.getElementById('nl-diag').value=l.diagnostico||'';
+  document.getElementById('nl-diag-sec').value=l.diagSecundario||'';
+  document.getElementById('nl-prof-trat').value=l.profTratante||'';
+  document.getElementById('nl-obra').value=l.obraSocial||'';
+  document.getElementById('nl-cud').value=l.cud||'';
+  document.getElementById('nl-motivo').value=l.motivo||'';
+  document.getElementById('nl-perfil').value=l.perfil||'';
+  document.getElementById('nl-fam1').value=l.fam1||'';
+  document.getElementById('nl-tel1').value=l.tel1||'';
+  document.getElementById('nl-fam2').value=l.fam2||'';
+  document.getElementById('nl-tel2').value=l.tel2||'';
+  abrirModal('modal-legajo');
+}
+
+function guardarLegajo() {
+  const apellido=document.getElementById('nl-apellido').value.trim();
+  const nombre=document.getElementById('nl-nombre').value.trim();
+  if (!apellido||!nombre){toast('Apellido y nombre son obligatorios','err');return;}
+  const datos={
+    id:S.editandoLegajoId||crypto.randomUUID(),
+    numLegajo:document.getElementById('nl-num').value.trim(),
+    apellido,nombre,
+    fnac:document.getElementById('nl-fnac').value,
+    dni:document.getElementById('nl-dni').value.trim(),
+    institucion:document.getElementById('nl-inst').value.trim(),
+    anio:document.getElementById('nl-anio').value.trim(),
+    nivel:document.getElementById('nl-nivel').value,
+    ciclo:document.getElementById('nl-ciclo').value.trim(),
+    mai:document.getElementById('nl-mai').value.trim(),
+    diagnostico:document.getElementById('nl-diag').value,
+    diagSecundario:document.getElementById('nl-diag-sec').value.trim(),
+    profTratante:document.getElementById('nl-prof-trat').value.trim(),
+    obraSocial:document.getElementById('nl-obra').value.trim(),
+    cud:document.getElementById('nl-cud').value,
+    motivo:document.getElementById('nl-motivo').value,
+    perfil:document.getElementById('nl-perfil').value.trim(),
+    fam1:document.getElementById('nl-fam1').value.trim(),
+    tel1:document.getElementById('nl-tel1').value.trim(),
+    fam2:document.getElementById('nl-fam2').value.trim(),
+    tel2:document.getElementById('nl-tel2').value.trim(),
+    historial:S.editandoLegajoId?(S.legajoActual?.historial||[]):[],
+    creado:S.editandoLegajoId?(S.legajoActual?.creado||new Date().toISOString()):new Date().toISOString()
+  };
+  let legs=getLegajos();
+  if (S.editandoLegajoId) legs=legs.map(l=>l.id===S.editandoLegajoId?datos:l);
+  else legs.push(datos);
+  setLegajos(legs);
+  S.legajoActual=datos;
+  cerrarModal('modal-legajo');
+  renderLegajos();
+  renderFicha();
+  habilitarGenerador();
+  toast('Legajo guardado','ok');
+}
+
+function eliminarLegajo() {
+  if (!S.legajoActual) return;
+  if (!confirm(`¿Eliminar el legajo de ${S.legajoActual.apellido}, ${S.legajoActual.nombre}? Esta acción no se puede deshacer.`)) return;
+  setLegajos(getLegajos().filter(l=>l.id!==S.legajoActual.id));
+  S.legajoActual=null;
+  renderLegajos();
+  ['ficha-welcome','gen-welcome','hist-welcome'].forEach(id=>document.getElementById(id).style.display='flex');
+  ['ficha-content','gen-content','hist-content'].forEach(id=>document.getElementById(id).style.display='none');
+  toast('Legajo eliminado','info');
+}
+
+// ══════════════════════════════════════════════
+// EXPORTAR / IMPORTAR JSON
+// ══════════════════════════════════════════════
+function exportarLegajosJSON() {
+  const legs = getLegajos();
+  if (!legs.length) { toast('No hay legajos para exportar','err'); return; }
+  const data = { version:'BRB-INC-v2', fecha: new Date().toISOString(), email: S.email, legajos: legs };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download = `BRB_Inclusion_Legajos_${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}.json`;
+  a.click();
+  toast('Legajos exportados','ok');
+}
+
+function importarLegajos(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.legajos || !Array.isArray(data.legajos)) throw new Error('Formato inválido');
+      const existentes = getLegajos();
+      const nuevos = data.legajos.filter(n => !existentes.find(e=>e.id===n.id));
+      setLegajos([...existentes, ...nuevos]);
+      renderLegajos();
+      toast(`${nuevos.length} legajo(s) importado(s)`, 'ok');
+    } catch(err) {
+      toast('Error al importar: ' + err.message, 'err');
+    }
+    event.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ══════════════════════════════════════════════
+// MÓDULOS
+// ══════════════════════════════════════════════
+const MODULOS = {
+  ppi:{nombre:'PPI — Proyecto Pedagógico Individual',norm:'Res. CFE 311/16 · Anexo II',campos:[
+    {id:'periodo',label:'Período / Año escolar',type:'text',ph:'Ej: 1° Trimestre 2026'},
+    {id:'materias',label:'Materias incluidas en el PPI',type:'ta',ph:'Ej: Matemáticas, Lengua, Ciencias Naturales...',span:true},
+    {id:'metas',label:'Metas y objetivos prioritarios',type:'ta',ph:'Qué se espera que el alumno logre en este período...',span:true},
+    {id:'recursos',label:'Recursos y apoyos disponibles',type:'ta',ph:'MAI, equipos externos, recursos tecnológicos...',span:true},
+    {id:'familia',label:'Compromisos de la familia',type:'ta',ph:'Qué se acordó con la familia...',span:true},
+  ]},
+  config:{nombre:'Configuraciones de Apoyo',norm:'Res. CFE 311/16 · Anexo III',campos:[
+    {id:'barreras',label:'Barreras identificadas',type:'ta',ph:'Describí las barreras de acceso, comunicación, didácticas y actitudinales...',span:true},
+    {id:'tipo_apoyo',label:'Tipo de configuración principal',type:'select',opts:['Apoyo de acceso físico','Apoyo de comunicación','Apoyo didáctico','Apoyo de contenido','Apoyo de evaluación','Combinado']},
+    {id:'materia',label:'Materia o área',type:'text',ph:'Ej: Todas las áreas / Matemáticas...'},
+    {id:'estrategias',label:'Estrategias de apoyo específicas',type:'ta',ph:'Describí qué tipo de estrategias querés desarrollar...',span:true},
+  ]},
+  traductor:{nombre:'Traductor Clínico-Pedagógico',norm:'DUA · DSM-5 · CIE-11 · Neurociencias',campos:[
+    {id:'diag_detalle',label:'Detalle del diagnóstico clínico',type:'ta',ph:'Copiá o resumí el diagnóstico del informe médico/psicológico...',span:true},
+    {id:'materia_foco',label:'Materia o área de foco',type:'text',ph:'Ej: Todas / Matemáticas / Lengua'},
+    {id:'nivel_sev',label:'Nivel de severidad',type:'select',opts:['Leve','Moderado','Severo','No especificado']},
+    {id:'contexto_aula',label:'Contexto del aula',type:'ta',ph:'Describí el grupo clase, estilo del docente, recursos disponibles...',span:true},
+  ]},
+  informe:{nombre:'Informe de Avance MAI',norm:'Obras Sociales · Supervisión · Res. CFE 311/16',campos:[
+    {id:'periodo_inf',label:'Período del informe',type:'select',opts:['1° Trimestre','2° Trimestre','3° Trimestre','Informe anual','Informe de alta','Informe para obra social']},
+    {id:'horas',label:'Horas semanales de apoyo',type:'text',ph:'Ej: 4 horas semanales'},
+    {id:'avances',label:'Avances y logros del período',type:'ta',ph:'Describí los progresos académicos, conductuales y sociales observados...',span:true},
+    {id:'dificultades',label:'Dificultades persistentes',type:'ta',ph:'Qué aspectos siguen siendo un desafío...',span:true},
+    {id:'recomendaciones',label:'Recomendaciones para el próximo período',type:'ta',ph:'Ajustes a las configuraciones, cambios de estrategia...',span:true},
+    {id:'destinatario',label:'Destinatario del informe',type:'select',opts:['Obra social / Prepaga','Supervisión escolar','Familia','Equipo de orientación','Médico tratante']},
+  ]},
+  dua:{nombre:'Planificación DUA + Código Docente',norm:'DUA · CAST 2018',campos:[
+    {id:'materia_dua',label:'Materia / Espacio curricular',type:'text',ph:'Ej: Ciencias Naturales'},
+    {id:'tema',label:'Tema o unidad didáctica',type:'text',ph:'Ej: Ecosistemas — Cadenas alimentarias'},
+    {id:'duracion',label:'Duración',type:'text',ph:'Ej: 3 clases de 80 minutos'},
+    {id:'objetivo',label:'Objetivo de aprendizaje',type:'ta',ph:'Qué se espera que todos los alumnos aprendan...',span:true},
+    {id:'barreras_dua',label:'Barreras de aprendizaje del grupo',type:'ta',ph:'Describí la diversidad del aula (con y sin diagnóstico)...',span:true},
+  ]},
+  eval:{nombre:'Evaluación Adaptada',norm:'Res. CFE 311/16 · Art. 48',campos:[
+    {id:'materia_ev',label:'Materia / Espacio curricular',type:'text',ph:'Ej: Historia'},
+    {id:'contenidos_ev',label:'Contenidos a evaluar',type:'ta',ph:'Listá los contenidos del PPI a evaluar...',span:true},
+    {id:'tipo_ev',label:'Tipo de evaluación',type:'select',opts:['Oral con apoyo visual','Escrita simplificada','Múltiple opción','Portfolio de trabajos','Demostración práctica','Evaluación continua con rúbrica']},
+    {id:'tiempo_ev',label:'Tiempo extendido',type:'select',opts:['Sí — tiempo extendido','No — tiempo estándar','Según necesidad']},
+    {id:'criterios',label:'Criterios de logro adaptados',type:'ta',ph:'Qué indicará que el alumno logró los objetivos del PPI...',span:true},
+  ]},
+  comunicado:{nombre:'Comunicado a familia',norm:'Ley 26.206 Art. 6° · Res. CFE 311/16',campos:[
+    {id:'motivo-com',label:'Motivo del comunicado',type:'select',opts:['Inicio del proceso de inclusión','Avance positivo del alumno','Solicitud de reunión','Actualización del PPI','Necesidad de documentación','Logro destacado','Comunicación general']},
+    {id:'tono-com',label:'Tono del mensaje',type:'select',opts:['Cálido e informativo','Formal e institucional','Urgente pero respetuoso']}
+  ]}
+};
+
+function selMod(id, el) {
+  document.querySelectorAll('.mod-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  S.modActual=id;
+  renderCamposMod(id);
+  document.getElementById('mod-campos').style.display='block';
+  document.getElementById('gen-btn-area').style.display='block';
+  document.getElementById('output-area').style.display='none';
+  document.getElementById('dua-code-area').style.display='none';
+  const waBar = document.getElementById('comunicado-wa-bar');
+  if (waBar) waBar.style.display = 'none';
+}
+
+function renderCamposMod(id) {
+  const mod=MODULOS[id];
+  document.getElementById('mod-campos-title').textContent=mod.nombre;
+  const grid=document.getElementById('campos-grid');
+  grid.innerHTML=mod.campos.map(c=>`
+    <div class="field ${c.span?'span-2':''}">
+      <label>${c.label}</label>
+      ${c.type==='ta'
+        ?`<textarea id="mc-${c.id}" placeholder="${c.ph||''}" rows="3"></textarea>`
+        :c.type==='select'
+          ?`<select id="mc-${c.id}">${c.opts.map(o=>`<option>${o}</option>`).join('')}</select>`
+          :`<input type="text" id="mc-${c.id}" placeholder="${c.ph||''}"/>`
+      }
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// ARCHIVO — persiste en legajo
+// ══════════════════════════════════════════════
+async function handleFileUpload(event) {
+  const file=event.target.files[0];
+  if (!file) return;
+  toast('Procesando documento clínico...','info');
+  try {
+    let text='';
+    if (file.name.endsWith('.pdf')) {
+      const lib=window['pdfjs-dist/build/pdf'];
+      lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const ab=await file.arrayBuffer();
+      const pdf=await lib.getDocument({data:ab}).promise;
+      for (let i=1;i<=Math.min(pdf.numPages,20);i++){const page=await pdf.getPage(i);const c=await page.getTextContent();text+=c.items.map(x=>x.str).join(' ')+'\n';}
+    } else {
+      const ab=await file.arrayBuffer();
+      const r=await mammoth.extractRawText({arrayBuffer:ab});
+      text=r.value;
+    }
+    if (text.length>12000) text=text.substring(0,12000);
+    S.docBase=text; S.docBaseNombre=file.name;
+
+    // Persistir en el legajo actual
+    if (S.legajoActual) {
+      const legs=getLegajos();
+      const idx=legs.findIndex(l=>l.id===S.legajoActual.id);
+      if (idx!==-1) {
+        if (!legs[idx].docsClinicosTexto) legs[idx].docsClinicosTexto=[];
+        // Evitar duplicados por nombre
+        const existe=legs[idx].docsClinicosTexto.findIndex(d=>d.nombre===file.name);
+        const entrada={nombre:file.name,texto:text,fecha:new Date().toISOString(),chars:text.length};
+        if (existe>=0) legs[idx].docsClinicosTexto[existe]=entrada;
+        else legs[idx].docsClinicosTexto.push(entrada);
+        setLegajos(legs);
+        S.legajoActual=legs[idx];
+        renderFicha();
+      }
+    }
+
+    document.getElementById('upload-zone').style.display='none';
+    document.getElementById('file-chip').style.display='flex';
+    document.getElementById('file-chip-name').textContent=file.name;
+    document.getElementById('file-chip-info').textContent=`${text.length.toLocaleString()} caracteres · Guardado en el legajo`;
+    toast('Documento procesado y guardado en el legajo','ok');
+  } catch(e){ toast('Error al procesar: '+e.message,'err'); }
+}
+
+function clearFile() {
+  S.docBase=''; S.docBaseNombre='';
+  document.getElementById('upload-zone').style.display='block';
+  document.getElementById('file-chip').style.display='none';
+  document.querySelector('#upload-zone input').value='';
+}
+
+function cargarDocEnGenerador(idx) {
+  const docs = S.legajoActual?.docsClinicosTexto || [];
+  const doc = docs[idx];
+  if (!doc) return;
+  S.docBase = doc.texto;
+  S.docBaseNombre = doc.nombre;
+  document.getElementById('upload-zone').style.display='none';
+  document.getElementById('file-chip').style.display='flex';
+  document.getElementById('file-chip-name').textContent = doc.nombre;
+  document.getElementById('file-chip-info').textContent = `${doc.chars?.toLocaleString()||''} caracteres · Cargado desde legajo`;
+  // Ir al tab generador
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.main-panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.mtab')[1].classList.add('on');
+  document.getElementById('tab-generador').classList.add('on');
+  toast('Documento clínico cargado en el generador','ok');
+}
+
+function eliminarDocClinico(idx) {
+  if (!confirm('¿Eliminar este documento clínico del legajo?')) return;
+  const legs = getLegajos();
+  const i = legs.findIndex(l=>l.id===S.legajoActual.id);
+  if (i===-1) return;
+  legs[i].docsClinicosTexto = (legs[i].docsClinicosTexto||[]).filter((_,j)=>j!==idx);
+  setLegajos(legs);
+  S.legajoActual = legs[i];
+  if (S.docBaseNombre === (S.legajoActual.docsClinicosTexto||[])[idx]?.nombre) clearFile();
+  renderFicha();
+  toast('Documento eliminado del legajo','info');
+}
+
+// ══════════════════════════════════════════════
+// GENERACIÓN
+// ══════════════════════════════════════════════
+async function generarDocumento() {
+  if (!S.legajoActual||!S.modActual){toast('Seleccioná un legajo y un módulo','err');return;}
+  if (S.isGenerating) return;
+  if (getLimitCount()>=10){toast('Límite de 10 generaciones diarias alcanzado. Se reinicia a medianoche.','err');return;}
+
+  S.isGenerating=true;
+  const btn=document.getElementById('btn-generar');
+  btn.disabled=true; btn.textContent='⏳ Generando...';
+  document.getElementById('output-area').style.display='block';
+  document.getElementById('dua-code-area').style.display='none';
+  document.getElementById('output-body').innerHTML=`<div class="loading-row"><span class="loading-txt">Generando con ${S.aiActivo.toUpperCase()}...</span><div class="loading-bar"><div class="loading-bar-inner"></div></div></div>`;
+
+  try {
+    const prompt=buildPrompt();
+    const text=await callAI(prompt);
+    const clean=stripMD(text);
+    S.outputActual=clean;
+    S.outputTipo=MODULOS[S.modActual].nombre;
+    document.getElementById('output-body').textContent=clean;
+    document.getElementById('output-tag').textContent=`${S.outputTipo.toUpperCase()} · BORRADOR`;
+    incrementLimit();
+
+    // Si es DUA, generar código para Generador de Clases
+    if (S.modActual==='dua') {
+      generarCodigoDUA(clean);
+    }
+
+    const waBar = document.getElementById('comunicado-wa-bar');
+    if (waBar) {
+      if (S.modActual==='comunicado') {
+        const l = S.legajoActual;
+        const btn1 = document.getElementById('wa-inc-btn-1');
+        const btn2 = document.getElementById('wa-inc-btn-2');
+        if (btn1) btn1.textContent = `📲 ${l.fam1 || 'Contacto 1'}`;
+        if (btn2) btn2.style.display = (l.fam2 && l.tel2) ? '' : 'none';
+        if (btn2) btn2.textContent = `📲 ${l.fam2 || 'Contacto 2'}`;
+        waBar.style.display = 'flex';
+      } else {
+        waBar.style.display = 'none';
+      }
+    }
+
+    toast('Documento generado. Revisá y validá el contenido.','ok');
+  } catch(e) {
+    document.getElementById('output-body').textContent=`Error: ${e.message}\n\nVerificá tu API Key y conexión a internet.`;
+    toast('Error al generar: '+e.message,'err');
+  } finally {
+    S.isGenerating=false;
+    btn.disabled=false; btn.textContent='⚡ Generar documento';
+  }
+}
+
+// ══════════════════════════════════════════════
+// CÓDIGO DUA — guarda clase adaptada en clases_compartidas
+// ══════════════════════════════════════════════
+async function generarCodigoDUA(textoDUA) {
+  const l = S.legajoActual;
+  const materia   = document.getElementById('mc-materia_dua')?.value || 'Clase adaptada';
+  const tema      = document.getElementById('mc-tema')?.value        || '';
+  const objetivo  = document.getElementById('mc-objetivo')?.value    || '';
+  const barreras  = document.getElementById('mc-barreras_dua')?.value || '';
+  const duracion  = document.getElementById('mc-duracion')?.value    || '2 horas cátedra';
+
+  // Mostrar estado generando
+  document.getElementById('dua-code-area').style.display = 'block';
+  document.getElementById('dua-code-generando').style.display = 'flex';
+  document.getElementById('dua-code-listo').style.display = 'none';
+  document.getElementById('dua-code-val').textContent = '';
+  document.getElementById('dua-code-vence').textContent = '';
+
+  try {
+    // Generar clase adaptada completa con IA
+    const promptClase = `Sos un especialista en educación inclusiva y DUA (Diseño Universal para el Aprendizaje). Generá una planificación de clase adaptada para el docente de grado, lista para usar en el aula.
+
+ESTUDIANTE (datos pedagógicos, sin identificación personal):
+- Diagnóstico: ${l.diagnostico||'—'}
+- Diagnóstico secundario: ${l.diagSecundario||'—'}
+- Perfil funcional: ${l.perfil||'—'}
+- Barreras de aprendizaje del grupo: ${barreras||'—'}
+
+CLASE A ADAPTAR:
+- Materia: ${materia}
+- Tema: ${tema}
+- Objetivo: ${objetivo}
+- Duración: ${duracion}
+- Marco normativo: DUA · CAST 2018 · Res. CFE 311/16
+
+INSTRUCCIONES:
+Redactá una planificación de clase completa con:
+1. OBJETIVO ADAPTADO — reescribí el objetivo considerando las necesidades del estudiante
+2. ESTRATEGIAS DUA — representación, acción/expresión y motivación
+3. MATERIALES ADAPTADOS — recursos concretos para este estudiante
+4. SECUENCIA DE LA CLASE — inicio, desarrollo y cierre con adaptaciones específicas
+5. EVALUACIÓN ADAPTADA — cómo evaluar sin barreras
+6. OBSERVACIONES PARA EL DOCENTE — alertas y recomendaciones concretas
+
+Texto plano sin markdown. Títulos en MAYÚSCULAS. Lenguaje directo para el docente de grado.
+Al pie: "CLASE ADAPTADA generada con BRB Inclusión & Neuro-Estrategias v2.0 para uso exclusivo del docente de grado. Requiere revisión del profesional de inclusión antes de implementar."`;
+
+    const textoClaseAdaptada = await callAI(promptClase);
+    const textoLimpio = stripMD(textoClaseAdaptada);
+
+    // Generar código único — mismo formato que Generador de Clases
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const bloque = Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+    const codigo = 'BRB' + bloque;
+
+    // Fecha de vencimiento — 7 días
+    const vence = new Date(Date.now() + 7*24*60*60*1000).toISOString();
+
+    // Guardar en clases_compartidas del proyecto principal (mjxtbtkhdsgzgvakgdrw)
+
+    const payload = {
+      id: crypto.randomUUID(),
+      codigo,
+      docente_email: S.email,
+      institucion: l.institucion || (S.perfil?.inst || ''),
+      materia,
+      grupo: l.anio || '',
+      numero_clase: 1,
+      texto_clase: textoLimpio,
+      texto_savi: `CLASE ADAPTADA — DUA\nDiagnóstico de referencia: ${l.diagnostico||'—'}\nPerfil funcional: ${(l.perfil||'').substring(0,300)}\n\nAdaptaciones implementadas según Res. CFE 311/16 y CAST 2018.`,
+      yt_busquedas: [],
+      expires_at: vence
+    };
+
+    const r = await fetch(`${SUPA_MAIN_URL}/rest/v1/clases_compartidas`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_MAIN_ANON,
+        'Authorization': `Bearer ${SUPA_MAIN_ANON}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!r.ok) {
+      const e = await r.json().catch(()=>({message:r.status}));
+      throw new Error('No se pudo guardar el código: ' + (e.message||r.status));
+    }
+
+    S.duaCodeActual = codigo;
+    const venceFmt = new Date(vence).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+    document.getElementById('dua-code-val').textContent = codigo;
+    document.getElementById('dua-code-vence').textContent = `⏱ Vence el ${venceFmt}`;
+    document.getElementById('dua-code-generando').style.display = 'none';
+    document.getElementById('dua-code-listo').style.display = 'block';
+
+    toast('Código de clase adaptada listo — clic para copiar','ok');
+  } catch(e) {
+    document.getElementById('dua-code-generando').style.display = 'none';
+    document.getElementById('dua-code-listo').style.display = 'none';
+    document.getElementById('dua-code-area').innerHTML += `<div style="padding:.75rem 1rem;font-family:var(--fm);font-size:.65rem;color:var(--error);">✗ Error al generar código: ${e.message}</div>`;
+    toast('Error al generar código: '+e.message,'err');
+  }
+}
+
+function copiarCodigoDUA() {
+  if (!S.duaCodeActual) return;
+  navigator.clipboard.writeText(S.duaCodeActual).then(()=>toast('Código copiado — pegalo en Generador de Clases BRB → "Recuperar clase compartida"','ok'));
+}
+
+function descargarCodigoDUA() {
+  if (!S.duaCodeActual||!S.legajoActual) return;
+  const l=S.legajoActual;
+  const pf=S.perfil;
+  const txt=`CÓDIGO DE CLASE ADAPTADA — BRB INCLUSIÓN v2.0\n${'='.repeat(55)}\nAlumno: [DATOS RESERVADOS]\nFecha de generación: ${new Date().toLocaleDateString('es-AR')}\nProfesional: ${pf?.nombre||S.email} — ${pf?.profesion||''}\n\nCÓMO USAR ESTE CÓDIGO:\n1. Abrí el Generador de Clases BRB\n   URL: https://bbbarrera1986-rgb.github.io/brb-generador/generador_clases_BRB_v3_5.html\n2. Ingresá con tu licencia docente\n3. En el módulo de Evaluación → tab "Compartir Clase"\n4. Ir a la sección "Recuperar clase compartida"\n5. Pegá el código y hacé clic en "Cargar →"\n6. La clase adaptada se carga lista para usar\n\nCÓDIGO (válido 7 días):\n\n   ${S.duaCodeActual}\n\n${'='.repeat(55)}\n⚠ Este código NO contiene nombre ni datos identificatorios del alumno.\nLa clase adaptada requiere revisión del profesional de inclusión antes de implementar.\n${'='.repeat(55)}\nBoris Rodríguez Barrera · ORCID: 0009-0004-6583-6439\nbbbarrera1986@gmail.com · +54 297 517-6351\nBRB Estrategia & Procesos · Soberanía Técnica Ediciones`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
+  a.download=`BRB_CodigoClaseAdaptada_${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}.txt`;
+  a.click();
+}
+
+// ══════════════════════════════════════════════
+// VINCULACIÓN — Ir a Tutoría BRB
+// ══════════════════════════════════════════════
+async function irATutoria() {
+  const URL_TUTORIA = 'https://bbbarrera1986-rgb.github.io/brb-generador/generador_tutoria_BRB_v1.html';
+  if (!S.email) { window.open(URL_TUTORIA,'_blank'); return; }
+
+  const btn = document.querySelector('[onclick="irATutoria()"]');
+  if (btn) { btn.disabled=true; btn.textContent='Verificando...'; }
+
+  try {
+    // Verificar licencia en proyecto principal (mjxtbtkhdsgzgvakgdrw)
+    const r = await fetch(
+      `${SUPA_MAIN_URL}/rest/v1/licencias_inclusion?email=eq.${encodeURIComponent(S.email)}&herramienta=eq.tutoria&activa=eq.true&select=id,activa,fecha_vencimiento`,
+      { headers: { 'apikey': SUPA_MAIN_ANON, 'Authorization': `Bearer ${SUPA_MAIN_ANON}` } }
+    );
+    const rows = await r.json().catch(()=>[]);
+    const tiene = rows && rows.length > 0 && rows[0].activa &&
+      (!rows[0].fecha_vencimiento || new Date(rows[0].fecha_vencimiento) >= new Date());
+
+    if (tiene) {
+      // Tiene licencia activa — ir directo (misma pestaña)
+      window.location.href = URL_TUTORIA;
+    } else {
+      // Sin licencia — abrir en nueva pestaña (llegará al login)
+      window.open(URL_TUTORIA, '_blank');
+      toast('Abriendo Tutoría BRB. Ingresá con tus credenciales.','info');
+    }
+  } catch(e) {
+    // Si falla la verificación — abrir de todos modos
+    window.open(URL_TUTORIA, '_blank');
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='→ Tutoría BRB'; }
+  }
+}
+
+// ══════════════════════════════════════════════
+// PROMPT Y AI CALL
+// ══════════════════════════════════════════════
+function buildPrompt() {
+  const l=S.legajoActual;
+  const mod=MODULOS[S.modActual];
+  const pf=S.perfil;
+  const hoy=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  if (S.modActual === 'comunicado') {
+    const motivoCom = document.getElementById('mc-motivo-com')?.value || 'Comunicación general';
+    const tonoCom   = document.getElementById('mc-tono-com')?.value   || 'Cálido e informativo';
+    return `Sos un profesional de inclusión educativa argentina. Redactá un mensaje breve para enviar por WhatsApp a la familia del/la alumno/a ${l.apellido}, ${l.nombre}.
+Motivo: ${motivoCom}.
+Tono: ${tonoCom}.
+Institución: ${pf?.inst || 'la institución'}.
+Profesional que firma: ${pf?.nombre || 'El/La profesional'} — ${pf?.profesion || ''}.
+
+Instrucciones estrictas:
+- Máximo 12 líneas en total
+- Saludá al familiar por su nombre si está disponible (${l.fam1 || 'estimada familia'})
+- Mencioná el nombre del alumno de forma natural
+- NO menciones el diagnóstico clínico ni términos como "discapacidad", "trastorno" o "patología" — solo hablá de "proceso de inclusión" o "acompañamiento"
+- Indicá el motivo en una o dos oraciones simples y claras
+- Si corresponde, pedí que se comuniquen o se acerquen a la institución con [COMPLETAR día/horario]
+- Cerrá con el nombre del profesional y la institución
+- Sin markdown, sin asteriscos, sin numeración, texto plano`;
+  }
+
+  // Datos reales del alumno — se incluyen en el documento
+  const nombreAlumno = l.apellido && l.nombre ? `${l.apellido}, ${l.nombre}` : '[NOMBRE Y APELLIDO DEL ESTUDIANTE]';
+  const dniAlumno    = l.dni    || '[DNI]';
+  const fnacAlumno   = l.fnac   ? new Date(l.fnac).toLocaleDateString('es-AR') : '[FECHA DE NACIMIENTO]';
+
+  // Profesional — nombre y profesión separados correctamente
+  const profNombre   = pf?.nombre    || '[NOMBRE DEL PROFESIONAL]';
+  const profProfesion= pf?.profesion || 'MAI / Profesional de inclusión';
+  const profInst     = pf?.inst      || l.institucion || '[INSTITUCIÓN]';
+  const profMatricula= pf?.matricula ? ` · Matrícula: ${pf.matricula}` : '';
+  const profCtx      = `\nPROFESIONAL SOLICITANTE:\n- Nombre: ${profNombre}\n- Profesión: ${profProfesion}${profMatricula}\n- Institución: ${profInst}\n- Enfoque de trabajo: ${pf?.estilo||'—'}`;
+
+  const alumnoCtx=`\nDATOS DEL ESTUDIANTE:\n- Apellido y Nombre: ${nombreAlumno}\n- DNI: ${dniAlumno}\n- Fecha de nacimiento: ${fnacAlumno}\n- Diagnóstico principal: ${l.diagnostico||'—'}\n- Diagnóstico secundario: ${l.diagSecundario||'—'}\n- Nivel educativo: ${l.nivel||'—'}\n- Año / Sección: ${l.anio||'—'}\n- Institución educativa: ${l.institucion||'—'}\n- MAI / Profesional de apoyo: ${l.mai||'—'}\n- CUD: ${l.cud||'—'}\n- Obra social / Cobertura: ${l.obraSocial||'—'}`;
+  const perfilCtx=l.perfil?`\n- Perfil funcional: ${l.perfil}`:'';
+  const docCtx=S.docBase?`\n\nDOCUMENTO CLÍNICO DE REFERENCIA (extracto):\n${S.docBase}`:'';
+  const campos=mod.campos.map(c=>{const el=document.getElementById('mc-'+c.id);return el?`${c.label}: ${el.value||'(no especificado)'}`:''}).filter(Boolean).join('\n');
+
+  const avisoBase=`INSTRUCCIÓN OBLIGATORIA: Incluí al pie del documento el siguiente aviso textual exacto: "BORRADOR ORIENTATIVO generado con asistencia de inteligencia artificial — Fecha: ${hoy}. El profesional interviniente es el único y exclusivo responsable de la validación técnica, adecuación al caso específico y firma. La firma de este documento implica responsabilidad profesional plena. Este texto no constituye diagnóstico clínico ni prescripción pedagógica definitiva. Elaborado con BRB Inclusión & Neuro-Estrategias v2.1 — Boris Rodríguez Barrera · bbbarrera1986@gmail.com"`;
+
+  return `Sos un especialista en psicopedagogía y educación inclusiva argentina. Redactá el siguiente documento siguiendo la normativa ${mod.norm} con rigor técnico y terminología psicopedagógica formal.
+${profCtx}
+${alumnoCtx}${perfilCtx}
+
+MÓDULO: ${mod.nombre}
+DATOS DEL DOCUMENTO:
+${campos}${docCtx}
+
+INSTRUCCIONES DE FORMATO:
+- Texto plano sin markdown, sin asteriscos, sin símbolos de formato
+- Títulos de sección en MAYÚSCULAS
+- En el encabezado del documento usá los datos reales del estudiante provistos arriba (apellido, nombre, DNI, fecha de nacimiento) — NO uses placeholders como [NOMBRE] para estos campos porque ya están provistos
+- Incluí encabezado con: institución, profesional responsable y período
+- Estructura formal según normativa indicada
+- Para campos que el profesional deba completar después (ej: firma, fecha de firma, datos no provistos), usá [COMPLETAR]
+- Lenguaje técnico, claro y contextualizado en el sistema educativo argentino
+- Extensión apropiada para un documento institucional real
+
+${avisoBase}`;
+}
+
+async function callAI(prompt) {
+  const keys=getKeys();
+  if (S.aiActivo==='gemini') {
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keys.gemini}`,
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.6,maxOutputTokens:6000}})});
+    if (!r.ok){const e=await r.json();throw new Error(e.error?.message||`Error ${r.status}`);}
+    const d=await r.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+  } else if (S.aiActivo==='claude') {
+    const r=await fetch('https://api.anthropic.com/v1/messages',
+      {method:'POST',headers:{'Content-Type':'application/json','x-api-key':keys.claude,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:6000,temperature:0.6,messages:[{role:'user',content:prompt}]})});
+    if (!r.ok){const e=await r.json();throw new Error(e.error?.message||`Error ${r.status}`);}
+    const d=await r.json();return d.content?.[0]?.text||'';
+  } else if (S.aiActivo==='gpt') {
+    const r=await fetch('https://api.openai.com/v1/chat/completions',
+      {method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${keys.gpt}`},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:6000,temperature:0.6,messages:[{role:'user',content:prompt}]})});
+    if (!r.ok){const e=await r.json();throw new Error(e.error?.message||`Error ${r.status}`);}
+    const d=await r.json();return d.choices?.[0]?.message?.content||'';
+  }
+  throw new Error('Configurá al menos un motor de IA');
+}
+
+function stripMD(t){
+  return t.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1')
+          .replace(/#+\s*/g,'').replace(/_{1,2}(.+?)_{1,2}/g,'$1')
+          .replace(/`(.+?)`/g,'$1').trim();
+}
+
+// ══════════════════════════════════════════════
+// COMUNICADO A FAMILIA — envío por WhatsApp
+// ══════════════════════════════════════════════
+async function enviarWhatsAppInc(contacto) {
+  const l = S.legajoActual;
+  if (!l) return;
+  const outputEl = document.getElementById('output-body');
+  const texto = outputEl ? outputEl.textContent.trim() : '';
+  if (!texto) { toast('No hay texto generado para enviar', 'err'); return; }
+  const tel = contacto === 1 ? (l.tel1 || '') : (l.tel2 || '');
+  const nomFam = contacto === 1 ? (l.fam1 || '') : (l.fam2 || '');
+  if (!tel) { toast('No hay número registrado para este contacto', 'err'); return; }
+  const telLimpio = tel.replace(/[\s\-\(\)\.]/g, '');
+  let telFinal = telLimpio;
+  if (telLimpio.startsWith('0')) {
+    telFinal = '549' + telLimpio.slice(1);
+  } else if (!telLimpio.startsWith('54') && !telLimpio.startsWith('+')) {
+    telFinal = '549' + telLimpio;
+  } else if (telLimpio.startsWith('+')) {
+    telFinal = telLimpio.slice(1);
+  }
+  const url = 'https://wa.me/' + telFinal + '?text=' + encodeURIComponent(texto);
+  window.open(url, '_blank');
+  const pf = S.perfil || {};
+  try {
+    await fetch(SUPA_MAIN_URL + '/rest/v1/comunicados_familias', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_MAIN_ANON,
+        'Authorization': 'Bearer ' + SUPA_MAIN_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        telefono_familiar: telFinal,
+        nombre_familiar: nomFam,
+        nombre_alumno: (l.apellido || '') + ', ' + (l.nombre || ''),
+        curso_alumno: (l.anio || '') + ' — ' + (l.nivel || ''),
+        contenido: texto,
+        tipo: 'inclusion',
+        telefono_tutor: pf.telefono || '',
+        nombre_tutor: pf.nombre || '',
+        institucion: pf.inst || l.institucion || '',
+        leido: false
+      })
+    });
+    const msg = document.getElementById('wa-inc-msg');
+    if (msg) {
+      msg.style.display = 'block';
+      setTimeout(() => { if (msg) msg.style.display = 'none'; }, 4000);
+    }
+  } catch(e) {
+    // Fallo silencioso — WhatsApp ya fue abierto exitosamente
+  }
+}
+
+// ══════════════════════════════════════════════
+// OUTPUT ACTIONS
+// ══════════════════════════════════════════════
+function copiarOutput(){navigator.clipboard.writeText(S.outputActual).then(()=>toast('Copiado al portapapeles','ok'));}
+
+function descargarOutput() {
+  if (!S.outputActual) return;
+  const l=S.legajoActual;
+  const pf=S.perfil;
+  const pie=`\n\n${'='.repeat(60)}\nBRB INCLUSIÓN & NEURO-ESTRATEGIAS v2.1\nProfesional: ${pf?.nombre||S.email} — ${pf?.profesion||''}\nInstitución: ${pf?.inst||''}\n⚠ DOCUMENTO GENERADO CON IA — REQUIERE REVISIÓN Y VALIDACIÓN PROFESIONAL\nEl profesional firmante es el único responsable del contenido.\nBoris Rodríguez Barrera · ORCID: 0009-0004-6583-6439 · bbbarrera1986@gmail.com\nBRB Estrategia & Procesos · Soberanía Técnica Ediciones · 2026\n${'='.repeat(60)}`;
+  const nombre=`${l.apellido}_${l.nombre}_${S.modActual}_${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([S.outputActual+pie],{type:'text/plain;charset=utf-8'}));
+  a.download=`BRB_Inclusion_${nombre}.txt`;
+  a.click();
+  toast('Descarga iniciada','ok');
+}
+
+function guardarEnHistorial() {
+  if (!S.outputActual||!S.legajoActual) return;
+  const legs=getLegajos();
+  const idx=legs.findIndex(l=>l.id===S.legajoActual.id);
+  if (idx===-1) return;
+  const entrada={
+    id:crypto.randomUUID(),tipo:S.outputTipo,modulo:S.modActual,ai:S.aiActivo,
+    texto:S.outputActual,docBase:!!S.docBase,docBaseNombre:S.docBaseNombre,
+    codigoDUA:S.modActual==='dua'?S.duaCodeActual:'',
+    fecha:new Date().toISOString()
+  };
+  legs[idx].historial=legs[idx].historial||[];
+  legs[idx].historial.unshift(entrada);
+  // Mantener últimas 50 entradas por legajo
+  if (legs[idx].historial.length>50) legs[idx].historial=legs[idx].historial.slice(0,50);
+  setLegajos(legs);
+  S.legajoActual=legs[idx];
+  renderHistorial();
+  renderFicha();
+  toast('Guardado en el historial del legajo','ok');
+}
+
+// ══════════════════════════════════════════════
+// HISTORIAL
+// ══════════════════════════════════════════════
+function renderHistorial() {
+  const l=S.legajoActual;
+  if (!l) return;
+  document.getElementById('hist-welcome').style.display='none';
+  document.getElementById('hist-content').style.display='block';
+  document.getElementById('hist-alumno-label').textContent=`Legajo: ${l.apellido}, ${l.nombre} — N° ${l.numLegajo}`;
+  const hist=l.historial||[];
+  const cont=document.getElementById('hist-lista');
+  if (hist.length===0){cont.innerHTML='<div style="font-family:var(--fm);font-size:.65rem;color:#3a4a3a;padding:1rem 0">Sin documentos guardados en este legajo.</div>';return;}
+  cont.innerHTML=hist.map(h=>`
+    <div class="hist-item" style="flex-direction:column;gap:.75rem;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;width:100%;">
+        <div class="hist-meta" style="flex:1;">
+          <div class="hist-tipo">${h.tipo}</div>
+          <div class="hist-fecha">${new Date(h.fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})} · ${(h.ai||'').toUpperCase()}</div>
+          <div class="hist-preview">${h.texto.substring(0,150)}...</div>
+        </div>
+        <div class="hist-btns">
+          <button class="btn btn-g btn-sm" onclick="verDocHistorial('${h.id}')">Ver</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarDocHistorial('${h.id}')">✕</button>
+        </div>
+      </div>
+      ${h.codigoDUA ? `
+        <div style="background:#080c08;border:1px solid rgba(200,168,75,.25);border-left:3px solid var(--oro);padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+          <div>
+            <div style="font-family:var(--fm);font-size:.55rem;color:var(--oro);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem;">🔗 Código Clase Adaptada — Generador de Clases BRB</div>
+            <div style="font-family:var(--fm);font-size:1.1rem;font-weight:700;letter-spacing:.15em;color:var(--oro);">${h.codigoDUA}</div>
+            <div style="font-family:var(--fm);font-size:.52rem;color:var(--gris-cl);margin-top:.15rem;">Pegalo en Generador de Clases → "Recuperar clase compartida"</div>
+          </div>
+          <button class="btn btn-oro btn-sm" onclick="navigator.clipboard.writeText('${h.codigoDUA}').then(()=>{this.textContent='✓ Copiado';setTimeout(()=>this.textContent='📋 Copiar',1500)})">📋 Copiar</button>
+        </div>` : ''}
+    </div>`).join('');
+}
+
+function verDocHistorial(id) {
+  const h=(S.legajoActual?.historial||[]).find(d=>d.id===id);
+  if (!h) return;
+  document.getElementById('modal-doc-title').textContent=h.tipo;
+  document.getElementById('modal-doc-body').textContent=h.texto;
+  document.getElementById('modal-doc-body').dataset.id=id;
+  abrirModal('modal-doc');
+}
+
+function copiarModalDoc(){navigator.clipboard.writeText(document.getElementById('modal-doc-body').textContent).then(()=>toast('Copiado','ok'));}
+
+function descargarModalDoc() {
+  const text=document.getElementById('modal-doc-body').textContent;
+  const id=document.getElementById('modal-doc-body').dataset.id;
+  const h=(S.legajoActual?.historial||[]).find(d=>d.id===id);
+  const l=S.legajoActual;
+  const nombre=`${l.apellido}_${l.nombre}_${h?.modulo||'doc'}_${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}`;
+  const pie=`\n\n${'='.repeat(60)}\nBoris Rodríguez Barrera · ORCID: 0009-0004-6583-6439 · bbbarrera1986@gmail.com\nBRB Inclusión & Neuro-Estrategias v2.1 · BRB Estrategia & Procesos\n⚠ BORRADOR GENERADO CON IA — REQUIERE REVISIÓN Y VALIDACIÓN PROFESIONAL`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text+pie],{type:'text/plain;charset=utf-8'}));
+  a.download=`BRB_Inclusion_${nombre}.txt`;
+  a.click();
+}
+
+function eliminarDocHistorial(id) {
+  if (!confirm('¿Eliminar este documento del historial?')) return;
+  const legs=getLegajos();
+  const idx=legs.findIndex(l=>l.id===S.legajoActual.id);
+  if (idx===-1) return;
+  legs[idx].historial=(legs[idx].historial||[]).filter(h=>h.id!==id);
+  setLegajos(legs);
+  S.legajoActual=legs[idx];
+  renderHistorial();
+  toast('Documento eliminado','info');
+}
+
+function exportarLegajoTXT() {
+  const l=S.legajoActual;
+  if (!l) return;
+  let out=`BRB INCLUSIÓN & NEURO-ESTRATEGIAS v2.1\nLEGAJO N° ${l.numLegajo} — ${l.apellido}, ${l.nombre}\n${'═'.repeat(60)}\n\n`;
+  out+=`DATOS ESCOLARES\nInstitución: ${l.institucion||'—'}\nAño: ${l.anio||'—'} | Nivel: ${l.nivel||'—'} | Ciclo: ${l.ciclo||'—'}\nMAI/Apoyo: ${l.mai||'—'}\n\n`;
+  out+=`DATOS CLÍNICOS\nDiagnóstico: ${l.diagnostico||'—'}\nDiagnósticos secundarios: ${l.diagSecundario||'—'}\nProfesional tratante: ${l.profTratante||'—'}\nObra social: ${l.obraSocial||'—'}\nCUD: ${l.cud||'—'}\n\n`;
+  out+=`PERFIL FUNCIONAL\n${l.perfil||'—'}\n\n`;
+  out+=`${'═'.repeat(60)}\nDOCUMENTOS GENERADOS (${(l.historial||[]).length})\n${'═'.repeat(60)}\n\n`;
+  (l.historial||[]).forEach((h,i)=>{
+    out+=`${'─'.repeat(60)}\n${i+1}. ${h.tipo}\nFecha: ${new Date(h.fecha).toLocaleDateString('es-AR')} · IA: ${(h.ai||'').toUpperCase()}\n${'─'.repeat(60)}\n${h.texto}\n\n`;
+  });
+  out+=`${'═'.repeat(60)}\nBoris Rodríguez Barrera · ORCID: 0009-0004-6583-6439 · bbbarrera1986@gmail.com\nBRB Inclusión & Neuro-Estrategias v2.1 · BRB Estrategia & Procesos · Soberanía Técnica Ediciones\n⚠ Todos los documentos son borradores orientativos. El profesional firmante es el único responsable de su validación y uso institucional.`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([out],{type:'text/plain;charset=utf-8'}));
+  a.download=`BRB_Legajo_${l.numLegajo}_${l.apellido}.txt`;
+  a.click();
+  toast('Legajo completo exportado','ok');
+}
+
+// ══════════════════════════════════════════════
+// TABS Y MODALES
+// ══════════════════════════════════════════════
+function switchTab(id, el) {
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.main-panel').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('tab-'+id).classList.add('on');
+}
+
+function abrirModal(id){document.getElementById(id).classList.add('on');}
+function cerrarModal(id){document.getElementById(id).classList.remove('on');}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+let _toastTimer;
+function toast(msg, type='info') {
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className=`toast ${type} show`;
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const lib=window['pdfjs-dist/build/pdf'];
+  if (lib) lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  document.getElementById('li-clave').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+  document.getElementById('li-email').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('li-clave').focus();});
+
+  const uz=document.getElementById('upload-zone');
+  if (uz) {
+    uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+    uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+    uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f)handleFileUpload({target:{files:[f]}});});
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(o=>{
+    o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');});
+  });
+
+  setTimeout(()=>mostrar('p-login'),600);
+});
+</script>
+<!-- AUDITORIA v2.1: sin residuos detectados -->
+</body>
+</html>
