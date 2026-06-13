@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Áulico y Planificación Docente con IA | Gratis para Argentina</title>
+<meta name="google-site-verification" content="dadcxJREPc0Bmr9lumuUKLgULkzLIkxp6Vcuj46glI0" />
+<meta name="description" content="Generá tu diagnóstico áulico, planificación cuatrimestral, contrato didáctico e informe a dirección con inteligencia artificial. Gratis, sin registro, alineado a resoluciones CFE vigentes. Para docentes de nivel secundario y técnico en Argentina." />
+<meta name="keywords" content="diagnóstico áulico, planificación docente Argentina, generador planificación áulica, contrato didáctico, informe a dirección, IA para docentes Argentina, herramienta gratuita docentes, resolución CFE, planificación cuatrimestral, documentación pedagógica gratis" />
+<meta name="author" content="Boris Rodríguez Barrera — BRB Estrategia & Procesos" />
+<meta property="og:title" content="Diagnóstico Áulico y Planificación Docente con IA | Gratis para Argentina" />
+<meta property="og:description" content="Generá tu diagnóstico áulico, planificación cuatrimestral y contrato didáctico con IA. Sin registro. Alineado a resoluciones CFE. Para docentes argentinos." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_AR" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "DocPed BRB — Generador de Documentación Pedagógica",
+  "description": "Herramienta gratuita con inteligencia artificial para generar diagnóstico áulico, planificación cuatrimestral, contrato didáctico e informe a dirección. Para docentes argentinos.",
+  "url": "https://bbbarrera1986-rgb.github.io/brb-generador/docped_BRB_v1.html",
+  "applicationCategory": "EducationalApplication",
+  "inLanguage": "es-AR",
+  "isAccessibleForFree": true,
+  "author": {
+    "@type": "Person",
+    "name": "Boris Rodríguez Barrera",
+    "identifier": "https://orcid.org/0009-0004-6583-6439"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "ARS"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDVR1ZTS1R"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-TDVR1ZTS1R');
+</script>
+
+<style>
+/* ══ VARIABLES ══ */
+:root{
+  --verde:    #1A3A2A;
+  --verde-m:  #2A5A3E;
+  --verde-cl: #3D7A55;
+  --oro:      #C8A84B;
+  --oro-cl:   #E8C96A;
+  --crema:    #F5F0E8;
+  --crema-o:  #E8E0CC;
+  --negro:    #0F1E18;
+  --gris:     #4A5A50;
+  --gris-b:   #C0CCC4;
+  --rojo:     #8B2020;
+  --rojo-bg:  #FFF5F5;
+  --azul:     #1A3A5A;
+  --radio:    6px;
+  --sombra:   0 2px 12px rgba(0,0,0,.1);
+  --sombra-lg:0 8px 32px rgba(0,0,0,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--crema);color:var(--negro);min-height:100vh;font-size:14px;}
+
+/* ══ SCREENS ══ */
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ══ TOAST ══ */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--negro);color:var(--crema);padding:10px 20px;border-radius:var(--radio);font-family:'DM Mono',monospace;font-size:12px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+#toast.vis{opacity:1;}
+#toast.ok{border-left:3px solid var(--oro);}
+#toast.err{border-left:3px solid var(--rojo);}
+
+/* ══ SPINNER ══ */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(245,240,232,.3);border-top-color:var(--crema);border-radius:50%;animation:giro .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes giro{to{transform:rotate(360deg);}}
+
+/* ════════════════════════════════════════
+   PANTALLA 0 — API KEY
+════════════════════════════════════════ */
+#s-api{background:linear-gradient(150deg,var(--verde) 0%,#0d2b1a 100%);align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden;}
+#s-api::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(200,168,75,.05) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(200,168,75,.05) 60px);pointer-events:none;}
+.api-box{background:#fff;border-radius:12px;box-shadow:var(--sombra-lg);width:100%;max-width:520px;overflow:hidden;position:relative;z-index:2;}
+.api-hdr{background:var(--verde);padding:22px 28px 18px;border-bottom:3px solid var(--oro);}
+.api-logo{font-family:'DM Serif Display',serif;color:var(--crema);font-size:1.3rem;margin-bottom:2px;}
+.api-logo em{font-style:italic;color:var(--oro);}
+.api-sub{font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(200,168,75,.7);letter-spacing:.12em;text-transform:uppercase;}
+.api-body{padding:24px 28px;}
+.api-title{font-size:.88rem;font-weight:700;color:var(--verde);margin-bottom:4px;}
+.api-desc{font-size:.76rem;color:var(--gris);margin-bottom:18px;line-height:1.6;}
+.prov-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:18px;}
+.prov-tab{padding:10px 6px;border:1.5px solid var(--crema-o);border-radius:var(--radio);background:#fff;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;color:var(--gris);}
+.prov-tab:hover{border-color:var(--verde-m);background:rgba(26,58,42,.05);}
+.prov-tab.on{border-color:var(--verde);background:var(--verde);color:#fff;}
+.pt-nom{font-size:.78rem;display:block;margin-bottom:2px;}
+.pt-tag{font-size:.55rem;padding:2px 6px;border-radius:2px;display:inline-block;background:var(--crema-o);color:var(--gris);}
+.prov-tab.on .pt-tag{background:var(--oro);color:var(--negro);}
+.pt-gratis{background:#c6f0d4!important;color:#1a7a3a!important;}
+.prov-tab.on .pt-gratis{background:#27ae60!important;color:#fff!important;}
+.prov-inst{display:none;background:var(--crema);border:1px solid var(--crema-o);border-radius:var(--radio);padding:14px;margin-bottom:14px;}
+.prov-inst.vis{display:block;}
+.pi-tit{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;color:var(--verde);margin-bottom:8px;font-weight:700;}
+.pi-paso{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;font-size:.75rem;color:var(--gris);line-height:1.5;}
+.pi-num{background:var(--verde);color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.62rem;font-weight:700;flex-shrink:0;}
+.pi-link{display:inline-block;margin-top:8px;background:var(--verde);color:#fff;padding:6px 12px;border-radius:4px;font-family:'DM Mono',monospace;font-size:.65rem;text-decoration:none;transition:background .15s;}
+.pi-link:hover{background:var(--verde-m);}
+.pi-costo{margin-top:8px;background:#fff;border:1px solid var(--crema-o);border-left:3px solid var(--oro);padding:6px 10px;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--negro);border-radius:3px;}
+.api-campo label{display:block;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--verde);margin-bottom:4px;}
+.api-campo input{width:100%;font-family:'DM Mono',monospace;font-size:.8rem;color:var(--negro);background:#fff;border:1.5px solid var(--crema-o);border-radius:var(--radio);padding:9px 12px;outline:none;transition:border-color .15s;margin-bottom:14px;}
+.api-campo input:focus{border-color:var(--verde);}
+.api-btn{width:100%;padding:12px;background:var(--oro);color:var(--negro);border:none;border-radius:var(--radio);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.api-btn:hover{background:var(--oro-cl);}
+.api-err{display:none;background:var(--rojo-bg);border:1px solid var(--rojo);border-radius:var(--radio);padding:8px 12px;font-size:.73rem;color:var(--rojo);margin-top:8px;line-height:1.5;}
+.api-err.vis{display:block;}
+.api-foot{padding:10px 28px;background:var(--crema);border-top:1px solid var(--crema-o);font-family:'DM Mono',monospace;font-size:.56rem;color:var(--gris);text-align:center;line-height:1.7;}
+
+/* ════════════════════════════════════════
+   PANTALLA 1 — PERFIL
+════════════════════════════════════════ */
+#s-perfil{background:var(--crema);}
+.p-hdr{background:var(--verde);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--oro);flex-wrap:wrap;gap:8px;}
+.p-marca{font-family:'DM Serif Display',serif;color:var(--crema);font-size:1.1rem;}
+.p-marca em{font-style:italic;color:var(--oro);}
+.p-sub{font-family:'DM Mono',monospace;font-size:.58rem;color:rgba(200,168,75,.7);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.p-hdr-btns{display:flex;gap:8px;}
+.btn-hdr{background:transparent;border:1px solid rgba(200,168,75,.35);color:rgba(245,240,232,.7);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.07em;text-transform:uppercase;padding:6px 12px;cursor:pointer;border-radius:var(--radio);transition:all .15s;}
+.btn-hdr:hover{border-color:var(--oro);color:var(--oro);}
+.btn-hdr.pri{background:var(--oro);color:var(--negro);border-color:var(--oro);}
+.btn-hdr.pri:hover{background:var(--oro-cl);}
+.p-layout{max-width:860px;margin:0 auto;padding:28px 16px 60px;}
+.p-hero{margin-bottom:22px;}
+.p-hero h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--verde);margin-bottom:4px;}
+.p-hero h2 em{font-style:italic;color:var(--oro);}
+.p-hero p{font-size:.8rem;color:var(--gris);line-height:1.6;}
+.card-s{background:#fff;border:1px solid var(--crema-o);border-radius:var(--radio);padding:20px;margin-bottom:16px;box-shadow:var(--sombra);}
+.s-tit{font-family:'DM Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--verde);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--crema-o);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.campo label{display:block;font-family:'DM Mono',monospace;font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--verde);margin-bottom:4px;}
+.campo input,.campo select,.campo textarea{width:100%;background:var(--crema);border:1.5px solid var(--crema-o);border-radius:var(--radio);padding:9px 12px;font-family:'Syne',sans-serif;font-size:.82rem;color:var(--negro);outline:none;transition:border-color .15s;}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--verde);}
+.campo input::placeholder,.campo textarea::placeholder{color:var(--gris-b);}
+.campo textarea{resize:vertical;min-height:64px;line-height:1.5;}
+.campo select{appearance:none;}
+.campo{margin-bottom:14px;}
+
+/* Instituciones */
+.inst-lista{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.inst-card{background:var(--crema);border:1.5px solid var(--crema-o);border-radius:var(--radio);padding:12px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.inst-card.principal{border-color:var(--verde);background:rgba(26,58,42,.05);}
+.inst-info{flex:1;min-width:0;}
+.inst-nom{font-size:.82rem;font-weight:700;color:var(--negro);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.inst-meta{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--gris);}
+.inst-badge{font-family:'DM Mono',monospace;font-size:.54rem;padding:2px 7px;border-radius:2px;background:var(--verde);color:#fff;flex-shrink:0;align-self:center;}
+.inst-acc{display:flex;gap:5px;flex-shrink:0;}
+.btn-mini{padding:4px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:.58rem;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .15s;background:transparent;}
+.bm-edit{border-color:var(--verde-m);color:var(--verde-m);}
+.bm-edit:hover{background:rgba(26,58,42,.08);}
+.bm-del{border-color:var(--rojo);color:var(--rojo);}
+.bm-del:hover{background:var(--rojo-bg);}
+.bm-star{border-color:var(--oro);color:var(--oro);}
+.bm-star:hover{background:rgba(200,168,75,.1);}
+.inst-form{background:rgba(26,58,42,.05);border:1.5px solid var(--verde-m);border-radius:var(--radio);padding:16px;margin-bottom:10px;display:none;}
+.inst-form.vis{display:block;}
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--verde);color:#fff;border:none;border-radius:var(--radio);font-family:'DM Mono',monospace;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.06em;}
+.btn-add:hover{background:var(--verde-m);}
+
+/* Materias tags */
+.mat-lista{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.mat-tag{display:flex;align-items:center;gap:5px;background:rgba(26,58,42,.08);border:1px solid rgba(26,58,42,.2);color:var(--verde);font-size:.73rem;padding:4px 10px;border-radius:20px;font-weight:600;}
+.mat-tag button{background:transparent;border:none;color:var(--verde-m);cursor:pointer;font-size:.8rem;line-height:1;padding:0;}
+.mat-tag button:hover{color:var(--rojo);}
+.chips-sug{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.chip-sug{padding:3px 9px;border-radius:20px;border:1px solid var(--crema-o);font-size:.68rem;cursor:pointer;color:var(--gris);transition:all .15s;}
+.chip-sug:hover{border-color:var(--verde);color:var(--verde);background:rgba(26,58,42,.05);}
+
+/* Cursos */
+.cursos-lista{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.curso-tag{display:flex;align-items:center;gap:5px;background:rgba(200,168,75,.12);border:1px solid rgba(200,168,75,.3);color:var(--negro);font-size:.73rem;padding:4px 10px;border-radius:20px;font-weight:600;}
+.curso-tag button{background:transparent;border:none;color:var(--gris);cursor:pointer;font-size:.8rem;line-height:1;padding:0;}
+.curso-tag button:hover{color:var(--rojo);}
+
+/* Perfil saved badge */
+.p-saved{display:none;background:var(--verde);color:#fff;padding:6px 16px;border-radius:var(--radio);font-family:'DM Mono',monospace;font-size:.68rem;text-align:center;margin-top:10px;}
+.p-saved.vis{display:block;}
+
+/* ════════════════════════════════════════
+   PANTALLA 2 — GENERADOR
+════════════════════════════════════════ */
+#s-gen{background:var(--crema);}
+.g-hdr{background:var(--verde);padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--oro);min-height:52px;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:6px;}
+.g-marca{font-family:'DM Serif Display',serif;color:var(--crema);font-size:1rem;}
+.g-marca em{font-style:italic;color:var(--oro);}
+.g-hdr-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 0;}
+.g-badge{font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(245,240,232,.55);}
+.g-badge strong{color:var(--oro);}
+
+/* Selectores inst/curso/materia en header */
+.hdr-sel-wrap{display:flex;align-items:center;gap:4px;}
+.hdr-sel-lbl{font-family:'DM Mono',monospace;font-size:.56rem;color:rgba(255,255,255,.45);white-space:nowrap;}
+.hdr-sel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;font-family:'DM Mono',monospace;font-size:.64rem;padding:4px 8px;border-radius:3px;cursor:pointer;outline:none;max-width:160px;}
+.hdr-sel option{background:var(--verde);color:#fff;}
+
+/* Layout 3 columnas */
+.g-body{display:grid;grid-template-columns:210px 1fr 205px;flex:1;min-height:0;}
+
+/* Sidebar izquierda */
+.sb-left{background:var(--verde);border-right:1px solid rgba(200,168,75,.1);padding:16px 0;overflow-y:auto;}
+.sb-sec{font-family:'DM Mono',monospace;font-size:.58rem;color:rgba(200,168,75,.45);letter-spacing:.22em;text-transform:uppercase;padding:0 14px;margin:14px 0 6px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-left:3px solid transparent;transition:all .12s;}
+.sb-item:hover{background:rgba(200,168,75,.07);}
+.sb-item.on{background:rgba(200,168,75,.1);border-left-color:var(--oro);}
+.sb-item.on .sb-txt{color:var(--oro);font-weight:600;}
+.sb-ico{font-size:13px;width:18px;text-align:center;flex-shrink:0;}
+.sb-txt{font-size:.72rem;color:rgba(245,240,232,.65);line-height:1.3;}
+
+/* Panel central */
+.main{background:var(--crema);padding:24px 28px;overflow-y:auto;}
+
+/* Sidebar derecha */
+.sb-right{background:var(--negro);border-left:1px solid rgba(200,168,75,.1);padding:14px;overflow-y:auto;}
+.sr-tit{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--oro);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid rgba(200,168,75,.18);}
+.plat-btn{display:block;width:100%;text-align:left;padding:8px 10px;margin-bottom:5px;background:rgba(255,255,255,.03);border:1px solid rgba(200,168,75,.1);color:rgba(245,240,232,.65);font-family:'Syne',sans-serif;font-size:.7rem;cursor:pointer;transition:all .2s;text-decoration:none;line-height:1.4;border-radius:3px;}
+.plat-btn:hover{background:rgba(200,168,75,.1);border-color:var(--oro);color:var(--oro);}
+.plat-btn span{display:block;font-family:'DM Mono',monospace;font-size:.57rem;color:rgba(200,168,75,.4);letter-spacing:.05em;text-transform:uppercase;margin-top:2px;}
+.plat-landing{background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.25)!important;color:var(--oro)!important;}
+.plat-landing:hover{background:rgba(200,168,75,.2)!important;}
+.sr-contact{margin-top:12px;padding-top:10px;border-top:1px solid rgba(200,168,75,.12);}
+.sr-c-lbl{font-family:'DM Mono',monospace;font-size:.56rem;color:rgba(200,168,75,.4);letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px;}
+.sr-c-btn{display:block;width:100%;text-align:center;padding:7px;margin-bottom:5px;border:none;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:opacity .2s;border-radius:3px;}
+.sr-c-btn:hover{opacity:.82;}
+.btn-wa{background:#25D366;color:#fff;}
+.btn-em{background:#D44638;color:#fff;}
+.btn-manual{display:block;width:100%;text-align:center;padding:7px;margin-top:6px;border:1px solid rgba(200,168,75,.2);color:rgba(200,168,75,.6);font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s;border-radius:3px;}
+.btn-manual:hover{border-color:var(--oro);color:var(--oro);}
+
+/* Contenido central */
+.ph{margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--verde);}
+.ph-badge{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--verde-cl);letter-spacing:.22em;text-transform:uppercase;margin-bottom:6px;}
+.ph-tit{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--verde);line-height:1.1;margin-bottom:4px;}
+.ph-tit em{font-style:italic;color:var(--oro);}
+.ph-desc{font-size:.78rem;color:var(--gris);line-height:1.6;}
+
+/* Aviso responsabilidad */
+.aviso{background:var(--rojo-bg);border-left:3px solid var(--rojo);padding:9px 13px;margin-bottom:18px;font-size:.72rem;color:var(--rojo);line-height:1.6;border-radius:0 var(--radio) var(--radio) 0;}
+.aviso strong{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.04em;}
+.aviso-info{background:rgba(26,58,42,.06);border-left:3px solid var(--verde-cl);padding:9px 13px;margin-bottom:18px;font-size:.72rem;color:var(--verde);line-height:1.6;border-radius:0 var(--radio) var(--radio) 0;}
+
+/* Selector contexto generación */
+.ctx-box{background:#fff;border:1px solid var(--crema-o);border-radius:var(--radio);padding:16px;margin-bottom:18px;box-shadow:var(--sombra);}
+.ctx-tit{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--verde);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;font-weight:700;}
+.ctx-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.ctx-campo label{font-family:'DM Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);display:block;margin-bottom:4px;}
+.ctx-campo select{width:100%;background:var(--crema);border:1.5px solid var(--crema-o);border-radius:var(--radio);padding:8px 10px;font-family:'Syne',sans-serif;font-size:.78rem;color:var(--negro);outline:none;appearance:none;transition:border-color .15s;}
+.ctx-campo select:focus{border-color:var(--verde);}
+
+/* Tipos de documento */
+.tipos-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.tipo-card{padding:14px;border:2px solid var(--crema-o);background:#fff;cursor:pointer;transition:all .18s;position:relative;border-radius:var(--radio);}
+.tipo-card:hover{border-color:var(--verde-cl);}
+.tipo-card.on{border-color:var(--verde);background:rgba(26,58,42,.04);}
+.tipo-card.on::after{content:'✓';position:absolute;top:10px;right:12px;color:var(--verde);font-weight:700;font-size:.9rem;}
+.tipo-ico{font-size:18px;margin-bottom:7px;}
+.tipo-tit{font-family:'DM Serif Display',serif;font-size:.88rem;color:var(--negro);margin-bottom:3px;}
+.tipo-desc{font-size:.7rem;color:var(--gris);line-height:1.5;}
+.tipo-norm{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--oro);margin-top:5px;letter-spacing:.04em;}
+
+/* Formulario generación */
+.form-gen{background:#fff;border:1px solid var(--crema-o);border-radius:var(--radio);padding:20px;margin-bottom:16px;box-shadow:var(--sombra);}
+.form-tit{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--verde);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--crema-o);}
+.fg-lbl{font-family:'DM Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--verde);display:block;margin-bottom:4px;}
+.fg-inp{width:100%;border:1.5px solid var(--crema-o);background:var(--crema);color:var(--negro);font-family:'Syne',sans-serif;font-size:.82rem;padding:9px 11px;outline:none;transition:border-color .15s;margin-bottom:14px;border-radius:var(--radio);}
+.fg-inp:focus{border-color:var(--verde);}
+.fg-inp::placeholder{color:var(--gris-b);}
+.fg-ta{width:100%;border:1.5px solid var(--crema-o);background:var(--crema);color:var(--negro);font-family:'Syne',sans-serif;font-size:.8rem;padding:9px 11px;outline:none;resize:vertical;min-height:68px;transition:border-color .15s;margin-bottom:14px;line-height:1.6;border-radius:var(--radio);}
+.fg-ta:focus{border-color:var(--verde);}
+.fg-ta::placeholder{color:var(--gris-b);}
+.fg-sel{width:100%;border:1.5px solid var(--crema-o);background:var(--crema);color:var(--negro);font-family:'Syne',sans-serif;font-size:.82rem;padding:9px 11px;outline:none;appearance:none;margin-bottom:14px;border-radius:var(--radio);}
+.fg-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* Perfil resumen en form */
+.perf-res{background:rgba(26,58,42,.05);border:1px solid rgba(26,58,42,.12);padding:10px 13px;margin-bottom:14px;border-radius:var(--radio);}
+.perf-res-lbl{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--verde);letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px;}
+.perf-res-txt{font-size:.76rem;color:var(--negro);line-height:1.8;}
+.perf-res-txt strong{color:var(--verde);}
+
+/* Opcionales */
+.opc-box{background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.2);padding:12px 15px;margin-bottom:14px;border-radius:var(--radio);}
+.opc-hdr{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.opc-body{display:none;padding-top:14px;}
+.opc-body.open{display:block;}
+
+/* Adjunto */
+.adj-zona{border:2px dashed var(--gris-b);padding:13px;margin-bottom:14px;cursor:pointer;transition:border-color .2s;text-align:center;background:var(--crema);border-radius:var(--radio);}
+.adj-zona:hover{border-color:var(--verde-cl);}
+.adj-zona.tiene{border-color:var(--verde);border-style:solid;background:rgba(26,58,42,.04);}
+.adj-ico{font-size:18px;margin-bottom:3px;}
+.adj-txt{font-size:.72rem;color:var(--gris);}
+.adj-nom{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--verde);margin-top:3px;}
+.adj-clear{background:none;border:none;color:var(--rojo);cursor:pointer;font-size:.65rem;margin-top:3px;font-family:'DM Mono',monospace;}
+
+/* Botón generar */
+.btn-gen{background:var(--verde);color:var(--crema);border:none;font-family:'Syne',sans-serif;font-size:.84rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:13px 28px;cursor:pointer;transition:background .2s;width:100%;border-radius:var(--radio);}
+.btn-gen:hover{background:var(--verde-m);}
+.btn-gen:disabled{background:var(--gris-b);cursor:not-allowed;}
+
+/* Resultado */
+.res-area{display:none;margin-top:16px;border:1px solid var(--crema-o);border-radius:var(--radio);overflow:hidden;}
+.res-area.vis{display:block;}
+.res-cab{background:var(--verde);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.res-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--oro);letter-spacing:.16em;text-transform:uppercase;}
+.res-btns{display:flex;gap:5px;flex-wrap:wrap;}
+.rb{padding:5px 10px;border:none;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s;border-radius:3px;}
+.rb-cop{background:rgba(200,168,75,.2);color:var(--oro);border:1px solid rgba(200,168,75,.3);}
+.rb-cop:hover{background:rgba(200,168,75,.35);}
+.rb-dl{background:rgba(245,240,232,.08);color:var(--crema);border:1px solid rgba(245,240,232,.18);}
+.rb-dl:hover{background:rgba(245,240,232,.18);}
+.rb-grd{background:var(--verde-cl);color:#fff;}
+.rb-grd:hover{background:var(--verde-m);}
+.rb-del{background:rgba(139,32,32,.18);color:#FF9999;border:1px solid rgba(139,32,32,.25);}
+.rb-del:hover{background:rgba(139,32,32,.3);}
+.res-aviso{background:var(--rojo);color:#fff;padding:6px 14px;font-size:.68rem;font-family:'DM Mono',monospace;letter-spacing:.05em;}
+.res-txt{padding:18px 20px;font-size:.8rem;line-height:1.9;color:var(--negro);white-space:pre-wrap;font-family:'Syne',sans-serif;background:#fff;}
+
+/* Inicio cards */
+.ini-free{display:inline-block;background:var(--verde);color:#fff;font-family:'DM Mono',monospace;font-size:.6rem;padding:3px 10px;letter-spacing:.1em;text-transform:uppercase;border-radius:3px;margin-bottom:14px;}
+.ini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.ini-card{background:#fff;border:1px solid var(--crema-o);padding:14px;cursor:pointer;transition:all .18s;border-radius:var(--radio);box-shadow:var(--sombra);}
+.ini-card:hover{border-color:var(--verde-cl);transform:translateY(-1px);}
+.ini-ico{font-size:20px;margin-bottom:6px;}
+.ini-tit{font-family:'DM Serif Display',serif;font-size:.88rem;color:var(--negro);margin-bottom:3px;}
+.ini-desc{font-size:.7rem;color:var(--gris);line-height:1.5;}
+
+/* Expediente */
+.exp-item{background:#fff;border:1px solid var(--crema-o);padding:13px 15px;margin-bottom:9px;transition:border-color .18s;border-radius:var(--radio);box-shadow:var(--sombra);}
+.exp-item:hover{border-color:var(--verde-cl);}
+.exp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.exp-tit{font-family:'DM Serif Display',serif;font-size:.88rem;color:var(--negro);}
+.exp-meta{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--gris);margin-top:3px;line-height:1.6;}
+.exp-badge{font-family:'DM Mono',monospace;font-size:.57rem;background:var(--verde);color:#fff;padding:2px 7px;border-radius:2px;white-space:nowrap;}
+.exp-btns{display:flex;gap:5px;margin-top:8px;}
+.eb{padding:5px 9px;border:none;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all .15s;border-radius:3px;}
+.eb-ver{background:var(--verde);color:#fff;}
+.eb-ver:hover{background:var(--verde-m);}
+.eb-dl{background:rgba(200,168,75,.15);color:var(--oro);border:1px solid rgba(200,168,75,.25);}
+.eb-dl:hover{background:rgba(200,168,75,.3);}
+.eb-del{background:var(--rojo-bg);color:var(--rojo);border:1px solid rgba(139,32,32,.18);}
+.eb-del:hover{background:#ffe0e0;}
+.exp-vacio{text-align:center;padding:36px;color:var(--gris-b);font-size:.72rem;font-family:'DM Mono',monospace;letter-spacing:.1em;}
+
+/* Modal */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;align-items:center;justify-content:center;}
+.modal-ov.vis{display:flex;}
+.modal{background:#fff;max-width:680px;width:95%;max-height:88vh;display:flex;flex-direction:column;box-shadow:var(--sombra-lg);border-radius:var(--radio);overflow:hidden;}
+.modal-hdr{background:var(--verde);padding:13px 16px;display:flex;justify-content:space-between;align-items:center;}
+.modal-tit{font-family:'DM Serif Display',serif;font-size:.95rem;color:var(--crema);}
+.modal-x{background:none;border:none;color:rgba(245,240,232,.6);font-size:17px;cursor:pointer;}
+.modal-x:hover{color:var(--crema);}
+.modal-body{padding:18px;overflow-y:auto;flex:1;white-space:pre-wrap;font-size:.78rem;line-height:1.9;font-family:'Syne',sans-serif;color:var(--negro);}
+.modal-foot{padding:10px 16px;border-top:1px solid var(--crema-o);display:flex;gap:6px;flex-wrap:wrap;}
+
+/* Footer */
+.g-foot{background:var(--negro);border-top:1px solid rgba(200,168,75,.12);padding:11px 20px;font-family:'DM Mono',monospace;font-size:.58rem;color:rgba(200,168,75,.35);letter-spacing:.06em;text-align:center;line-height:1.9;}
+.g-foot a{color:rgba(200,168,75,.45);text-decoration:none;}
+.g-foot a:hover{color:var(--oro);}
+
+/* Responsive */
+@media(max-width:820px){
+  .g-body{grid-template-columns:1fr;}
+  .sb-left,.sb-right{display:none;}
+  .tipos-grid,.ini-grid,.ctx-grid,.grid2,.grid3,.fg-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════
+     PANTALLA 0 — API KEY
+════════════════════════════════════════ -->
+<div id="s-api" class="screen active">
+  <div class="api-box">
+    <div class="api-hdr">
+      <div class="api-logo">DocPed <em>BRB</em></div>
+      <div class="api-sub">Configuración de IA — Paso 1 de 2</div>
+    </div>
+    <div class="api-body">
+      <div class="api-title">Seleccioná tu asistente de IA</div>
+      <p class="api-desc">Elegí el proveedor y obtené tu API Key gratuita. La key no se almacena en ningún servidor — solo se usa en esta sesión activa en tu dispositivo.</p>
+      <div class="prov-tabs">
+        <button class="prov-tab on" onclick="selProv('gemini',this)">
+          <span class="pt-nom">Gemini</span>
+          <span class="pt-tag pt-gratis">GRATIS</span>
+        </button>
+        <button class="prov-tab" onclick="selProv('openai',this)">
+          <span class="pt-nom">ChatGPT</span>
+          <span class="pt-tag">PAGO</span>
+        </button>
+        <button class="prov-tab" onclick="selProv('claude',this)">
+          <span class="pt-nom">Claude</span>
+          <span class="pt-tag">PAGO</span>
+        </button>
+      </div>
+
+      <div class="prov-inst vis" id="inst-gemini">
+        <div class="pi-tit">Cómo obtener tu API Key de Gemini — GRATIS</div>
+        <div class="pi-paso"><div class="pi-num">1</div><div>Hacé clic en el botón de abajo para ir a Google AI Studio.</div></div>
+        <div class="pi-paso"><div class="pi-num">2</div><div>Iniciá sesión con tu cuenta Google.</div></div>
+        <div class="pi-paso"><div class="pi-num">3</div><div>Hacé clic en <strong>"Get API Key"</strong> → <strong>"Create API key"</strong>.</div></div>
+        <div class="pi-paso"><div class="pi-num">4</div><div>Copiá la key (empieza con "AIza...") y pegala abajo.</div></div>
+        <a class="pi-link" href="https://aistudio.google.com/apikey" target="_blank">🔑 Ir a Google AI Studio →</a>
+        <div class="pi-costo">✓ GRATIS · Sin tarjeta · Hasta 15 consultas/minuto · Ideal para docentes</div>
+      </div>
+
+      <div class="prov-inst" id="inst-openai">
+        <div class="pi-tit">Cómo obtener tu API Key de ChatGPT (OpenAI)</div>
+        <div class="pi-paso"><div class="pi-num">1</div><div>Hacé clic en el botón de abajo para ir a OpenAI Platform.</div></div>
+        <div class="pi-paso"><div class="pi-num">2</div><div>Iniciá sesión o creá una cuenta.</div></div>
+        <div class="pi-paso"><div class="pi-num">3</div><div>Andá a <strong>"API Keys"</strong> → <strong>"Create new secret key"</strong>.</div></div>
+        <div class="pi-paso"><div class="pi-num">4</div><div>Copiá la key (empieza con "sk-..."). Necesitás saldo cargado.</div></div>
+        <a class="pi-link" href="https://platform.openai.com/api-keys" target="_blank">🔑 Ir a OpenAI Platform →</a>
+        <div class="pi-costo">Costo estimado: ~$0.001 USD por documento · Requiere tarjeta de crédito</div>
+      </div>
+
+      <div class="prov-inst" id="inst-claude">
+        <div class="pi-tit">Cómo obtener tu API Key de Claude (Anthropic)</div>
+        <div class="pi-paso"><div class="pi-num">1</div><div>Hacé clic en el botón de abajo para ir a Anthropic Console.</div></div>
+        <div class="pi-paso"><div class="pi-num">2</div><div>Creá una cuenta o iniciá sesión.</div></div>
+        <div class="pi-paso"><div class="pi-num">3</div><div>Andá a <strong>"API Keys"</strong> → <strong>"Create Key"</strong>.</div></div>
+        <div class="pi-paso"><div class="pi-num">4</div><div>Copiá la key (empieza con "sk-ant-...").</div></div>
+        <a class="pi-link" href="https://console.anthropic.com" target="_blank">🔑 Ir a Anthropic Console →</a>
+        <div class="pi-costo">Costo estimado: ~$0.002 USD por documento · Requiere tarjeta de crédito</div>
+      </div>
+
+      <div class="api-campo">
+        <label>Tu API Key</label>
+        <input type="password" id="apikey-inp" placeholder="Pegá tu API Key aquí..."
+          onkeydown="if(event.key==='Enter') confirmarAPI()">
+      </div>
+      <button class="api-btn" onclick="confirmarAPI()">Continuar al perfil →</button>
+      <div class="api-err" id="api-err"></div>
+    </div>
+    <div class="api-foot">
+      DocPed BRB · BRB Estrategia &amp; Procesos · Soberanía Técnica Ediciones · Boris Rodríguez Barrera<br>
+      Tu API Key no se almacena — solo se usa durante esta sesión activa en tu dispositivo.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PANTALLA 1 — PERFIL
+════════════════════════════════════════ -->
+<div id="s-perfil" class="screen">
+  <div class="p-hdr">
+    <div>
+      <div class="p-marca">DocPed <em>BRB</em></div>
+      <div class="p-sub">Perfil Docente — Paso 2 de 2</div>
+    </div>
+    <div class="p-hdr-btns">
+      <button class="btn-hdr" onclick="volverAPI()">← Volver</button>
+      <button class="btn-hdr pri" onclick="guardarPerfil()">Guardar e ingresar →</button>
+    </div>
+  </div>
+  <div class="p-layout">
+    <div class="p-hero">
+      <h2>Tu Perfil <em>Docente</em></h2>
+      <p>Completá tu perfil una vez. Cada documento generado usará estos datos automáticamente. Podés editarlo en cualquier momento desde el generador.</p>
+    </div>
+
+    <!-- Datos personales -->
+    <div class="card-s">
+      <div class="s-tit">👤 Datos personales</div>
+      <div class="grid2">
+        <div class="campo">
+          <label>Nombre y apellido completo</label>
+          <input type="text" id="pf-nombre" placeholder="Prof. María González">
+        </div>
+        <div class="campo">
+          <label>Provincia</label>
+          <select id="pf-prov">
+            <option value="">— Seleccioná —</option>
+            <option>Buenos Aires</option><option>CABA</option><option>Catamarca</option>
+            <option>Chaco</option><option>Chubut</option><option>Córdoba</option>
+            <option>Corrientes</option><option>Entre Ríos</option><option>Formosa</option>
+            <option>Jujuy</option><option>La Pampa</option><option>La Rioja</option>
+            <option>Mendoza</option><option>Misiones</option><option>Neuquén</option>
+            <option>Río Negro</option><option>Salta</option><option>San Juan</option>
+            <option>San Luis</option><option>Santa Cruz</option><option>Santa Fe</option>
+            <option>Santiago del Estero</option><option>Tierra del Fuego</option><option>Tucumán</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="campo">
+          <label>Cargo / Rol institucional</label>
+          <select id="pf-cargo">
+            <option>Docente de aula</option>
+            <option>Docente de taller</option>
+            <option>Preceptor/a</option>
+            <option>Tutor/a</option>
+            <option>Coordinador/a pedagógico/a</option>
+            <option>Jefe/a de Departamento</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Ciclo lectivo</label>
+          <input type="text" id="pf-ciclo" placeholder="2026">
+        </div>
+      </div>
+    </div>
+
+    <!-- Instituciones -->
+    <div class="card-s">
+      <div class="s-tit">🏫 Mis instituciones educativas <span style="font-family:'DM Mono',monospace;font-size:.58rem;color:var(--gris);font-weight:400;text-transform:none;letter-spacing:0;">(hasta 6 instituciones)</span></div>
+      <div class="inst-lista" id="inst-lista"></div>
+
+      <!-- Form agregar/editar institución -->
+      <div class="inst-form" id="inst-form">
+        <div class="grid2" style="margin-bottom:10px;">
+          <div class="campo">
+            <label>Tipo de institución</label>
+            <select id="if-tipo" onchange="actualizarNiveles()">
+              <option value="">— Seleccioná —</option>
+              <option value="primario">Primario</option>
+              <option value="sec-bachiller">Secundario Bachiller</option>
+              <option value="sec-tecnica">Secundario Técnico / ETP</option>
+              <option value="tecnicatura">Tecnicatura Superior</option>
+              <option value="universidad">Universidad</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label>Nombre de la institución</label>
+            <input type="text" id="if-nombre" placeholder="Esc. Municipal N.° 2701 Juan Demonte">
+          </div>
+        </div>
+        <div class="grid2" style="margin-bottom:10px;">
+          <div class="campo">
+            <label>Turno</label>
+            <select id="if-turno">
+              <option value="mañana">Mañana</option>
+              <option value="tarde">Tarde</option>
+              <option value="noche">Noche</option>
+              <option value="vespertino">Vespertino</option>
+              <option value="completo">Jornada completa</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label>Especialidad / Orientación <span style="font-weight:400;text-transform:none;">(si aplica)</span></label>
+            <input type="text" id="if-espec" placeholder="Ej: Pesca y Procesamiento Pesquero">
+          </div>
+        </div>
+
+        <!-- Materias de esta institución -->
+        <div class="campo">
+          <label>Materias / Espacios curriculares</label>
+          <div class="mat-lista" id="if-mat-lista"></div>
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="if-mat-inp" class="fg-inp" style="margin-bottom:6px;" placeholder="Escribí una materia y presioná Agregar">
+            <button class="btn-add" style="height:38px;flex-shrink:0;" onclick="agregarMateria()">+ Agregar</button>
+          </div>
+          <div class="chips-sug" id="if-chips-sug"></div>
+        </div>
+
+        <!-- Cursos de esta institución -->
+        <div class="campo">
+          <label>Cursos / Años a cargo</label>
+          <div class="cursos-lista" id="if-cursos-lista"></div>
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="if-curso-inp" class="fg-inp" style="margin-bottom:6px;" placeholder="Ej: 5° 1a · 6° 2a · 7° 1a">
+            <button class="btn-add" style="height:38px;flex-shrink:0;" onclick="agregarCurso()">+ Agregar</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="btn-add" onclick="guardarInst()">💾 Guardar institución</button>
+          <button class="btn-mini bm-del" onclick="cancelarInstForm()">✕ Cancelar</button>
+        </div>
+      </div>
+
+      <button class="btn-add" id="btn-add-inst" onclick="mostrarInstForm()">+ Agregar institución</button>
+    </div>
+
+    <div class="p-saved" id="p-saved">✓ Perfil guardado correctamente</div>
+    <div style="display:flex;gap:10px;margin-top:6px;">
+      <button class="btn-add" style="flex:1;justify-content:center;" onclick="guardarPerfil()">💾 Guardar e ingresar al generador →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PANTALLA 2 — GENERADOR
+════════════════════════════════════════ -->
+<div id="s-gen" class="screen">
+  <!-- Header -->
+  <div class="g-hdr">
+    <div class="g-marca">DocPed <em>BRB</em></div>
+    <div class="g-hdr-right">
+      <!-- Selectores contexto -->
+      <div class="hdr-sel-wrap">
+        <span class="hdr-sel-lbl">Institución:</span>
+        <select class="hdr-sel" id="hdr-inst" onchange="onInstChange()">
+          <option value="">— —</option>
+        </select>
+      </div>
+      <div class="hdr-sel-wrap">
+        <span class="hdr-sel-lbl">Materia:</span>
+        <select class="hdr-sel" id="hdr-mat">
+          <option value="">— —</option>
+        </select>
+      </div>
+      <div class="hdr-sel-wrap">
+        <span class="hdr-sel-lbl">Curso:</span>
+        <select class="hdr-sel" id="hdr-curso">
+          <option value="">— —</option>
+        </select>
+      </div>
+      <div class="g-badge" id="hdr-badge"></div>
+      <button class="btn-hdr" onclick="verExpediente()">📁 Expediente</button>
+      <button class="btn-hdr" onclick="irPerfil()">⚙ Perfil</button>
+    </div>
+  </div>
+
+  <div class="g-body">
+    <!-- Sidebar izquierda -->
+    <div class="sb-left">
+      <div class="sb-sec">Navegación</div>
+      <div class="sb-item on" id="sbi-inicio" onclick="navegar('inicio',this)">
+        <span class="sb-ico">🏠</span><span class="sb-txt">Inicio</span>
+      </div>
+      <div class="sb-item" id="sbi-gen" onclick="navegar('generar',this)">
+        <span class="sb-ico">📄</span><span class="sb-txt">Generar documento</span>
+      </div>
+      <div class="sb-item" id="sbi-exp" onclick="navegar('expediente',this)">
+        <span class="sb-ico">📁</span><span class="sb-txt">Expediente docente</span>
+      </div>
+      <div class="sb-sec">Tipo de documento</div>
+      <div class="sb-item" onclick="irAGenerar('diagnostico')">
+        <span class="sb-ico">🔍</span><span class="sb-txt">Diagnóstico Áulico</span>
+      </div>
+      <div class="sb-item" onclick="irAGenerar('planificacion')">
+        <span class="sb-ico">📋</span><span class="sb-txt">Planificación Áulica</span>
+      </div>
+      <div class="sb-item" onclick="irAGenerar('contrato')">
+        <span class="sb-ico">✍</span><span class="sb-txt">Contrato Didáctico</span>
+      </div>
+      <div class="sb-item" onclick="irAGenerar('informe')">
+        <span class="sb-ico">📊</span><span class="sb-txt">Informe Cuatrimestral</span>
+      </div>
+    </div>
+
+    <!-- Panel central -->
+    <div class="main" id="main-panel"></div>
+
+    <!-- Sidebar derecha -->
+    <div class="sb-right">
+      <div class="sr-tit">Sistema BRB-Educa</div>
+      <a class="plat-btn plat-landing" href="https://bbbarrera1986-rgb.github.io/brb-generador/" target="_blank">
+        🌐 BRB-Educa — Ecosistema IA<span>Landing · Todas las herramientas</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-generador/generador_clases_BRB_v2_1.html" target="_blank">
+        Generador de Clases BRB<span>Docentes secundario / ETP</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-generador/generador_estudio_BRB_v2_1_final.html" target="_blank">
+        Generador de Estudio BRB<span>Estudiantes</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-generador/evaluAR_BRB_v1.html" target="_blank">
+        EvaluAR BRB<span>Instrumentos de evaluación</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-generador/generador_tutoria_BRB_v1.html" target="_blank">
+        Plataforma de Tutoría BRB<span>Tutores y orientadores</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-generador/asesor_direccion_BRB_v2.html" target="_blank">
+        Asesor de Dirección BRB<span>Directivos institucionales</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-inclusion/index.html?v=2" target="_blank">
+        BRB Inclusión &amp; Neuro-Estrategias<span>MAI · Psicopedagogos</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-generador/aulaViva_BRB_v1.html" target="_blank">
+        Aula Viva BRB<span>Docentes de primaria</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/brb-universitario/" target="_blank">
+        Generador Universitario BRB<span>Nivel superior</span>
+      </a>
+      <a class="plat-btn" href="https://bbbarrera1986-rgb.github.io/generador-tesis-brb/" target="_blank">
+        Generador de Tesis BRB<span>Investigación académica</span>
+      </a>
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(200,168,75,.15);">
+        <div class="sr-c-lbl" style="margin-bottom:6px;">Libros &amp; Cursos BRB</div>
+        <a class="plat-btn" href="https://sites.google.com/view/borisrodriguezbarrera" target="_blank" style="background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.25);color:var(--oro);">
+          🛒 Catálogo BRB — Hotmart<span>Libros · Cursos · Kits técnicos</span>
+        </a>
+      </div>
+      <div class="sr-contact">
+        <div class="sr-c-lbl">Acceso con licencia</div>
+        <a class="sr-c-btn btn-wa" href="https://wa.me/542975176351?text=Consulta%20sobre%20BRB-Educa%3A" target="_blank">💬 WhatsApp</a>
+        <a class="sr-c-btn btn-em" href="mailto:bbbarrera1986@gmail.com?subject=Consulta%20BRB-Educa" target="_blank">✉ Email</a>
+        <a class="btn-manual" href="https://bbbarrera1986-rgb.github.io/brb-generador/manual_BRB_Educa_v2.html" target="_blank">📖 Manual del sistema</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-foot">
+    DocPed BRB · Herramienta de uso libre y gratuito &nbsp;|&nbsp;
+    Boris Rodríguez Barrera · ORCID: <a href="https://orcid.org/0009-0004-6583-6439" target="_blank">0009-0004-6583-6439</a><br>
+    BRB Estrategia &amp; Procesos &nbsp;·&nbsp; Soberanía Técnica Ediciones &nbsp;·&nbsp; Puerto Madryn, Chubut, Argentina &nbsp;|&nbsp;
+    <a href="mailto:bbbarrera1986@gmail.com">bbbarrera1986@gmail.com</a> &nbsp;·&nbsp; <a href="https://wa.me/542975176351">+54 297 517-6351</a>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-ov" id="modal-ov">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-tit" id="modal-tit">Documento</div>
+      <button class="modal-x" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot">
+      <button class="rb rb-cop" onclick="copiarModal()">📋 Copiar</button>
+      <button class="rb rb-dl" onclick="dlModal()">⬇ .txt</button>
+      <button class="rb rb-del" onclick="cerrarModal()">✕ Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// STORAGE SEGURO
+// ═══════════════════════════════════════════
+const _store = (()=>{
+  try{ localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage; }
+  catch(e){ const m={};return{getItem:k=>m[k]??null,setItem:(k,v)=>{m[k]=String(v);},removeItem:k=>{delete m[k];}}; }
+})();
+
+// ═══════════════════════════════════════════
+// ESTADO GLOBAL
+// ═══════════════════════════════════════════
+const S = {
+  prov: 'gemini', apikey: '',
+  perfil: null,
+  tipoSel: 'diagnostico',
+  textoGen: '',
+  adjTexto: '', adjNombre: '',
+  docModal: null,
+  ifMats: [], ifCursos: [],
+  instEditIdx: -1
+};
+
+// Google Forms tracking
+const GFORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfn0TZ-nH_HvvYJQh0R9IHvYb9F6u88u81c1mZTAcyt597QYw/formResponse';
+const GFORM_E = { tipo:'entry.862452251', nivel:'entry.985623144', cargo:'entry.740986689', provincia:'entry.1025085657', ts:'entry.1034624102' };
+
+function trackGen(tipoId){
+  try{
+    const p=S.perfil||{};
+    const inst=instActiva();
+    const params=new URLSearchParams();
+    params.append(GFORM_E.tipo,tipoId);
+    params.append(GFORM_E.nivel,inst?.tipo||p.cargo||'—');
+    params.append(GFORM_E.cargo,p.cargo||'—');
+    params.append(GFORM_E.provincia,p.provincia||'—');
+    params.append(GFORM_E.ts,new Date().toISOString());
+    fetch(GFORM_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()}).catch(()=>{});
+    if(typeof gtag==='function') gtag('event','generar_doc',{tipo:tipoId,provincia:p.provincia||'—'});
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function toast(msg,tipo='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='vis '+(tipo==='err'?'err':'ok');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2500);
+}
+
+// ═══════════════════════════════════════════
+// NAVEGACIÓN DE PANTALLAS
+// ═══════════════════════════════════════════
+function mostrarScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── PANTALLA 0: API ──
+let _provSel='gemini';
+function selProv(p,btn){
+  _provSel=p;
+  document.querySelectorAll('.prov-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.prov-inst').forEach(d=>d.classList.remove('vis'));
+  document.getElementById('inst-'+p).classList.add('vis');
+  document.getElementById('apikey-inp').value='';
+  const ph={gemini:'AIza...',openai:'sk-...',claude:'sk-ant-...'};
+  document.getElementById('apikey-inp').placeholder=ph[p]||'API Key...';
+}
+
+function confirmarAPI(){
+  const key=document.getElementById('apikey-inp').value.trim();
+  const err=document.getElementById('api-err');
+  err.classList.remove('vis');
+  if(!key||key.length<20){err.textContent='Ingresá una API Key válida (mínimo 20 caracteres).';err.classList.add('vis');return;}
+  S.apikey=key; S.prov=_provSel;
+  sessionStorage.setItem('dp_api',key);
+  sessionStorage.setItem('dp_prov',_provSel);
+  // Cargar perfil si existe
+  const p=cargarPerfilLocal();
+  if(p){ S.perfil=p; lanzarApp(); }
+  else{ cargarFormPerfil(); mostrarScreen('s-perfil'); }
+}
+
+function volverAPI(){ mostrarScreen('s-api'); }
+
+// ── PANTALLA 1: PERFIL ──
+function cargarPerfilLocal(){
+  try{ return JSON.parse(_store.getItem('dp_perfil')); }catch(e){ return null; }
+}
+
+function cargarFormPerfil(){
+  const p=S.perfil;
+  if(!p) return;
+  if(p.nombre) document.getElementById('pf-nombre').value=p.nombre;
+  if(p.provincia) document.getElementById('pf-prov').value=p.provincia;
+  if(p.cargo) document.getElementById('pf-cargo').value=p.cargo;
+  if(p.ciclo) document.getElementById('pf-ciclo').value=p.ciclo;
+  renderInstLista();
+}
+
+function irPerfil(){
+  cargarFormPerfil();
+  mostrarScreen('s-perfil');
+}
+
+function guardarPerfil(){
+  const nombre=document.getElementById('pf-nombre').value.trim();
+  const prov=document.getElementById('pf-prov').value;
+  if(!nombre||!prov){ toast('Completá nombre y provincia.','err'); return; }
+  if(!S.perfil) S.perfil={instituciones:[]};
+  S.perfil.nombre=nombre;
+  S.perfil.provincia=prov;
+  S.perfil.cargo=document.getElementById('pf-cargo').value;
+  S.perfil.ciclo=document.getElementById('pf-ciclo').value.trim()||'2026';
+  if(!S.perfil.instituciones) S.perfil.instituciones=[];
+  _store.setItem('dp_perfil',JSON.stringify(S.perfil));
+  const saved=document.getElementById('p-saved');
+  saved.classList.add('vis');
+  setTimeout(()=>saved.classList.remove('vis'),2000);
+  toast('Perfil guardado.','ok');
+  lanzarApp();
+}
+
+// ── INSTITUCIONES ──
+const MATS_TIPO={
+  primario:['Prácticas del Lenguaje','Matemática','Ciencias Naturales','Ciencias Sociales','Formación Ética y Ciudadana','Educación Física','Educación Artística','Inglés'],
+  'sec-bachiller':['Lengua y Literatura','Matemática','Historia','Geografía','Física','Química','Biología','Inglés','Filosofía','Educación Física','Formación Ética y Ciudadana','Arte','Economía','Psicología','Sociología','Informática'],
+  'sec-tecnica':['Matemática','Física','Química General e Inorgánica','Química Analítica','Química Orgánica','Biología','Inglés Técnico','Tecnología de los Alimentos','Bromatología','Procesos Industriales','Gestión de Calidad','Seguridad e Higiene','Electrotecnia','Electrónica','Mecánica','Informática Aplicada','Operaciones Unitarias','Prácticas Profesionalizantes'],
+  tecnicatura:['Matemática Superior','Estadística Aplicada','Química Analítica','Microbiología Industrial','Bioquímica','Fisicoquímica','Operaciones Unitarias','Tecnología de los Alimentos','Gestión de Calidad ISO 9001','HACCP y Normativa','Seguridad e Higiene Laboral','Gestión Empresarial','Práctica Profesionalizante','Inglés Técnico'],
+  universidad:['Álgebra','Análisis Matemático','Física I','Física II','Química General','Química Analítica','Biología Molecular','Estadística','Termodinámica','Operaciones Unitarias I','Operaciones Unitarias II','Control de Procesos','Gestión de Calidad','Proyecto Final']
+};
+
+function actualizarNiveles(){
+  const tipo=document.getElementById('if-tipo').value;
+  const chips=document.getElementById('if-chips-sug');
+  chips.innerHTML='';
+  if(MATS_TIPO[tipo]){
+    MATS_TIPO[tipo].forEach(m=>{
+      const c=document.createElement('span');
+      c.className='chip-sug';
+      c.textContent='+'+m;
+      c.onclick=()=>agregarMateriaSug(m);
+      chips.appendChild(c);
+    });
+  }
+}
+
+function renderIfMats(){
+  const el=document.getElementById('if-mat-lista');
+  el.innerHTML=S.ifMats.map((m,i)=>`<span class="mat-tag">${m}<button onclick="quitarMat(${i})">✕</button></span>`).join('');
+}
+function quitarMat(i){ S.ifMats.splice(i,1); renderIfMats(); }
+function agregarMateria(){
+  const inp=document.getElementById('if-mat-inp');
+  const v=inp.value.trim();
+  if(v&&!S.ifMats.includes(v)){ S.ifMats.push(v); renderIfMats(); inp.value=''; }
+}
+function agregarMateriaSug(m){
+  if(!S.ifMats.includes(m)){ S.ifMats.push(m); renderIfMats(); }
+}
+
+function renderIfCursos(){
+  const el=document.getElementById('if-cursos-lista');
+  el.innerHTML=S.ifCursos.map((c,i)=>`<span class="curso-tag">${c}<button onclick="quitarCurso(${i})">✕</button></span>`).join('');
+}
+function quitarCurso(i){ S.ifCursos.splice(i,1); renderIfCursos(); }
+function agregarCurso(){
+  const inp=document.getElementById('if-curso-inp');
+  const v=inp.value.trim();
+  if(v&&!S.ifCursos.includes(v)){ S.ifCursos.push(v); renderIfCursos(); inp.value=''; }
+}
+
+function mostrarInstForm(){
+  S.instEditIdx=-1; S.ifMats=[]; S.ifCursos=[];
+  renderIfMats(); renderIfCursos();
+  document.getElementById('if-tipo').value='';
+  document.getElementById('if-nombre').value='';
+  document.getElementById('if-turno').value='mañana';
+  document.getElementById('if-espec').value='';
+  document.getElementById('if-chips-sug').innerHTML='';
+  document.getElementById('inst-form').classList.add('vis');
+  document.getElementById('btn-add-inst').style.display='none';
+}
+
+function cancelarInstForm(){
+  document.getElementById('inst-form').classList.remove('vis');
+  document.getElementById('btn-add-inst').style.display='';
+}
+
+function guardarInst(){
+  const tipo=document.getElementById('if-tipo').value;
+  const nombre=document.getElementById('if-nombre').value.trim();
+  if(!tipo){ toast('Seleccioná el tipo de institución.','err'); return; }
+  if(!nombre){ toast('Escribí el nombre de la institución.','err'); return; }
+  const inst={tipo,nombre,turno:document.getElementById('if-turno').value,especialidad:document.getElementById('if-espec').value.trim(),materias:[...S.ifMats],cursos:[...S.ifCursos]};
+  if(!S.perfil) S.perfil={instituciones:[]};
+  if(!S.perfil.instituciones) S.perfil.instituciones=[];
+  if(S.instEditIdx>=0){ S.perfil.instituciones[S.instEditIdx]=inst; }
+  else{
+    if(S.perfil.instituciones.length>=6){ toast('Máximo 6 instituciones.','err'); return; }
+    S.perfil.instituciones.push(inst);
+  }
+  renderInstLista();
+  cancelarInstForm();
+  toast('Institución guardada.','ok');
+}
+
+function editarInst(i){
+  const inst=S.perfil.instituciones[i];
+  S.instEditIdx=i;
+  S.ifMats=[...(inst.materias||[])];
+  S.ifCursos=[...(inst.cursos||[])];
+  document.getElementById('if-tipo').value=inst.tipo||'';
+  actualizarNiveles();
+  document.getElementById('if-nombre').value=inst.nombre||'';
+  document.getElementById('if-turno').value=inst.turno||'mañana';
+  document.getElementById('if-espec').value=inst.especialidad||'';
+  renderIfMats(); renderIfCursos();
+  document.getElementById('inst-form').classList.add('vis');
+  document.getElementById('btn-add-inst').style.display='none';
+}
+
+function eliminarInst(i){
+  if(!confirm('¿Eliminar esta institución?')) return;
+  S.perfil.instituciones.splice(i,1);
+  renderInstLista();
+}
+
+function setPrincipal(i){
+  const inst=S.perfil.instituciones.splice(i,1)[0];
+  S.perfil.instituciones.unshift(inst);
+  renderInstLista();
+}
+
+function tipoLabel(t){
+  return {primario:'Primario','sec-bachiller':'Sec. Bachiller','sec-tecnica':'Sec. Técnico/ETP',tecnicatura:'Tecnicatura Sup.',universidad:'Universidad'}[t]||t;
+}
+
+function renderInstLista(){
+  const el=document.getElementById('inst-lista');
+  const insts=(S.perfil?.instituciones)||[];
+  if(!insts.length){
+    el.innerHTML='<div style="font-family:\'DM Mono\',monospace;font-size:.68rem;color:var(--gris);padding:8px 0;">No tenés instituciones configuradas todavía. Agregá al menos una para comenzar.</div>';
+    return;
+  }
+  el.innerHTML=insts.map((inst,i)=>`
+    <div class="inst-card ${i===0?'principal':''}">
+      <div class="inst-info">
+        <div class="inst-nom">${inst.nombre}</div>
+        <div class="inst-meta">${tipoLabel(inst.tipo)} · ${inst.turno||''} · ${inst.materias?.length||0} materia(s) · ${inst.cursos?.length||0} curso(s)</div>
+      </div>
+      ${i===0?'<span class="inst-badge">Principal</span>':''}
+      <div class="inst-acc">
+        ${i>0?`<button class="btn-mini bm-star" onclick="setPrincipal(${i})">★</button>`:''}
+        <button class="btn-mini bm-edit" onclick="editarInst(${i})">Editar</button>
+        <button class="btn-mini bm-del" onclick="eliminarInst(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── LANZAR APP ──
+function lanzarApp(){
+  const p=S.perfil;
+  // Cargar selectores del header
+  const hInst=document.getElementById('hdr-inst');
+  hInst.innerHTML='<option value="">— Sin institución —</option>';
+  (p?.instituciones||[]).forEach((inst,i)=>{
+    const o=document.createElement('option');
+    o.value=i;
+    o.textContent=inst.nombre.length>32?inst.nombre.slice(0,32)+'…':inst.nombre;
+    hInst.appendChild(o);
+  });
+  if(p?.instituciones?.length>0){ hInst.value='0'; onInstChange(); }
+  document.getElementById('hdr-badge').innerHTML=`<strong>${(p?.nombre||'—').split(' ')[0]}</strong> · ${p?.provincia||'—'}`;
+  mostrarScreen('s-gen');
+  navegar('inicio',document.getElementById('sbi-inicio'));
+}
+
+function onInstChange(){
+  const idx=parseInt(document.getElementById('hdr-inst').value);
+  const inst=(S.perfil?.instituciones||[])[idx];
+  const mSel=document.getElementById('hdr-mat');
+  const cSel=document.getElementById('hdr-curso');
+  mSel.innerHTML='<option value="">— Sin materia —</option>';
+  cSel.innerHTML='<option value="">— Sin curso —</option>';
+  if(inst){
+    (inst.materias||[]).forEach(m=>{const o=document.createElement('option');o.value=o.textContent=m;mSel.appendChild(o);});
+    (inst.cursos||[]).forEach(c=>{const o=document.createElement('option');o.value=o.textContent=c;cSel.appendChild(o);});
+  }
+}
+
+function instActiva(){
+  const idx=parseInt(document.getElementById('hdr-inst')?.value);
+  return (S.perfil?.instituciones||[])[idx]||null;
+}
+function materiaActiva(){ return document.getElementById('hdr-mat')?.value||''; }
+function cursoActivo(){ return document.getElementById('hdr-curso')?.value||''; }
+
+// ═══════════════════════════════════════════
+// NAVEGACIÓN INTERNA APP
+// ═══════════════════════════════════════════
+function navegar(sec,item){
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  if(item) item.classList.add('on');
+  const mp=document.getElementById('main-panel');
+  if(sec==='inicio') renderInicio(mp);
+  else if(sec==='generar') renderGenerar(mp);
+  else if(sec==='expediente') renderExpediente(mp);
+}
+
+function verExpediente(){ navegar('expediente',document.getElementById('sbi-exp')); }
+function irAGenerar(tipo){ S.tipoSel=tipo; navegar('generar',document.getElementById('sbi-gen')); }
+
+function fechaHoy(){
+  const d=new Date();
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+
+// ═══════════════════════════════════════════
+// TIPOS DE DOCUMENTO
+// ═══════════════════════════════════════════
+const TIPOS={
+  diagnostico:{ico:'🔍',tit:'Diagnóstico Áulico',norm:'Res. CFE 174/12 · Res. CFE 93/09',desc:'Evaluación del grupo al inicio del ciclo. Primeras 2–4 semanas.',
+    campos:[{id:'cant',l:'Cantidad de estudiantes',t:'text',ph:'Ej: 23'},{id:'edades',l:'Rango etario',t:'text',ph:'Ej: 16–18 años'},{id:'clima',l:'Clima grupal observado',t:'ta',ph:'Participación, vínculos, liderazgos, actitudes generales...'},{id:'motivacion',l:'Motivación y expectativas',t:'ta',ph:'Interés en la materia, disposición, expectativas vocacionales...'},{id:'necesidades',l:'Necesidades detectadas',t:'ta',ph:'Dificultades de aprendizaje, ausentismo, diversidad, NEE...'},{id:'fortalezas',l:'Fortalezas del grupo',t:'ta',ph:'Liderazgos positivos, experiencias previas, disposición...'},{id:'mod_g',l:'Modalidad de trabajo',t:'select',opts:['Aula','Taller','Mixto (aula + taller)']}]},
+  planificacion:{ico:'📋',tit:'Planificación Áulica Cuatrimestral',norm:'Res. CFE 93/09 · Res. CFE 390/21',desc:'Contenidos, actividades y evaluaciones por período.',
+    campos:[{id:'cuatri',l:'Período',t:'select',opts:['1° Cuatrimestre','2° Cuatrimestre','Anual','Trimestral']},{id:'mod_p',l:'Modalidad',t:'select',opts:['Aula','Taller','Mixto']},{id:'unidad',l:'Unidad / Módulo / Eje temático',t:'text',ph:'Ej: Unidad 3 — Reacciones de oxidación-reducción'},{id:'horas',l:'Cantidad de clases / horas',t:'text',ph:'Ej: 18 clases de 80 minutos'},{id:'contenidos',l:'Contenidos a desarrollar',t:'ta',ph:'Conceptuales, procedimentales y actitudinales...'},{id:'inicio',l:'Actividades de INICIO',t:'ta',ph:'Apertura, diagnóstico, recuperación de saberes previos...'},{id:'desarrollo',l:'Actividades de DESARROLLO',t:'ta',ph:'Actividades clase por clase, metodología, recursos...'},{id:'cierre',l:'Actividades de CIERRE',t:'ta',ph:'Síntesis, integración, evaluación sumativa parcial...'},{id:'evaluacion',l:'Criterios e instrumentos de evaluación',t:'ta',ph:'Objetivos, instrumentos, nota mínima, ponderaciones...'},{id:'recursos',l:'Recursos y bibliografía',t:'ta',ph:'Libros, materiales, equipamiento, TIC...'}]},
+  contrato:{ico:'✍',tit:'Contrato Didáctico',norm:'Res. CFE 330/17 · Res. CFE 84/09',desc:'Acuerdo formal docente-grupo. Compromisos, normas y evaluación.',
+    campos:[{id:'mod_c',l:'Modalidad',t:'select',opts:['Aula','Taller']},{id:'comp_doc',l:'Compromisos del docente',t:'ta',ph:'Listá los compromisos que asumís como profesional...'},{id:'comp_est',l:'Compromisos del estudiante',t:'ta',ph:'Asistencia, participación, entrega de trabajos, celular...'},{id:'normas',l:'Normas de convivencia',t:'ta',ph:'Reglas del aula/taller, EPP si aplica, uso de dispositivos...'},{id:'evaluacion_c',l:'Sistema de evaluación completo',t:'ta',ph:'Instancias, criterios, nota de aprobación, recuperatorios...'},{id:'asistencia',l:'Política de asistencia',t:'text',ph:'Ej: Mínimo 80% de asistencia para regularizar'},{id:'acuerdos',l:'Acuerdos adicionales',t:'ta',ph:'Entregas fuera de término, reintegros...'}]},
+  informe:{ico:'📊',tit:'Informe Cuatrimestral Docente a Dirección',norm:'Res. CFE 93/09 · Res. CFE 330/17',desc:'Rendición pedagógica al equipo directivo al cierre del período.',
+    campos:[{id:'cuatri_i',l:'Período informado',t:'select',opts:['1° Cuatrimestre','2° Cuatrimestre','1° Trimestre','2° Trimestre','3° Trimestre']},{id:'cont_des',l:'Contenidos desarrollados',t:'ta',ph:'Listá los contenidos efectivamente trabajados...'},{id:'cont_nd',l:'Contenidos no desarrollados (si los hay)',t:'ta',ph:'Justificá brevemente...'},{id:'aprobados',l:'N° de estudiantes aprobados',t:'text',ph:'Ej: 18'},{id:'desap',l:'N° de estudiantes desaprobados',t:'text',ph:'Ej: 4'},{id:'instancias',l:'Instancias de evaluación realizadas',t:'ta',ph:'Tipo, fecha e instrumento de cada evaluación...'},{id:'dific',l:'Dificultades pedagógicas encontradas',t:'ta',ph:'Obstáculos en el proceso de enseñanza-aprendizaje...'},{id:'logros',l:'Logros destacados del período',t:'ta',ph:'Avances del grupo, hitos positivos...'},{id:'ajustes',l:'Ajustes propuestos para el próximo período',t:'ta',ph:'Cambios en estrategias, tiempos, recursos...'}]},
+  secuencia:{ico:'📐',tit:'Secuencia Didáctica',norm:'Res. CFE 93/09 · Res. CFE 330/17 · DUA/CAST 2018',desc:'Planificación detallada clase por clase para una unidad temática.',
+    campos:[{id:'cant_clases',l:'Cantidad de clases',t:'text',ph:'Ej: 6 clases de 80 minutos'},{id:'unidad_sd',l:'Unidad / Eje temático',t:'text',ph:'Ej: Reacciones de oxidación-reducción'},{id:'objetivo_sd',l:'Objetivo general de la secuencia',t:'ta',ph:'¿Qué van a poder hacer/comprender los alumnos al finalizar?'},{id:'saberes',l:'Saberes previos requeridos',t:'ta',ph:'Conocimientos que los alumnos ya deben tener...'},{id:'actividades_sd',l:'Ideas de actividades por clase',t:'ta',ph:'Describí brevemente la progresión de actividades clase por clase...'},{id:'cierre_sd',l:'Actividad de cierre e integración',t:'ta',ph:'Cómo cerrarás la secuencia, síntesis, evaluación final...'},{id:'recursos_sd',l:'Recursos y materiales',t:'ta',ph:'Bibliografía, equipamiento, TIC, laboratorio...'}]},
+  informe_alumno:{ico:'👤',tit:'Informe Individual de Alumno',norm:'Res. CFE 93/09 · Res. CFE 343/18 · Ley 26.206 Art. 11',desc:'Informe pedagógico individual para legajo, pase o reunión con familia.',
+    campos:[{id:'nombre_al',l:'Nombre y apellido del alumno/a',t:'text',ph:'Ej: García, Valentina'},{id:'periodo_al',l:'Período informado',t:'select',opts:['1° Cuatrimestre 2026','2° Cuatrimestre 2026','1° Trimestre 2026','2° Trimestre 2026','3° Trimestre 2026','Anual 2026']},{id:'asistencia_al',l:'Asistencia',t:'text',ph:'Ej: 78% — 14 inasistencias justificadas'},{id:'rendimiento_al',l:'Rendimiento académico',t:'ta',ph:'Notas obtenidas, promedio, evolución durante el período...'},{id:'logros_al',l:'Logros y fortalezas observadas',t:'ta',ph:'Aspectos positivos del desempeño, habilidades destacadas...'},{id:'dificultades_al',l:'Dificultades identificadas',t:'ta',ph:'Áreas de mejora, obstáculos en el aprendizaje...'},{id:'conducta_al',l:'Actitud y convivencia',t:'ta',ph:'Participación, vínculos con pares, actitud hacia la tarea...'},{id:'recomendaciones_al',l:'Recomendaciones',t:'ta',ph:'Acciones sugeridas para el próximo período, apoyos necesarios...'},{id:'destino_al',l:'Destino del informe',t:'select',opts:['Legajo del alumno','Reunión con familia','Pase a otra institución','Equipo de orientación','Dirección']}]},
+  abp:{ico:'🚀',tit:'Proyecto ABP — Aprendizaje Basado en Proyectos',norm:'Res. CFE 93/09 · Res. CFE 330/17 · INET — Educación Técnica',desc:'Diseño completo de un proyecto integrador interdisciplinar con producto final.',
+    campos:[{id:'nombre_proy',l:'Nombre del proyecto',t:'text',ph:'Ej: "Diseño sustentable para la comunidad patagónica"'},{id:'duracion_proy',l:'Duración estimada',t:'text',ph:'Ej: 6 semanas / 1 cuatrimestre'},{id:'areas_proy',l:'Áreas / materias involucradas',t:'ta',ph:'Ej: Química, Matemática, Tecnología, Lengua...'},{id:'pregunta_guia',l:'Pregunta guía del proyecto',t:'ta',ph:'La pregunta central que motiva la investigación y el trabajo...'},{id:'producto_final',l:'Producto final esperado',t:'ta',ph:'¿Qué van a producir los alumnos? Maqueta, informe, video, app, prototipo...'},{id:'etapas_proy',l:'Etapas del proyecto',t:'ta',ph:'Describí las fases: investigación, diseño, producción, presentación...'},{id:'evaluacion_proy',l:'Criterios de evaluación',t:'ta',ph:'¿Cómo se evaluará el proceso y el producto? ¿Quién evalúa?'},{id:'contexto_proy',l:'Vinculación con el contexto local',t:'ta',ph:'Cómo se conecta el proyecto con la realidad del entorno...'}]}
+};
+
+// ═══════════════════════════════════════════
+// RENDERS
+// ═══════════════════════════════════════════
+function renderInicio(mp){
+  const p=S.perfil;
+  const exp=cargarExp();
+  const inst=instActiva();
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">DocPed BRB · Herramienta Gratuita</div>
+      <div class="ph-tit">Documentación pedagógica <em>lista en minutos</em></div>
+      <div class="ph-desc">${p?.nombre||'—'} &nbsp;·&nbsp; ${inst?.nombre||'Sin institución seleccionada'} &nbsp;·&nbsp; ${p?.provincia||'—'} &nbsp;·&nbsp; Ciclo ${p?.ciclo||'2026'}</div>
+    </div>
+    <span class="ini-free">✓ Acceso Libre y Gratuito · Sin registro · Sin contraseña</span>
+    <div class="aviso"><strong>⚠ RESPONSABILIDAD PROFESIONAL:</strong> Todo documento generado es un borrador orientativo producido con IA. El/la profesional docente es el/la ÚNICO/A responsable de revisar, corregir, adaptar a su contexto y FIRMAR antes de cualquier uso institucional.</div>
+    ${exp.length>0?`<div class="aviso-info">📁 Tenés <strong>${exp.length} documento${exp.length>1?'s':''}</strong> guardado${exp.length>1?'s':''} en tu expediente local.</div>`:''}
+    <div class="ini-grid">
+      <div class="ini-card" onclick="irAGenerar('diagnostico')"><div class="ini-ico">🔍</div><div class="ini-tit">Diagnóstico Áulico</div><div class="ini-desc">Evaluación del grupo al inicio del ciclo. Res. CFE 174/12.</div></div>
+      <div class="ini-card" onclick="irAGenerar('planificacion')"><div class="ini-ico">📋</div><div class="ini-tit">Planificación Áulica</div><div class="ini-desc">Contenidos, actividades y evaluaciones por cuatrimestre. Res. CFE 93/09.</div></div>
+      <div class="ini-card" onclick="irAGenerar('contrato')"><div class="ini-ico">✍</div><div class="ini-tit">Contrato Didáctico</div><div class="ini-desc">Acuerdo docente-grupo. Compromisos y evaluación. Res. CFE 330/17.</div></div>
+      <div class="ini-card" onclick="irAGenerar('informe')"><div class="ini-ico">📊</div><div class="ini-tit">Informe Cuatrimestral</div><div class="ini-desc">Rendición pedagógica a la conducción. Res. CFE 93/09.</div></div>
+    </div>`;
+}
+
+function renderGenerar(mp){
+  const tipo=TIPOS[S.tipoSel];
+  const p=S.perfil||{};
+  const inst=instActiva();
+  const mat=materiaActiva();
+  const curso=cursoActivo();
+
+  let tiposCards=Object.keys(TIPOS).map(k=>{
+    const t=TIPOS[k];
+    return `<div class="tipo-card${S.tipoSel===k?' on':''}" onclick="selTipo('${k}')">
+      <div class="tipo-ico">${t.ico}</div><div class="tipo-tit">${t.tit}</div>
+      <div class="tipo-desc">${t.desc}</div><div class="tipo-norm">${t.norm}</div></div>`;
+  }).join('');
+
+  let camposHTML=tipo.campos.map(c=>{
+    if(c.t==='select') return `<div class="campo"><label class="fg-lbl" for="c-${c.id}">${c.l}</label><select class="fg-sel" id="c-${c.id}">${c.opts.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+    if(c.t==='ta') return `<div class="campo"><label class="fg-lbl" for="c-${c.id}">${c.l}</label><textarea class="fg-ta" id="c-${c.id}" placeholder="${c.ph||''}"></textarea></div>`;
+    return `<div class="campo"><label class="fg-lbl" for="c-${c.id}">${c.l}</label><input class="fg-inp" id="c-${c.id}" type="text" placeholder="${c.ph||''}"></div>`;
+  }).join('');
+
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">Generador · ${tipo.tit}</div>
+      <div class="ph-tit">${tipo.ico} <em>${tipo.tit}</em></div>
+      <div class="ph-desc">${tipo.norm}</div>
+    </div>
+    <div class="aviso"><strong>⚠ RESPONSABILIDAD PROFESIONAL:</strong> Borrador orientativo. Revisá, corregí y firmá antes del uso institucional.</div>
+    <div class="tipos-grid">${tiposCards}</div>
+
+    <div class="form-gen">
+      <div class="form-tit">📝 Datos del documento</div>
+
+      <!-- Resumen perfil + contexto -->
+      <div class="perf-res">
+        <div class="perf-res-lbl">Contexto activo (desde perfil y selectores del header)</div>
+        <div class="perf-res-txt">
+          <strong>${p.nombre||'Sin nombre'}</strong> &nbsp;·&nbsp; ${p.cargo||'—'}<br>
+          ${inst?`<strong>${inst.nombre}</strong> &nbsp;·&nbsp; ${tipoLabel(inst.tipo)} &nbsp;·&nbsp; turno ${inst.turno||'—'}<br>`:'<em>Sin institución seleccionada — elegí una en el selector del encabezado</em><br>'}
+          ${mat?`Materia: <strong>${mat}</strong>`:''} ${curso?`&nbsp;·&nbsp; Curso: <strong>${curso}</strong>`:''}
+          ${!mat&&!curso?'<em>Seleccioná materia y curso en el encabezado</em>':''}<br>
+          Provincia: ${p.provincia||'—'} &nbsp;·&nbsp; Ciclo ${p.ciclo||'2026'}
+        </div>
+      </div>
+
+      <div class="fg-2">
+        <div class="campo"><label class="fg-lbl" for="c-fecha">Fecha de creación</label><input class="fg-inp" id="c-fecha" type="text" value="${fechaHoy()}"></div>
+        <div class="campo"><label class="fg-lbl" for="c-grupo">Grupo / División</label><input class="fg-inp" id="c-grupo" type="text" placeholder="Ej: 6° 2a División" value="${curso||''}"></div>
+      </div>
+
+      ${camposHTML}
+
+      <!-- Datos opcionales -->
+      <div class="opc-box">
+        <div class="opc-hdr" onclick="toggleOpc()">Datos adicionales opcionales (estudiantes y otros) <span id="opc-arr">▼</span></div>
+        <div class="opc-body" id="opc-body">
+          <div class="campo" style="margin-top:12px;"><label class="fg-lbl" for="c-estudiantes">Nombres de estudiantes (a elección del profesional)</label><textarea class="fg-ta" id="c-estudiantes" placeholder="Si el documento lo requiere, listá los nombres relevantes. Para anonimizar dejá vacío."></textarea></div>
+          <div class="campo"><label class="fg-lbl" for="c-extra">Otros datos específicos del documento</label><textarea class="fg-ta" id="c-extra" placeholder="Cualquier dato adicional relevante..."></textarea></div>
+        </div>
+      </div>
+
+      <!-- Adjunto -->
+      <div class="campo">
+        <label class="fg-lbl">Documento de apoyo (opcional)</label>
+        <div class="adj-zona${S.adjTexto?' tiene':''}" id="adj-zona" onclick="document.getElementById('adj-inp').click()">
+          <div class="adj-ico">📎</div>
+          <div class="adj-txt">${S.adjTexto?'Documento cargado como contexto adicional':'Hacé clic para adjuntar un archivo de apoyo (.txt, .docx, .pdf)'}</div>
+          <div class="adj-nom">${S.adjNombre||''}</div>
+          ${S.adjTexto?'<button class="adj-clear" onclick="event.stopPropagation();limpiarAdj()">✕ Quitar adjunto</button>':''}
+        </div>
+        <input type="file" id="adj-inp" accept=".txt,.docx,.doc,.pdf,.md" style="display:none" onchange="cargarAdj(this)">
+        <div style="font-size:.65rem;color:var(--gris-b);margin-top:3px;">El texto del archivo se usa como contexto para la IA. Formatos: .txt · .docx · .pdf · .md</div>
+      </div>
+
+      <button class="btn-gen" id="btn-gen" onclick="generarDoc()">✦ Generar ${tipo.tit}</button>
+    </div>
+    <div class="res-area" id="res-area"></div>`;
+}
+
+function selTipo(k){ S.tipoSel=k; renderGenerar(document.getElementById('main-panel')); }
+function toggleOpc(){ const b=document.getElementById('opc-body');const a=document.getElementById('opc-arr');b.classList.toggle('open');a.textContent=b.classList.contains('open')?'▲':'▼'; }
+
+// ═══════════════════════════════════════════
+// ADJUNTO
+// ═══════════════════════════════════════════
+async function cargarAdj(input){
+  const file=input.files[0]; if(!file) return;
+  S.adjNombre=file.name;
+  const ext=file.name.split('.').pop().toLowerCase();
+  const zona=document.getElementById('adj-zona');
+  try{
+    if(['txt','md','rtf'].includes(ext)){
+      S.adjTexto=await file.text();
+
+    }else if(ext==='pdf'){
+      const ab=await file.arrayBuffer();
+      const bytes=new Uint8Array(ab);
+      let raw='';
+      for(let i=0;i<bytes.length;i++){ raw+=String.fromCharCode(bytes[i]); }
+      const bloques=[];
+      const btEt=raw.match(/BT[\s\S]*?ET/g)||[];
+      btEt.forEach(bloque=>{
+        const textos=bloque.match(/\(([^)]{1,200})\)\s*Tj/g)||[];
+        textos.forEach(t=>{
+          const limpio=t.replace(/^\(/,'').replace(/\)\s*Tj$/,'')
+            .replace(/\\n/g,'\n').replace(/\\r/g,'').replace(/\\t/g,' ')
+            .replace(/\\\(/g,'(').replace(/\\\)/g,')').trim();
+          if(limpio.length>2) bloques.push(limpio);
+        });
+      });
+      if(bloques.length<5){
+        const fallback=raw.match(/[A-Za-záéíóúñÁÉÍÓÚÑ][A-Za-záéíóúñÁÉÍÓÚÑ0-9\s.,;:!?()'"%-]{8,}/g)||[];
+        S.adjTexto=fallback.join(' ').replace(/\s{2,}/g,' ').substring(0,5000);
+      }else{
+        S.adjTexto=bloques.join(' ').replace(/\s{2,}/g,' ').substring(0,5000);
+      }
+      if(S.adjTexto.length<80){
+        S.adjTexto=`[Archivo PDF: ${file.name} — el contenido no pudo extraerse automáticamente. Describí el contenido en el campo "Datos adicionales".]`;
+      }
+
+    }else if(['docx','doc'].includes(ext)){
+      const ab=await file.arrayBuffer();
+      const bytes=new Uint8Array(ab);
+      let raw='';
+      for(let i=0;i<bytes.length;i++){ raw+=String.fromCharCode(bytes[i]); }
+      const xmlMatch=raw.match(/word\/document\.xml[^<]*(<\?xml[\s\S]*?)<\/w:document>/);
+      if(xmlMatch){
+        const xml=xmlMatch[1];
+        const textos=xml.match(/<w:t[^>]*>([^<]+)<\/w:t>/g)||[];
+        S.adjTexto=textos
+          .map(t=>t.replace(/<w:t[^>]*>/,'').replace(/<\/w:t>/,''))
+          .join(' ')
+          .replace(/\s{2,}/g,' ')
+          .substring(0,5000);
+      }
+      if(!S.adjTexto||S.adjTexto.length<80){
+        const legibles=raw.match(/[A-Za-záéíóúñÁÉÍÓÚÑ][A-Za-záéíóúñÁÉÍÓÚÑ0-9\s.,;:!?()'"%-]{8,}/g)||[];
+        S.adjTexto=legibles.join(' ').replace(/\s{2,}/g,' ').substring(0,5000);
+      }
+      if(S.adjTexto.length<80){
+        S.adjTexto=`[Archivo Word: ${file.name} — el contenido no pudo extraerse automáticamente. Describí el contenido en el campo "Datos adicionales".]`;
+      }
+
+    }else{
+      S.adjTexto=`[Archivo: ${file.name} — formato no soportado para extracción automática.]`;
+    }
+
+    if(zona){
+      zona.classList.add('tiene');
+      zona.innerHTML=`<div class="adj-ico">📎</div>
+        <div class="adj-txt">Documento cargado como contexto (${Math.round(S.adjTexto.length/100)/10}kb de texto)</div>
+        <div class="adj-nom">${file.name}</div>
+        <button class="adj-clear" onclick="event.stopPropagation();limpiarAdj()">✕ Quitar</button>`;
+    }
+  }catch(e){
+    S.adjTexto=`[Error al leer ${file.name}: ${e.message}]`;
+    if(zona) zona.innerHTML=`<div class="adj-ico">⚠</div><div class="adj-txt">Error al leer el archivo</div>`;
+  }
+}
+
+function limpiarAdj(){
+  S.adjTexto=''; S.adjNombre='';
+  const z=document.getElementById('adj-zona');
+  if(z){ z.classList.remove('tiene'); z.innerHTML=`<div class="adj-ico">📎</div><div class="adj-txt">Hacé clic para adjuntar un archivo de apoyo (.txt, .docx, .pdf)</div><div class="adj-nom"></div>`; }
+}
+
+// ═══════════════════════════════════════════
+// PROMPT
+// ═══════════════════════════════════════════
+function construirPrompt(tipoId,vals){
+  const p=S.perfil||{};
+  const inst=instActiva()||{};
+  const mat=materiaActiva();
+  const curso=cursoActivo();
+  const fecha=document.getElementById('c-fecha')?.value||fechaHoy();
+  const grupodoc=document.getElementById('c-grupo')?.value||curso||'';
+  const estud=document.getElementById('c-estudiantes')?.value?.trim()||'';
+  const extra=document.getElementById('c-extra')?.value?.trim()||'';
+  const adjunto=S.adjTexto?`\n\nDOCUMENTO DE APOYO ADJUNTO:\n${S.adjTexto.substring(0,4500)}`:'';
+  const estBloque=estud?`\n\nESTUDIANTES MENCIONADOS:\n${estud}`:'';
+  const exBloque=extra?`\n\nDATOS ADICIONALES:\n${extra}`:'';
+
+  const inst_inst={
+    diagnostico:`Redactá un DIAGNÓSTICO ÁULICO completo y formal para el sistema educativo argentino. Incluí: encabezado institucional completo con todos los datos del docente, objetivo del diagnóstico, metodología (observación directa), análisis del grupo en cuatro dimensiones (composición, clima grupal, motivación y expectativas, necesidades detectadas), fortalezas del grupo, conclusión pedagógica y orientaciones para la planificación. Firmado por el profesional con nombre, cargo, aclaración y fecha completa (día/mes/año).`,
+    planificacion:`Redactá una PLANIFICACIÓN ÁULICA CUATRIMESTRAL formal para nivel ${inst.tipo||'secundario'} del sistema educativo argentino. Incluí: encabezado completo, tabla de momentos pedagógicos (INICIO / DESARROLLO / CIERRE) con actividades detalladas, criterios de evaluación con instrumentos y nota mínima, recursos y bibliografía. Firmado por el docente.`,
+    contrato:`Redactá un CONTRATO DIDÁCTICO formal para el sistema educativo argentino. Incluí: encabezado, fundamentación pedagógica, compromisos del docente, compromisos del estudiante, normas de convivencia, sistema de evaluación completo, acuerdos adicionales. Al final incluí una tabla de firma con columnas: Nombre del estudiante | DNI | Firma | Fecha. Firmado por el docente con nombre, cargo y fecha completa.`,
+    informe:`Redactá un INFORME CUATRIMESTRAL DOCENTE A LA CONDUCCIÓN INSTITUCIONAL formal para el sistema educativo argentino. Incluí: encabezado completo, período informado, contenidos desarrollados, contenidos no desarrollados (con justificación), resultados cuantitativos, análisis de ausentismo, instancias evaluativas realizadas, dificultades pedagógicas, logros destacados y ajustes propuestos. Firmado con nombre completo, cargo y fecha completa (día/mes/año).`,
+    secuencia:`Redactá una SECUENCIA DIDÁCTICA completa y estructurada para el sistema educativo argentino. Incluí: encabezado institucional completo, objetivo general de la secuencia, saberes previos requeridos, desarrollo clase por clase (número, duración, momento de inicio/desarrollo/cierre, actividades, recursos e indicadores de avance para cada clase), evaluación con criterios e instrumentos para cada momento de la secuencia, y recursos y bibliografía. Marco normativo: Res. CFE 93/09 y 330/17, enfoque DUA cuando corresponda. Firmado por el docente con nombre, cargo y fecha completa (día/mes/año).`,
+    informe_alumno:`Redactá un INFORME PEDAGÓGICO INDIVIDUAL DE ALUMNO/A formal para el sistema educativo argentino. Incluí: encabezado institucional completo, datos del/la alumno/a, período informado, asistencia y puntualidad, rendimiento académico (con notas si las hay), logros y fortalezas observadas, dificultades identificadas, actitud/participación y convivencia, recomendaciones y propuestas de acompañamiento, y espacio para firma y aclaración del docente. Tono formal, objetivo y pedagógicamente fundamentado, sin juicios de valor negativos — describir hechos observables. Marco normativo: Res. CFE 93/09 y 343/18. Firmado con nombre completo, cargo y fecha completa (día/mes/año).`,
+    abp:`Redactá un PROYECTO DE APRENDIZAJE BASADO EN PROYECTOS (ABP) completo para el sistema educativo argentino. Incluí: encabezado institucional, nombre y fundamentación del proyecto, pregunta guía, objetivos generales y específicos, áreas y materias involucradas, etapas del proyecto (con duración, actividades y responsables), producto final y criterios de calidad, evaluación de proceso y producto con rúbrica orientativa, recursos necesarios, vinculación con el contexto local y/o educación técnica, y espacio para firmas de los/las docentes participantes. Marco normativo: Res. CFE 93/09, 330/17 e INET para ETP. Firmado con nombre completo, cargo y fecha completa (día/mes/año).`
+  };
+
+  const pie=`\n\n---\nDocumento generado con DocPed BRB — Herramienta de uso libre y gratuito\nBoris Rodríguez Barrera · BRB Estrategia & Procesos / Soberanía Técnica Ediciones\nORCID: 0009-0004-6583-6439 · Puerto Madryn, Chubut, Argentina\nbbbarrera1986@gmail.com · +54 297 517-6351\n⚠ BORRADOR ORIENTATIVO: El/la profesional docente es el/la único/a responsable de revisar, corregir, adaptar a su contexto y firmar este documento antes de su uso institucional.`;
+
+  return `Sos un especialista en documentación pedagógica formal para el sistema educativo argentino.
+
+DATOS DEL PROFESIONAL:
+Docente: ${p.nombre||'No especificado'}
+Cargo: ${p.cargo||'—'}
+Institución: ${inst.nombre||'No especificada'}
+Tipo: ${tipoLabel(inst.tipo||'')}
+Especialidad: ${inst.especialidad||'—'}
+Turno: ${inst.turno||'—'}
+Provincia: ${p.provincia||'—'}
+Espacio curricular / Materia: ${mat||'No especificado'}
+Grupo/Curso: ${grupodoc||'No especificado'}
+Ciclo lectivo: ${p.ciclo||'2026'}
+Fecha: ${fecha}
+
+TIPO DE DOCUMENTO: ${TIPOS[tipoId].tit}
+NORMATIVA: ${TIPOS[tipoId].norm}
+
+DATOS DEL FORMULARIO:
+${vals}${adjunto}${estBloque}${exBloque}
+
+INSTRUCCIÓN: ${inst_inst[tipoId]}
+
+REGLAS OBLIGATORIAS:
+1. Texto plano únicamente — SIN asteriscos, SIN #, SIN markdown de ningún tipo
+2. Encabezado institucional completo al inicio
+3. Secciones separadas con líneas de guiones (---) o líneas en blanco
+4. La sección de firma DEBE incluir: Firma: ______________ / Aclaración: ${p.nombre||'_______________'} / Cargo: ${p.cargo||'_______________'} / Fecha: ${fecha}
+5. Incluir al pie exactamente este texto: "${pie.trim()}"
+6. Documento completo, formal y directamente utilizable en contexto institucional`;
+}
+
+// ═══════════════════════════════════════════
+// LLAMADA IA
+// ═══════════════════════════════════════════
+function mensajeError(status,prov){
+  if(status===401||status===403) return `${prov}: API Key incorrecta o sin permisos.`;
+  if(status===429) return `${prov}: Límite de solicitudes alcanzado — esperá un momento.`;
+  if(status===502||status===503) return `${prov}: Servicio temporalmente no disponible — intentá en unos minutos.`;
+  return `${prov} ${status}: Error de API.`;
+}
+
+async function generarDoc(){
+  const tipoId=S.tipoSel;
+  const tipo=TIPOS[tipoId];
+  const vals=tipo.campos.map(c=>{const el=document.getElementById('c-'+c.id);return`${c.l}: ${el?el.value.trim()||'(no especificado)':'(no especificado)'}`;}).join('\n');
+  const prompt=construirPrompt(tipoId,vals);
+  const btn=document.getElementById('btn-gen');
+  btn.disabled=true; btn.innerHTML=`<span class="spin"></span> Generando con ${S.prov}...`;
+  const ra=document.getElementById('res-area');
+  ra.classList.add('vis');
+  ra.innerHTML=`<div class="res-cab"><span class="res-lbl">GENERANDO BORRADOR...</span></div><div class="res-txt" style="color:var(--gris);font-size:.75rem;">Conectando con ${S.prov}...</div>`;
+  try{
+    let texto='';
+    if(!S.apikey) throw new Error('No hay API Key. Volvé al inicio.');
+    if(S.prov==='gemini'){
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${S.apikey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      if(!r.ok) throw new Error(mensajeError(r.status,'Gemini'));
+      const d=await r.json(); texto=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    } else if(S.prov==='openai'){
+      const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.apikey}`},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}],max_tokens:3500})});
+      if(!r.ok) throw new Error(mensajeError(r.status,'OpenAI'));
+      const d=await r.json(); texto=d.choices?.[0]?.message?.content||'';
+    } else if(S.prov==='claude'){
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apikey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
+      if(!r.ok) throw new Error(mensajeError(r.status,'Claude'));
+      const d=await r.json(); texto=d.content?.[0]?.text||'';
+    }
+    if(!texto) throw new Error('La IA no devolvió texto. Intentá nuevamente.');
+    texto=texto.replace(/\*\*/g,'').replace(/\*/g,'').replace(/^#{1,6}\s/gm,'').replace(/_{2,}/g,'').replace(/`/g,'');
+    S.textoGen=texto;
+    trackGen(tipoId);
+    const fecha=fechaHoy().replace(/\//g,'');
+    const inst=instActiva();
+    const nomDl=`DocPed_BRB_${tipoId.toUpperCase()}_${(inst?.nombre||'BRB').replace(/[^a-zA-Z0-9]/g,'_').substring(0,16)}_${fecha}.txt`;
+    ra.innerHTML=`
+      <div class="res-cab">
+        <span class="res-lbl">BORRADOR · ${tipo.tit.toUpperCase()}</span>
+        <div class="res-btns">
+          <button class="rb rb-cop" id="btn-cop" onclick="copiarTexto()">📋 Copiar</button>
+          <button class="rb rb-dl" onclick="dlDoc(S.textoGen,'${nomDl}')">⬇ Exportar .txt</button>
+          <button class="rb rb-grd" id="btn-grd" onclick="guardarExp('${tipoId}')">💾 Guardar en expediente</button>
+          <button class="rb rb-del" onclick="limpiarRes()">✕ Limpiar</button>
+        </div>
+      </div>
+      <div class="res-aviso">⚠ BORRADOR — El/la profesional docente es el/la único/a responsable de revisar, corregir y FIRMAR antes del uso institucional.</div>
+      <div class="res-txt">${escHtml(texto)}</div>`;
+  }catch(e){
+    const msg=(e instanceof TypeError)?'Error de red — verificá tu conexión.':e.message;
+    ra.innerHTML=`<div class="res-cab"><span class="res-lbl" style="color:#FF9999;">ERROR</span></div><div class="res-txt" style="color:var(--rojo);padding:18px;">${escHtml(msg)}</div>`;
+  }finally{
+    btn.disabled=false; btn.innerHTML=`✦ Generar ${tipo.tit}`;
+  }
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function copiarTexto(){
+  navigator.clipboard?.writeText(S.textoGen).then(()=>{
+    const b=document.getElementById('btn-cop');
+    if(b){b.textContent='✓ Copiado';setTimeout(()=>{b.textContent='📋 Copiar';},2000);}
+  }).catch(()=>{ const t=document.createElement('textarea');t.value=S.textoGen;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); });
+}
+
+function dlDoc(texto,nombre){
+  const blob=new Blob([texto],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=nombre;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function limpiarRes(){
+  const ra=document.getElementById('res-area');
+  if(ra){ra.classList.remove('vis');ra.innerHTML='';}
+  S.textoGen='';
+}
+
+// ═══════════════════════════════════════════
+// EXPEDIENTE LOCAL
+// ═══════════════════════════════════════════
+function guardarExp(tipoId){
+  const tipo=TIPOS[tipoId];
+  const p=S.perfil||{};
+  const inst=instActiva()||{};
+  const item={
+    id:Date.now(), tipoId, tipoNombre:tipo.tit, icono:tipo.ico,
+    docente:p.nombre||'—', institucion:inst.nombre||'—',
+    grupo:document.getElementById('c-grupo')?.value||cursoActivo()||'',
+    materia:materiaActiva()||'—',
+    fecha:fechaHoy(), ciclo:p.ciclo||'2026',
+    texto:S.textoGen
+  };
+  let exp=cargarExp();
+  exp.unshift(item);
+  if(exp.length>200) exp=exp.slice(0,200);
+  _store.setItem('dp_exp',JSON.stringify(exp));
+  const b=document.getElementById('btn-grd');
+  if(b){b.textContent='✓ Guardado';b.disabled=true;setTimeout(()=>{b.textContent='💾 Guardar en expediente';b.disabled=false;},2500);}
+  toast('Documento guardado en el expediente.','ok');
+}
+
+function cargarExp(){ try{return JSON.parse(_store.getItem('dp_exp'))||[];}catch(e){return[];} }
+
+function renderExpediente(mp){
+  const exp=cargarExp();
+  mp.innerHTML=`
+    <div class="ph">
+      <div class="ph-badge">Almacenamiento Local · Este dispositivo</div>
+      <div class="ph-tit">📁 Expediente <em>Docente</em></div>
+      <div class="ph-desc">${exp.length} documento${exp.length!==1?'s':''} guardado${exp.length!==1?'s':''} en este dispositivo.</div>
+    </div>
+    <div class="aviso-info"><strong>ℹ ALMACENAMIENTO LOCAL:</strong> Los documentos se guardan únicamente en este navegador y dispositivo. No se envían a ningún servidor. Exportá como .txt los que necesitás conservar.</div>
+    ${exp.length===0
+      ? '<div class="exp-vacio">NO HAY DOCUMENTOS GUARDADOS<br><br><small>Generá y guardá tu primer documento</small></div>'
+      : exp.map(d=>`
+        <div class="exp-item">
+          <div class="exp-top">
+            <div>
+              <div class="exp-tit">${d.icono} ${d.tipoNombre}</div>
+              <div class="exp-meta">${d.docente} &nbsp;·&nbsp; ${d.institucion}<br>${d.materia||'—'} &nbsp;·&nbsp; ${d.grupo} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; Ciclo ${d.ciclo}</div>
+            </div>
+            <div class="exp-badge">${d.tipoId.toUpperCase()}</div>
+          </div>
+          <div class="exp-btns">
+            <button class="eb eb-ver" onclick="verDoc(${d.id})">👁 Ver</button>
+            <button class="eb eb-dl" onclick="dlDocExp(${d.id})">⬇ .txt</button>
+            <button class="eb eb-del" onclick="elimDoc(${d.id})">🗑 Eliminar</button>
+          </div>
+        </div>`).join('')
+    }`;
+}
+
+function verDoc(id){
+  const doc=cargarExp().find(d=>d.id===id); if(!doc) return;
+  S.docModal=doc;
+  document.getElementById('modal-tit').textContent=`${doc.icono} ${doc.tipoNombre} — ${doc.fecha}`;
+  document.getElementById('modal-body').textContent=doc.texto;
+  document.getElementById('modal-ov').classList.add('vis');
+}
+
+function dlDocExp(id){
+  const doc=cargarExp().find(d=>d.id===id); if(!doc) return;
+  const nom=`DocPed_BRB_${doc.tipoId.toUpperCase()}_${(doc.institucion||'BRB').replace(/[^a-zA-Z0-9]/g,'_').substring(0,16)}_${doc.fecha.replace(/\//g,'')}.txt`;
+  dlDoc(doc.texto,nom);
+}
+
+function elimDoc(id){
+  if(!confirm('¿Eliminar este documento del expediente? No se puede deshacer.')) return;
+  let exp=cargarExp().filter(d=>d.id!==id);
+  _store.setItem('dp_exp',JSON.stringify(exp));
+  renderExpediente(document.getElementById('main-panel'));
+}
+
+function cerrarModal(){ document.getElementById('modal-ov').classList.remove('vis'); S.docModal=null; }
+function copiarModal(){ navigator.clipboard?.writeText(document.getElementById('modal-body').textContent).catch(()=>{}); }
+function dlModal(){ if(S.docModal) dlDocExp(S.docModal.id); }
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarModal();});
+document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target===document.getElementById('modal-ov'))cerrarModal();});
+
+// ═══════════════════════════════════════════
+// INIT — recuperar sesión si existe
+// ═══════════════════════════════════════════
+(function init(){
+  const ak=sessionStorage.getItem('dp_api');
+  const pk=sessionStorage.getItem('dp_prov');
+  if(ak){
+    S.apikey=ak; S.prov=pk||'gemini';
+    document.getElementById('apikey-inp').value=ak;
+    // Actualizar tab visual
+    document.querySelectorAll('.prov-tab').forEach(b=>{
+      const match=b.getAttribute('onclick')?.includes(`'${S.prov}'`);
+      b.classList.toggle('on',!!match);
+    });
+    document.querySelectorAll('.prov-inst').forEach(d=>d.classList.remove('vis'));
+    const pi=document.getElementById('inst-'+S.prov);
+    if(pi) pi.classList.add('vis');
+    const p=cargarPerfilLocal();
+    if(p){ S.perfil=p; lanzarApp(); return; }
+  }
+})();
+
+document.getElementById('apikey-inp').addEventListener('input',function(){
+  sessionStorage.setItem('dp_api',this.value.trim());
+});
+</script>
+<!-- AUDITORIA v1.2: agregados proveedores Gemini/OpenAI/Claude con mensajes de error específicos (helper mensajeError), mejorada extracción de PDF/DOCX en cargarAdj(), agregados 3 tipos de documento (secuencia, informe_alumno, abp) con sus prompts. Sin variables/funciones huérfanas detectadas. -->
+</body>
+</html>
